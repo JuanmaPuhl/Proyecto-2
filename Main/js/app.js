@@ -1,10 +1,6 @@
 //Variables para los objetos
 var gl = null;
 var shaderProgram  = null; //Shader program to use.
-var vao = null;
-var vao2 =null; //Geometry to render (stored in VAO).
-var vao3 = null;
-var vao4=null;
 var parsedOBJ = null; //Archivos OBJ Traducidos para que los pueda leer webgl2
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
@@ -28,7 +24,6 @@ var u_ia;
 var u_id;
 var u_is;
 var u_MV;
-
 
 //Uniform values.
 var satelliteMatrix = mat4.create();
@@ -84,7 +79,7 @@ function onLoad() {
 	//Creacion de MATERIALES
 	crearMateriales();
 
-	//vertexShaderSource y fragmentShaderSource estan importadas en index.html <script>
+	//Creo las variables que voy a pasar a los shaders
 	shaderProgram = ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
 	let posLocation = gl.getAttribLocation(shaderProgram, 'vertexPos');
 	let vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
@@ -102,11 +97,14 @@ function onLoad() {
 	u_is = gl.getUniformLocation(shaderProgram, 'is');
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
 
-	obj_planet = new Object(parsedOBJ);
-	obj_satellite = new Object(parsedOBJ2);
-	obj_ring1 = new Object(parsedOBJ3);
-	obj_ring2 = new Object(parsedOBJ4);
-	for(let i = 0; i<24; i++){
+	//Creo objetos
+	obj_planet = new Object(parsedOBJ); //Planeta
+	obj_satellite = new Object(parsedOBJ2); //Satelite
+	obj_ring1 = new Object(parsedOBJ3); //Anillo 1
+	obj_ring2 = new Object(parsedOBJ4); //Anillo 2
+
+
+	for(let i = 0; i<24; i++){ //Pelotas
 			balls.push(new Object(parsedOBJ5));
 			balls[i].setMaterial(getMaterialByIndex(i%materials.length));
 			balls[i].setVao(VAOHelper.create(balls[i].getIndices(), [
@@ -114,7 +112,7 @@ function onLoad() {
 				new VertexAttributeInfo(balls[i].getNormals(), vertexNormal_location, 3)
 			]));
 	}
-	light = new Light(light_position , light_intensity , light_angle);
+	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
 
 	//Para el planeta
 	let vertexAttributeInfoArray = [
