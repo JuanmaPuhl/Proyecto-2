@@ -80,7 +80,7 @@ function onLoad() {
 
 	//Cargo los objetos a la escena
 	onModelLoad();
-	//cargarSliders();//Cargo los sliders
+	cargarSliders();//Cargo los sliders
 	//Creacion de MATERIALES
 	crearMateriales();
 

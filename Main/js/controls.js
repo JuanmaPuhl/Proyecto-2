@@ -32,7 +32,7 @@ function getMaterialByIndex(index){
 
 /*Funcion para cargar los sliders de la pagina*/
 function cargarSliders(){
-	for(let i=0; i<6; i++){
+	for(let i=3; i<6; i++){
 		slider[i]=document.getElementById("slider"+(i+1));//Guardo el slider
 		angle[i]=parseFloat(slider[i].defaultValue);//Actualizo el valor del angulo asociado al slider
 		updateTextInput(i+1,slider[i].value);//Actualizo el valor del campo de texto asociado al slider

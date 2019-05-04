@@ -120,17 +120,19 @@ input[type=text]{
 /**Modificaciones a los botones*/
 button {
   background-color : rgba(0,0,0,0);
-  border: 2px solid #dd6b4d;
-  border-radius : 25px;
+  border: 2px solid #d65a31;
+  border-radius : 10px;
   padding: 5px 10px;
   text-align: center;
   font-size: 16px;
   transition-duration: 0.4s;
+	color : white;
 
 }
 
 /**Modificaciones cuando pongo el mouse encima del boton*/
 button:hover {
-  background-color: #dd6b4d;
+  background-color: #d65a31;
   color: white;
+	box-shadow: 2px 2px 5px #d65a31;
 }
