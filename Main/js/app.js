@@ -179,6 +179,11 @@ function onRender(now){
 	passLight(light);
 	passCamera();
 
+	let matrizTraslacion = mat4.create();
+	mat4.fromTranslation(matrizTraslacion,[1.5,0,0]);
+	mat4.multiply( obj_satellite.getObjectMatrix(),matrizTraslacion, obj_satellite.getObjectMatrix());
+
+	//console.log(matriz);
 	for(let i = 0; i<balls.length; i++){
 		balls[i].resetObjectMatrix();
 		let matrix = balls[i].getObjectMatrix();
@@ -191,10 +196,10 @@ function onRender(now){
 		mat4.fromTranslation(translationMatrix,[1.1*i,0,-2*i]);
 		mat4.multiply(matrix,translationMatrix,matrix);
 		mat4.multiply(matrix,scaleMatrix,matrix);
-		drawObject(balls[i]);
+		//drawObject(balls[i]);
 	}
-	//drawObject(obj_planet);
-	//drawObject(obj_satellite);
+	drawObject(obj_planet);
+	drawObject(obj_satellite);
 	//drawObject(obj_ring1);
 	//drawObject(obj_ring2);
 	gl.useProgram(null);
@@ -207,9 +212,9 @@ function refreshFrame(){
 	obj_ring1.resetObjectMatrix();
 	obj_ring2.resetObjectMatrix();
 	/*Actualizo las transformaciones para cada uno de los objetos*/
-	rotatePlanet();//Roto el planeta
-	rotateSatellite();//Roto el satelite
-	orbitSatellite();//Orbito el satelite
+	//rotatePlanet();//Roto el planeta
+	//rotateSatellite();//Roto el satelite
+	//orbitSatellite();//Orbito el satelite
 	scaleSatellite();//Escalo el satelite
 	scalePlanet();//Escalo el planeta
 	rotateRing1();//Roto el anillo interior
@@ -457,8 +462,8 @@ function scalePlanet(){
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
 	//parsedOBJ = OBJParser.parseFile(teapot);
-	parsedOBJ = OBJParser.parseFile(planeta); //Cargo el planeta
-	parsedOBJ2 = OBJParser.parseFile(satelite); //Cargo el satelite
+	parsedOBJ = OBJParser.parseFile(bmw); //Cargo el planeta
+	parsedOBJ2 = OBJParser.parseFile(ford); //Cargo el satelite
 	parsedOBJ3 = OBJParser.parseFile(anillo1); //Cargo el anillo interior
 	parsedOBJ4 = OBJParser.parseFile(anillo2); //Cargo el anillo exterior
 	parsedOBJ5 = OBJParser.parseFile(ball);
