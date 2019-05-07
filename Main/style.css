@@ -24,12 +24,12 @@ body{
 
 #controlDiv{
 	width : 525px;
-	height : 255px;
+	height : 370px;
 	background-color : #222831;
 	margin-right : 100px;
 	float : right;
 	/* border : 1px solid black; */
-	box-shadow: 2px 2px 10px black;
+	box-shadow: 2px 	2px 10px black;
 }
 
 #canvasDiv{
@@ -42,11 +42,13 @@ body{
 	width : 525px;
 	margin-right : auto;
 	margin-left : auto;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
+	/* margin-top : 10px; */
 	border-collapse : collapse;
 	overflow : hidden;
 	font-family : Helvetica;
 	text-align: center;
+
 }
 
 th{
@@ -60,6 +62,7 @@ th{
 tr{
 	height : 40px;
 	background-color : #393e46;
+	/* border-bottom : 2px solid #393e46; */
 	text-align : center;
 }
 

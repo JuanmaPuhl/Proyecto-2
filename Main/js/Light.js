@@ -10,6 +10,10 @@ class Light{
         this.angle = angle;
   }
 
+  setIntensity(intensity){
+    this.intensity = intensity;
+  }
+
   //Retorno la posicion de la luz
   getLightPosition(){
     return this.lightPosition;
