@@ -104,14 +104,6 @@ function onLoad() {
 	obj_ring2 = new Object(parsedOBJ4); //Anillo 2
 
 
-	for(let i = 0; i<24; i++){ //Pelotas
-			balls.push(new Object(parsedOBJ5));
-			balls[i].setMaterial(getMaterialByIndex(i%materials.length));
-			balls[i].setVao(VAOHelper.create(balls[i].getIndices(), [
-				new VertexAttributeInfo(balls[i].getPositions(), posLocation, 3),
-				new VertexAttributeInfo(balls[i].getNormals(), vertexNormal_location, 3)
-			]));
-	}
 	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
 
 	//Para el planeta
@@ -183,21 +175,6 @@ function onRender(now){
 	mat4.fromTranslation(matrizTraslacion,[1.5,0,0]);
 	mat4.multiply( obj_satellite.getObjectMatrix(),matrizTraslacion, obj_satellite.getObjectMatrix());
 
-	//console.log(matriz);
-	for(let i = 0; i<balls.length; i++){
-		balls[i].resetObjectMatrix();
-		let matrix = balls[i].getObjectMatrix();
-		let translationMatrix = mat4.create();
-		let scaleMatrix = mat4.create();
-		mat4.fromTranslation(translationMatrix,[-10,0,20]);
-		mat4.multiply(matrix,translationMatrix,matrix);
-		translationMatrix = mat4.create();
-		mat4.fromScaling(scaleMatrix,[0.08,0.08,0.08]);
-		mat4.fromTranslation(translationMatrix,[1.1*i,0,-2*i]);
-		mat4.multiply(matrix,translationMatrix,matrix);
-		mat4.multiply(matrix,scaleMatrix,matrix);
-		//drawObject(balls[i]);
-	}
 	drawObject(obj_planet);
 	drawObject(obj_satellite);
 	//drawObject(obj_ring1);
