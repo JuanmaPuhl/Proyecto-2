@@ -100,8 +100,8 @@ function onLoad() {
 	//Creo objetos
 	obj_planet = new Object(parsedOBJ); //Planeta
 	obj_satellite = new Object(parsedOBJ2); //Satelite
-	obj_ring1 = new Object(parsedOBJ3); //Anillo 1
-	obj_ring2 = new Object(parsedOBJ4); //Anillo 2
+	// obj_ring1 = new Object(parsedOBJ3); //Anillo 1
+	// obj_ring2 = new Object(parsedOBJ4); //Anillo 2
 
 
 	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
@@ -117,21 +117,21 @@ function onLoad() {
 		new VertexAttributeInfo(obj_satellite.getNormals(), vertexNormal_location, 3)
 	];
 	//Para el anillo interior
-	let vertexAttributeInfoArray3 = [
-		new VertexAttributeInfo(obj_ring1.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_ring1.getNormals(), vertexNormal_location, 3)
-	];
-	//Para el anillo exterior
-	let vertexAttributeInfoArray4 = [
-		new VertexAttributeInfo(obj_ring2.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_ring2.getNormals(), vertexNormal_location, 3)
-	];
+	// let vertexAttributeInfoArray3 = [
+	// 	new VertexAttributeInfo(obj_ring1.getPositions(), posLocation, 3),
+	// 	new VertexAttributeInfo(obj_ring1.getNormals(), vertexNormal_location, 3)
+	// ];
+	// //Para el anillo exterior
+	// let vertexAttributeInfoArray4 = [
+	// 	new VertexAttributeInfo(obj_ring2.getPositions(), posLocation, 3),
+	// 	new VertexAttributeInfo(obj_ring2.getNormals(), vertexNormal_location, 3)
+	// ];
 
 	//Asigno VAOs
 	obj_planet.setVao(VAOHelper.create(obj_planet.getIndices(), vertexAttributeInfoArray));
 	obj_satellite.setVao(VAOHelper.create(obj_satellite.getIndices(), vertexAttributeInfoArray2));
-	obj_ring1.setVao(VAOHelper.create(obj_ring1.getIndices(), vertexAttributeInfoArray3));
-	obj_ring2.setVao(VAOHelper.create(obj_ring2.getIndices(), vertexAttributeInfoArray4));
+	//obj_ring1.setVao(VAOHelper.create(obj_ring1.getIndices(), vertexAttributeInfoArray3));
+	//obj_ring2.setVao(VAOHelper.create(obj_ring2.getIndices(), vertexAttributeInfoArray4));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -144,10 +144,10 @@ function onLoad() {
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
 
-	obj_planet.setMaterial(getMaterialByName("Gold"));
-	obj_satellite.setMaterial(getMaterialByName("Gold"));
-	obj_ring1.setMaterial(getMaterialByName("Rock"));
-	obj_ring2.setMaterial(getMaterialByName("Jade"));
+	obj_planet.setMaterial(getMaterialByName("Polished Gold"));
+	obj_satellite.setMaterial(getMaterialByName("Polished Gold"));
+	//obj_ring1.setMaterial(getMaterialByName("Rock"));
+	//obj_ring2.setMaterial(getMaterialByName("Jade"));
 
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	//Dibujara los que esten mas cerca de la pantalla.
@@ -186,18 +186,18 @@ function onRender(now){
 function refreshFrame(){
 	obj_planet.resetObjectMatrix();
 	obj_satellite.resetObjectMatrix();
-	obj_ring1.resetObjectMatrix();
-	obj_ring2.resetObjectMatrix();
+	//obj_ring1.resetObjectMatrix();
+	//obj_ring2.resetObjectMatrix();
 	/*Actualizo las transformaciones para cada uno de los objetos*/
 	//rotatePlanet();//Roto el planeta
-	//rotateSatellite();//Roto el satelite
+	rotateSatellite();//Roto el satelite
 	//orbitSatellite();//Orbito el satelite
 	scaleSatellite();//Escalo el satelite
 	scalePlanet();//Escalo el planeta
-	rotateRing1();//Roto el anillo interior
-	rotateRing2();//Roto el anillo exterior
-	scaleRing1();//Escalo el anillo 1
-	scaleRing2();//Escalo el anillo 2
+	//rotateRing1();//Roto el anillo interior
+	//rotateRing2();//Roto el anillo exterior
+	//scaleRing1();//Escalo el anillo 1
+	//scaleRing2();//Escalo el anillo 2
 	refreshCamera();
 }
 
@@ -392,7 +392,7 @@ function rotateSatellite(){
 			if(animated[8])
 				mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[8]));
 	else//Sino... creo matriz de rotacion con el angulo del slider
-		mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(-angle[1]));
+		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(180));
 	//Obtengo las componentes del punto central de rotacion del objeto y multiplico por -1 para obtener
 	//el vector de traslacion al 0,0,0
 	let center = obj_satellite.getCenter();
@@ -402,6 +402,8 @@ function rotateSatellite(){
 	mat4.multiply(matrix, rotationMatrix, matrix);//Roto el satelite
 	mat4.invert(translationMatrix,translationMatrix)//Calculo la matriz de traslacion al punto original
 	mat4.multiply(matrix,translationMatrix,matrix);//Vuelvo a pos normal
+	mat4.fromTranslation(translationMatrix,[-10,0,-1.5]);
+	mat4.multiply(matrix,translationMatrix,matrix);
 }
 
 /*Funcion para orbitar el satelite*/
@@ -441,7 +443,7 @@ function onModelLoad() {
 	//parsedOBJ = OBJParser.parseFile(teapot);
 	parsedOBJ = OBJParser.parseFile(bmw); //Cargo el planeta
 	parsedOBJ2 = OBJParser.parseFile(ford); //Cargo el satelite
-	parsedOBJ3 = OBJParser.parseFile(anillo1); //Cargo el anillo interior
-	parsedOBJ4 = OBJParser.parseFile(anillo2); //Cargo el anillo exterior
-	parsedOBJ5 = OBJParser.parseFile(ball);
+	//parsedOBJ3 = OBJParser.parseFile(anillo1); //Cargo el anillo interior
+	//parsedOBJ4 = OBJParser.parseFile(anillo2); //Cargo el anillo exterior
+	//parsedOBJ5 = OBJParser.parseFile(ball);
 }
