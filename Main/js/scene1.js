@@ -2,7 +2,7 @@
 var gl = null;
 var shaderProgram  = null; //Shader program to use.
 var parsedOBJ = null;
-
+var parsedOBJ2 = null;
 //Uniform locations.
 var u_modelMatrix;
 var u_viewMatrix;
@@ -45,7 +45,7 @@ var materials = [];
 
 //OBJETOS
 var balls = [];
-
+var obj_axis;
 //LUCES
 var light;
 var light_position = [0.0,0.0,10.0,1.0];
@@ -82,12 +82,17 @@ function onLoad() {
 	u_is = gl.getUniformLocation(shaderProgram, 'is');
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
 
-
+  obj_axis = new Object(parsedOBJ2);
+  obj_axis.setMaterial(getMaterialByName("Jade"));
+  obj_axis.setVao(VAOHelper.create(obj_axis.getIndices(), [
+    new VertexAttributeInfo(obj_axis.getPositions(), posLocation, 3),
+    new VertexAttributeInfo(obj_axis.getNormals(), vertexNormal_location, 3)
+  ]));
 	for(let i = 0; i<6; i++){ //Pelotas
     let arr = [];
       for(let j=0; j<4; j++){
         arr.push(new Object(parsedOBJ));
-  			arr[j].setMaterial(getMaterialByIndex(j%materials.length));
+  			arr[j].setMaterial(getMaterialByIndex((i+j)%materials.length));
   			arr[j].setVao(VAOHelper.create(arr[j].getIndices(), [
   				new VertexAttributeInfo(arr[j].getPositions(), posLocation, 3),
   				new VertexAttributeInfo(arr[j].getNormals(), vertexNormal_location, 3)
@@ -140,20 +145,17 @@ function onRender(now){
       let matrix = arr[j].getObjectMatrix();
       let translationMatrix = mat4.create();
       let scaleMatrix = mat4.create();
-      mat4.fromTranslation(translationMatrix,[-10,0,20]);
+      mat4.fromTranslation(translationMatrix,[-3,0,-12.5]);
       mat4.multiply(matrix,translationMatrix,matrix);
       translationMatrix = mat4.create();
       mat4.fromScaling(scaleMatrix,[0.08,0.08,0.08]);
-      mat4.fromTranslation(translationMatrix,[2*j,0,-3*i]);
+      mat4.fromTranslation(translationMatrix,[2*j,0,5*i]);
       mat4.multiply(matrix,translationMatrix,matrix);
       mat4.multiply(matrix,scaleMatrix,matrix);
       drawObject(arr[j]);
     }
 	}
-	//drawObject(obj_planet);
-	//drawObject(obj_satellite);
-	//drawObject(obj_ring1);
-	//drawObject(obj_ring2);
+  drawObject(obj_axis);
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
@@ -216,14 +218,6 @@ function refreshAngles(deltaTime){
 	 // A partir del tiempo que pasó desde el ultimo frame (timeDelta), calculamos los cambios que tenemos que aplicar al cubo
 	for(let x = 0; x<10 ; x++){
 		if(animated[x]){
-			if(x==1){ //Si lo que se esta animando es el satelite
-				rotationAngle[x] = -deltaTime * rotationSpeed+rotationAngle[x];//Acomodo el angulo de rotacion
-				if(rotationAngle[x]<-360) //Verifico que no se pase de los valores establecidos para el slider
-					rotationAngle[x]=360; //No hay problema alguno en que se pase, pero si se deja mucho tiempo corriendo
-				if(rotationAngle[x]>360) //Puede llegar al maximo valor de integer y pueden llegar a ocurrir errores
-					rotationAngle[x]=-360;
-			}
-			else
 			if(x==6){ //Si lo que se esta animando es la camara rotando automaticamente de forma horaria
 				rotationAngle[x] = deltaTime * (-rotationSpeed)+rotationAngle[x];
 				if(rotationAngle[x]<=0)
@@ -234,14 +228,6 @@ function refreshAngles(deltaTime){
 				rotationAngle[x] = deltaTime * rotationSpeed + rotationAngle[x];
 				if(rotationAngle[x]>360)
 					rotationAngle[x]=0;
-			}
-			else
-				if(x==7){//Si lo que estoy animando es el planeta rotando automaticamente de forma horaria
-				rotationAngle[x] =deltaTime * (-rotationSpeed) + rotationAngle[x];
-				if(rotationAngle[x]<-360)
-					rotationAngle[x]=360;
-				if(rotationAngle[x]>360)
-					rotationAngle[x]=-360;
 			}
 			else{//Si no es ninguno de los casos anteriores establezco un angulo de rotacion estandar
 				rotationAngle[x] = deltaTime * rotationSpeed + rotationAngle[x];
@@ -256,4 +242,5 @@ function refreshAngles(deltaTime){
 function onModelLoad() {
 	//parsedOBJ = OBJParser.parseFile(teapot);
 	parsedOBJ = OBJParser.parseFile(ball);
+  parsedOBJ2 = OBJParser.parseFile(axis);
 }
