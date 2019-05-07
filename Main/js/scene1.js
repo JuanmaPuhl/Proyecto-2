@@ -48,7 +48,7 @@ var balls = [];
 var obj_axis;
 //LUCES
 var light;
-var light_position = [0.0,0.0,10.0,1.0];
+var light_position = [0.0,10.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = 0.0;
 
@@ -145,7 +145,7 @@ function onRender(now){
       let matrix = arr[j].getObjectMatrix();
       let translationMatrix = mat4.create();
       let scaleMatrix = mat4.create();
-      mat4.fromTranslation(translationMatrix,[-3,0,-12.5]);
+      mat4.fromTranslation(translationMatrix,[-3 ,0,-12.5]);
       mat4.multiply(matrix,translationMatrix,matrix);
       translationMatrix = mat4.create();
       mat4.fromScaling(scaleMatrix,[0.08,0.08,0.08]);
