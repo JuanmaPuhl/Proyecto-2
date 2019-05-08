@@ -24,6 +24,9 @@ var u_ia;
 var u_id;
 var u_is;
 var u_MV;
+var u_ax;
+var u_ay;
+
 
 //Uniform values.
 var satelliteMatrix = mat4.create();
@@ -63,10 +66,11 @@ var balls = [];
 
 //LUCES
 var light;
-var light_position = [0.0,0.0,10.0,1.0];
+var light_position = [0.0,5.0,5.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = 0.0;
-
+var ax = 0.4;
+var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -96,6 +100,9 @@ function onLoad() {
 	u_id = gl.getUniformLocation(shaderProgram, 'id');
 	u_is = gl.getUniformLocation(shaderProgram, 'is');
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
+	u_ax = gl.getUniformLocation(shaderProgram, 'ax');
+	u_ay = gl.getUniformLocation(shaderProgram, 'ay');
+
 
 	//Creo objetos
 	obj_planet = new Object(parsedOBJ); //Planeta
@@ -144,7 +151,7 @@ function onLoad() {
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
 
-	obj_planet.setMaterial(getMaterialByName("Polished Gold"));
+	obj_planet.setMaterial(getMaterialByName("Jade"));
 	obj_satellite.setMaterial(getMaterialByName("Polished Gold"));
 	//obj_ring1.setMaterial(getMaterialByName("Rock"));
 	//obj_ring2.setMaterial(getMaterialByName("Jade"));
@@ -208,9 +215,9 @@ function refreshCamera(){
 		if(animated[6]) //Si esta rotando automaticamente a la derecha...
 			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[4])); //Roto segun el angulo de rotacion 6
 		else {// Si no esta siendo animada
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[5]),glMatrix.toRadian(angle[4])); //Roto segun el angulo del slider
+			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
 		}
-	projMatrix=camaraEsferica.zoom(angle[3]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
+	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
 }
 
 function passCamera(){
@@ -219,6 +226,8 @@ function passCamera(){
 }
 
 function passLight(light){
+	gl.uniform1f(u_ax,ax);
+	gl.uniform1f(u_ay,ay);
 	gl.uniform4fv(u_posL, light.getLightPosition());
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
 	gl.uniform3fv(u_id, light.getIntensity()[1]);
@@ -357,7 +366,7 @@ function rotatePlanet(){
 				//Creo matriz de rotacion para el planeta con el angulo de rotacion automatico
 				mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[7]));
 			else//sino... creo matriz de rotacion con el angulo del slider
-				mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(angle[0]));
+				mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(0));
 	//Aplico transformaciones al planeta
 	mat4.multiply(matrix, rotationMatrix, matrix);
 }

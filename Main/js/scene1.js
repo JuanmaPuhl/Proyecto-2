@@ -17,6 +17,8 @@ var u_ia;
 var u_id;
 var u_is;
 var u_MV;
+var u_ax;
+var u_ay;
 
 //Uniform values.
 var viewMatrix = mat4.create();
@@ -48,10 +50,11 @@ var balls = [];
 var obj_axis;
 //LUCES
 var light;
-var light_position = [0.0,10.0,0.0,1.0];
+var light_position = [0.0,10.0,10.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = 0.0;
-
+var ax = 0.4;
+var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -81,6 +84,9 @@ function onLoad() {
 	u_id = gl.getUniformLocation(shaderProgram, 'id');
 	u_is = gl.getUniformLocation(shaderProgram, 'is');
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
+	u_ax = gl.getUniformLocation(shaderProgram, 'ax');
+	u_ay = gl.getUniformLocation(shaderProgram, 'ay');
+
 
   obj_axis = new Object(parsedOBJ2);
   obj_axis.setMaterial(getMaterialByName("Jade"));
@@ -264,7 +270,8 @@ function drawObject(object){
 	gl.uniform4fv(u_kd,material.getKd());
 	gl.uniform4fv(u_ks,material.getKs());
 	gl.uniform1f(u_coefEspec,material.getShininess());
-
+	gl.uniform1f(u_ax,ax);
+	gl.uniform1f(u_ay,ay);
 	gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
 	gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
 	gl.bindVertexArray(null);
