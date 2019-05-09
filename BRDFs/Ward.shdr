@@ -1,0 +1,67 @@
+{
+  "vertexSource": "#version 300 es \n\nuniform mat4 modelMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\n\n\n\nin vec3 vertexPosition;\nin vec3 vertexNormal;\n\nout vec3 vNE; //Vector normal en espacio ojo\nout vec3 vLE; //Vector de direccion de luz\nout vec3 vVE; //Vector de vista (al ojo)\n\nuniform vec4 posL; //Posicion luz\nvoid main(void){\n    mat4 MV =  viewMatrix * modelMatrix;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);\n    \n    vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));\n    vLE = normalize(vec3(posL-vec4(posVE,1.0)));\n    \n    mat4 MN = normalMatrix;\n    //Transformar normal del espacio objeto al ojo\n    vNE = normalize(vec3(MN * vec4(vertexNormal,0.0)));\n    \n    //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.\n    vVE= normalize(-posVE);\n    \n}",
+  "fragmentSource": "#version 300 es\n#define PI 3.1415926535897932384626433832795\nprecision highp float;\n\nin vec3 vNE; \nin vec3 vLE;\nin vec3 vVE;\nout vec4 colorFrag;\nuniform vec4 ka;\nuniform float coefEspec;\nuniform vec4 kd;\nuniform vec4 ks;\nuniform float v;\n\n\n\nuniform float pd;\nuniform float ps;\nuniform float ax;\nuniform float ay;\n\nvoid main(){\n    vec3 N = normalize(vNE);\n    vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    vec3 H = normalize(L+V);\n    float difuso = max(dot(L,N),0.0) ;\n    float dividir = 4.0*PI*ax*ay;\n  \t\n\tvec3 u = normalize(- H - N*dot(N,H));\n    float titaH = max(dot(N,H),0.0);\n    float titaI = max(dot(N,L),0.0);\n    float cosV = max(dot(N,V),0.0);\n    float anguloH = acos(titaH);\n    float anguloI = acos(titaI);\n    float phiH = atan((ax/ay)*tan(2.0*PI*v));\n    \n    float coseno;\n    float seno ;\n    if(ax>0.0 && ay>0.0){\n    \tcoseno = pow(max(dot(N,H),0.0)/ax,2.0);\n        seno=(1.0-pow(max(dot(N,H),0.0),2.0) )/pow(ay,2.0);\n    }\n    else{\n\t\tcoseno=0.0;\n        seno = 0.0;\n    }\n    //float exponencial2 = exp(-pow(tan(anguloH*(coseno+seno)),2.0));\n    float A = sin(anguloI)*max(dot(L,N),0.0)+sin(acos(max(dot(N,V),0.0)))*max(dot(N,V),0.0);\n    float B = sin(anguloI)*sin(acos(max(dot(L,N),0.0)))+sin(acos(max(dot(N,V),0.0)))*max(dot(V,N),0.0);\n    float exponencial2 = pow(A/ax,2.0)+pow(B/ay,2.0);\n    exponencial2 = exponencial2/pow(dot(H,N),2.0);\n    exponencial2 = exp(-exponencial2);\n    float termino = 0.0;\n    if(dividir > 0.0)\n    \ttermino = exponencial2/dividir;\n    else\n\t\ttermino = 0.0;   \n\t\n    float wardEspecular = (ps/pow(cos(phiH)*max(dot(N,V),0.00001),1.0/2.0)) * termino;\n    float wardDifuso =  pd/PI;\n    vec4 fresnel = kd * difuso + titaI *ks* wardEspecular;\n    colorFrag =ka+fresnel;\n    \n}",
+  "model": "sphere",
+  "uniforms": [
+    {
+      "name": "posL",
+      "type": "vec4",
+      "value": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "ka",
+      "type": "vec4",
+      "value": [
+        0,
+        0.10000000149011612,
+        0.10000000149011612,
+        1
+      ]
+    },
+    {
+      "name": "kd",
+      "type": "vec4",
+      "value": [
+        0.5,
+        0.699999988079071,
+        0.30000001192092896,
+        1
+      ]
+    },
+    {
+      "name": "ks",
+      "type": "vec4",
+      "value": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "v",
+      "type": "float",
+      "value": 0.5
+    },
+    {
+      "name": "ps",
+      "type": "float",
+      "value": 0.8
+    },
+    {
+      "name": "ax",
+      "type": "float",
+      "value": 0.21
+    },
+    {
+      "name": "ay",
+      "type": "float",
+      "value": 0.82
+    }
+  ]
+}

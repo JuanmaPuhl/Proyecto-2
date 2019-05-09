@@ -1,0 +1,47 @@
+{
+  "vertexSource": "#version 300 es \n\nuniform mat4 modelMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\n\n\n\nin vec3 vertexPosition;\nin vec3 vertexNormal;\n\nout vec3 vNE; //Vector normal en espacio ojo\nout vec3 vLE; //Vector de direccion de luz\nout vec3 vVE; //Vector de vista (al ojo)\n\nuniform vec4 posL; //Posicion luz\nvoid main(void){\n    mat4 MV =  viewMatrix * modelMatrix;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);\n    \n    vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));\n    vLE = normalize(vec3(posL-vec4(posVE,1.0)));\n    \n    mat4 MN = normalMatrix;\n    //Transformar normal del espacio objeto al ojo\n    vNE = normalize(vec3(MN * vec4(vertexNormal,0.0)));\n    \n    //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.\n    vVE= normalize(-posVE);\n    \n}",
+  "fragmentSource": "#version 300 es\n#define PI 3.1415926535897932384626433832795\nprecision highp float;\n\nin vec3 vNE; \nin vec3 vLE;\nin vec3 vVE;\nout vec4 colorFrag;\nuniform vec4 ka;\nuniform float coefEspec;\nuniform vec4 kd;\nuniform vec4 ks;\nuniform float p;\nuniform float sigma;\nuniform vec4 ia;\n\nuniform vec4 pa;\nuniform vec4 pd;\nuniform vec4 ps;\nuniform float ax;\nuniform float ay;\n\nvoid main(){\n    vec3 N = normalize(vNE);\n    vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    vec3 H = normalize(L+V);\n   \n    //OREN-NAYAR\n    vec3 v = normalize(-L-N*dot(N,L) );\n    vec3 u = normalize(-V-N * dot(N,V));\n    float phiDiff = max(dot(u,v),0.0);\n    float A = 1.0 - 0.5 * sigma/(pow(sigma,2.0)+0.33);\n    float B = 0.45 * (sigma/(pow(sigma,2.0)+0.09));\n    float cosR = max(dot(N,V),0.0);\n    float cosI = max(dot(N,L),0.0);\n    float anguloR = acos(cosR);\n    float anguloI = acos(cosI);\n    float a = max(anguloR,anguloI);\n    float b = min(anguloR,anguloI);\n    float f0N = (p/PI )* cosI*(A+B*max(0.0,phiDiff)*sin(a)*tan(b));\n    \n  \tcolorFrag =  ka+kd * f0N ;\n    \n  \n    \n}",
+  "model": "sphere",
+  "uniforms": [
+    {
+      "name": "posL",
+      "type": "vec4",
+      "value": [
+        0,
+        5,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "ka",
+      "type": "vec4",
+      "value": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "kd",
+      "type": "vec4",
+      "value": [
+        0.800000011920929,
+        0.5,
+        2.5,
+        1
+      ]
+    },
+    {
+      "name": "p",
+      "type": "float",
+      "value": 1
+    },
+    {
+      "name": "sigma",
+      "type": "float",
+      "value": 90
+    }
+  ]
+}
