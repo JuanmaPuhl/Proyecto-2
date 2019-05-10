@@ -17,6 +17,7 @@ out vec3 vNE; //Vector normal en espacio ojo
 out vec3 vLE; //Vector de direccion de luz
 out vec3 vVE; //Vector de vista (al ojo)
 
+
 uniform vec4 posL; //Posicion luz
 void main(void){
     //mat4 MV =  viewMatrix * modelMatrix;

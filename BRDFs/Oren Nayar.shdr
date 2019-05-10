@@ -1,14 +1,14 @@
 {
-  "vertexSource": "#version 300 es \n\nuniform mat4 modelMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\n\n\n\nin vec3 vertexPosition;\nin vec3 vertexNormal;\n\nout vec3 vNE; //Vector normal en espacio ojo\nout vec3 vLE; //Vector de direccion de luz\nout vec3 vVE; //Vector de vista (al ojo)\n\nuniform vec4 posL; //Posicion luz\nvoid main(void){\n    mat4 MV =  viewMatrix * modelMatrix;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);\n    \n    vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));\n    vLE = normalize(vec3(posL-vec4(posVE,1.0)));\n    \n    mat4 MN = normalMatrix;\n    //Transformar normal del espacio objeto al ojo\n    vNE = normalize(vec3(MN * vec4(vertexNormal,0.0)));\n    \n    //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.\n    vVE= normalize(-posVE);\n    \n}",
-  "fragmentSource": "#version 300 es\n#define PI 3.1415926535897932384626433832795\nprecision highp float;\n\nin vec3 vNE; \nin vec3 vLE;\nin vec3 vVE;\nout vec4 colorFrag;\nuniform vec4 ka;\nuniform float coefEspec;\nuniform vec4 kd;\nuniform vec4 ks;\nuniform float p;\nuniform float sigma;\nuniform vec4 ia;\n\nuniform vec4 pa;\nuniform vec4 pd;\nuniform vec4 ps;\nuniform float ax;\nuniform float ay;\n\nvoid main(){\n    vec3 N = normalize(vNE);\n    vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    vec3 H = normalize(L+V);\n   \n    //OREN-NAYAR\n    vec3 v = normalize(-L-N*dot(N,L) );\n    vec3 u = normalize(-V-N * dot(N,V));\n    float phiDiff = max(dot(u,v),0.0);\n    float A = 1.0 - 0.5 * sigma/(pow(sigma,2.0)+0.33);\n    float B = 0.45 * (sigma/(pow(sigma,2.0)+0.09));\n    float cosR = max(dot(N,V),0.0);\n    float cosI = max(dot(N,L),0.0);\n    float anguloR = acos(cosR);\n    float anguloI = acos(cosI);\n    float a = max(anguloR,anguloI);\n    float b = min(anguloR,anguloI);\n    float f0N = (p/PI )* cosI*(A+B*max(0.0,phiDiff)*sin(a)*tan(b));\n    \n  \tcolorFrag =  ka+kd * f0N ;\n    \n  \n    \n}",
+  "vertexSource": "#version 300 es \n\nuniform mat4 modelMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\n\n\n\nin vec3 vertexPosition;\nin vec3 vertexNormal;\n\nout vec3 vNE; //Vector normal en espacio ojo\nout vec3 vLE; //Vector de direccion de luz\nout vec3 vVE; //Vector de vista (al ojo)\n\nuniform vec4 posL; //Posicion luz\nvoid main(void){\n    mat4 MV =  viewMatrix * modelMatrix;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);\n    \n    vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));\n    vLE = normalize(vec3(posL-vec4(posVE,1.0)));\n    \n    mat4 MN = normalMatrix;\n    //Transformar normal del espacio objeto al ojo\n    vNE = normalize(vec3(MN * vec4(vertexNormal,0.0)));\n    \n    //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.\n    vVE= normalize(-posVE);\n}",
+  "fragmentSource": "#version 300 es\n#define PI 3.1415926535897932384626433832795\nprecision highp float;\n\nin vec3 vNE; \nin vec3 vLE;\nin vec3 vVE;\nout vec4 colorFrag;\nuniform vec4 ka;\nuniform float coefEspec;\nuniform vec4 kd;\nuniform vec4 ks;\nuniform float p;\nuniform float sigma;\nuniform vec4 ia;\nuniform vec4 dirL;\nuniform float limit;\nuniform float cutOffAngle;\nuniform float angularAttenuation;\n\nuniform vec4 pa;\nuniform vec4 pd;\nuniform vec4 ps;\nuniform float ax;\nuniform float ay;\n\nvoid main(){\n    vec3 N = normalize(vNE);\n    vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    vec3 H = normalize(L+V);\n   \n    \n    \n    \n    vec3 lightDirection_EyeSpace = vec3(vec4(V,1.0) * dirL);\n    vec3 D = normalize(vec3(dirL)); // Direction Vector\n    float LdotD = max(dot(L, D), 0.0);\t// -L so it points in the same direction as D (coming off the light source)\n    float angle = acos(LdotD);\n    //float mapToCutOff = radians(90.0) / max(cutOffAngle,0.00001);\n    //float angularAttenuationFactor = pow(cos(angle * mapToCutOff), angularAttenuation);\n    bool insideSpot = angle < cutOffAngle;\n    \n    float f0N = 0.0;\n    vec4 ambient = ka;\n\t\tvec4 diffuse = vec4(0.0, 0.0, 0.0,0.0);\n\t\tvec4 specular = vec4(0.0, 0.0, 0.0,0.0);\n\t\tif (insideSpot) {\n\t\t\tdiffuse = kd * dot(L,N);\n\t\t\tspecular = ks * pow(dot(H,V), coefEspec);\n\t\t}\n    /*\tif(insideSpot){\n            \n            //OREN-NAYAR\n    vec3 v = normalize(-L-N*dot(N,L) );\n    vec3 u = normalize(-V-N * dot(N,V));\n    float phiDiff = max(dot(u,v),0.0);\n    float A = 1.0 - 0.5 * sigma/(pow(sigma,2.0)+0.33);\n    float B = 0.45 * (sigma/(pow(sigma,2.0)+0.09));\n    float cosR = max(dot(N,V),0.0);\n    float cosI = max(dot(N,L),0.0);\n    float anguloR = acos(cosR);\n    float anguloI = acos(cosI);\n    float a = max(anguloR,anguloI);\n    float b = min(anguloR,anguloI);\n    f0N = (p/PI )* cosI*(A+B*max(0.0,phiDiff)*sin(a)*tan(b));\n    }\n  \t\t\t*/\n   \n  \t\tcolorFrag = ambient + diffuse + specular;\n    \n}",
   "model": "sphere",
   "uniforms": [
     {
       "name": "posL",
       "type": "vec4",
       "value": [
+        100,
         0,
-        5,
         0,
         1
       ]
@@ -17,31 +17,51 @@
       "name": "ka",
       "type": "vec4",
       "value": [
+        0.20000000298023224,
+        0.10000000149011612,
         0,
-        0,
-        0,
-        1
+        0
       ]
+    },
+    {
+      "name": "coefEspec",
+      "type": "float",
+      "value": 0
     },
     {
       "name": "kd",
       "type": "vec4",
       "value": [
-        0.800000011920929,
+        0,
+        0.7099999785423279,
         0.5,
-        2.5,
+        0
+      ]
+    },
+    {
+      "name": "ks",
+      "type": "vec4",
+      "value": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "dirL",
+      "type": "vec4",
+      "value": [
+        0,
+        -1,
+        0,
         1
       ]
     },
     {
-      "name": "p",
+      "name": "cutOffAngle",
       "type": "float",
-      "value": 1
-    },
-    {
-      "name": "sigma",
-      "type": "float",
-      "value": 90
+      "value": 1.52
     }
   ]
 }

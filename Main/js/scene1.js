@@ -3,6 +3,7 @@ var gl = null;
 var shaderProgram  = null; //Shader program to use.
 var parsedOBJ = null;
 var parsedOBJ2 = null;
+var parsedOBJ3 = null;
 //Uniform locations.
 var u_modelMatrix;
 var u_viewMatrix;
@@ -19,6 +20,9 @@ var u_is;
 var u_MV;
 var u_ax;
 var u_ay;
+var u_ro;
+var u_sigma;
+var u_limit;
 
 //Uniform values.
 var viewMatrix = mat4.create();
@@ -48,9 +52,10 @@ var materials = [];
 //OBJETOS
 var balls = [];
 var obj_axis;
+var obj_plano;
 //LUCES
 var light;
-var light_position = [0.0,10.0,10.0,1.0];
+var light_position = [0.0,1.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = 0.0;
 var ax = 0.4;
@@ -84,9 +89,18 @@ function onLoad() {
 	u_id = gl.getUniformLocation(shaderProgram, 'id');
 	u_is = gl.getUniformLocation(shaderProgram, 'is');
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
-	u_ax = gl.getUniformLocation(shaderProgram, 'ax');
-	u_ay = gl.getUniformLocation(shaderProgram, 'ay');
+	u_ro = gl.getUniformLocation(shaderProgram, 'p');
+	u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
+	u_limit = gl.getUniformLocation(shaderProgram, 'limit');
+	//u_ax = gl.getUniformLocation(shaderProgram, 'ax');
+	//u_ay = gl.getUniformLocation(shaderProgram, 'ay');
 
+	obj_plano = new Object(parsedOBJ3);
+	obj_plano.setMaterial(getMaterialByName("Rock"));
+	obj_plano.setVao(VAOHelper.create(obj_plano.getIndices(), [
+    new VertexAttributeInfo(obj_plano.getPositions(), posLocation, 3),
+    new VertexAttributeInfo(obj_plano.getNormals(), vertexNormal_location, 3)
+  ]));
 
   obj_axis = new Object(parsedOBJ2);
   obj_axis.setMaterial(getMaterialByName("Jade"));
@@ -151,7 +165,7 @@ function onRender(now){
       let matrix = arr[j].getObjectMatrix();
       let translationMatrix = mat4.create();
       let scaleMatrix = mat4.create();
-      mat4.fromTranslation(translationMatrix,[-3 ,0,-12.5]);
+      mat4.fromTranslation(translationMatrix,[-3 ,1,-12.5]);
       mat4.multiply(matrix,translationMatrix,matrix);
       translationMatrix = mat4.create();
       mat4.fromScaling(scaleMatrix,[0.08,0.08,0.08]);
@@ -162,6 +176,7 @@ function onRender(now){
     }
 	}
   drawObject(obj_axis);
+	drawObject(obj_plano);
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
@@ -251,6 +266,7 @@ function passLight(light){
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
 	gl.uniform3fv(u_id, light.getIntensity()[1]);
 	gl.uniform3fv(u_is, light.getIntensity()[2]);
+	gl.uniform1f(u_limit, light.getLimit());
 }
 
 function drawObject(object){
@@ -263,6 +279,8 @@ function drawObject(object){
 	mat4.invert(MV,MV);
 	mat4.transpose(MV,MV);
 	gl.uniformMatrix4fv(u_normalMatrix, false, MV);
+	gl.uniform1f(u_ro,1.0);
+	gl.uniform1f(u_sigma,90.0);
 
 	let material = object.getMaterial();
 	/*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
@@ -270,8 +288,8 @@ function drawObject(object){
 	gl.uniform4fv(u_kd,material.getKd());
 	gl.uniform4fv(u_ks,material.getKs());
 	gl.uniform1f(u_coefEspec,material.getShininess());
-	gl.uniform1f(u_ax,ax);
-	gl.uniform1f(u_ay,ay);
+	//gl.uniform1f(u_ax,ax);
+	//gl.uniform1f(u_ay,ay);
 	gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
 	gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
 	gl.bindVertexArray(null);
@@ -306,4 +324,5 @@ function onModelLoad() {
 	//parsedOBJ = OBJParser.parseFile(teapot);
 	parsedOBJ = OBJParser.parseFile(ball);
   parsedOBJ2 = OBJParser.parseFile(axis);
+	parsedOBJ3 = OBJParser.parseFile(plano);
 }
