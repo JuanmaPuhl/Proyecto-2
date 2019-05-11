@@ -23,7 +23,7 @@ var u_ay;
 var u_ro;
 var u_sigma;
 var u_limit;
-
+var u_dirL;
 //Uniform values.
 var viewMatrix = mat4.create();
 var projMatrix = mat4.create();
@@ -55,7 +55,7 @@ var obj_axis;
 var obj_plano;
 //LUCES
 var light;
-var light_position = [0.0,1.0,0.0,1.0];
+var light_position = [0.0,5.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = 0.0;
 var ax = 0.4;
@@ -92,6 +92,7 @@ function onLoad() {
 	u_ro = gl.getUniformLocation(shaderProgram, 'p');
 	u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
 	u_limit = gl.getUniformLocation(shaderProgram, 'limit');
+	u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
 	//u_ax = gl.getUniformLocation(shaderProgram, 'ax');
 	//u_ay = gl.getUniformLocation(shaderProgram, 'ay');
 
@@ -267,6 +268,7 @@ function passLight(light){
 	gl.uniform3fv(u_id, light.getIntensity()[1]);
 	gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit, light.getLimit());
+	gl.uniform4fv(u_dirL, [0.0,-1.0,0.0,0.0]);
 }
 
 function drawObject(object){

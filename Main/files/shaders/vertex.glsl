@@ -16,8 +16,9 @@ in vec3 vertexNormal;
 out vec3 vNE; //Vector normal en espacio ojo
 out vec3 vLE; //Vector de direccion de luz
 out vec3 vVE; //Vector de vista (al ojo)
+out vec4 dirLight;
 
-
+uniform vec4 dirL;
 uniform vec4 posL; //Posicion luz
 void main(void){
     //mat4 MV =  viewMatrix * modelMatrix;
@@ -32,4 +33,5 @@ void main(void){
     //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.
     vVE= normalize(-posVE);
 
+    dirLight = MV * dirL;
 }`

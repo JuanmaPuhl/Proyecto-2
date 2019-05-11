@@ -26,7 +26,7 @@ uniform vec4 ia;
 uniform vec4 id;
 uniform vec4 is;
 uniform float limit;
-uniform vec4 posL; //Posicion luz
+in vec4 dirLight; //Posicion luz
 //uniform light [2];
 
 void main(){
@@ -35,6 +35,10 @@ void main(){
     vec3 V = normalize(vVE);
     vec3 H = normalize(L+V);
 
+
+  vec3 direccion = normalize(vec3(dirLight));
+  float dotFromDirection = acos(dot(-L,direccion));
+  if(dotFromDirection < radians(limit)){
     //OREN-NAYAR
     vec3 v = normalize(-L-N*dot(N,L) );
     vec3 u = normalize(-V-N * dot(N,V));
@@ -75,12 +79,9 @@ float titaH = max(dot(N,H),0.0);
 
    GCT=min(1.0,Ge);
    GCT=min(GCT,Gs);
-   float light= 0.0;
-  float dotFromDirection = dot(N,L);
-  if(dotFromDirection >= limit){
-    colorFrag =  ka+kd * f0N + +ks*(Fres/3.141516)* (Beckmann*GCT)/(dot(N,V)*dot(N,L));
+    colorFrag = ka+ kd * f0N + +ks*(Fres/3.141516)* (Beckmann*GCT)/(dot(N,V)*dot(N,L));
   }
-      //else
-    //colorFrag = ka;
+      else
+    colorFrag = vec4(0.0,0.0,0.0,1.0);
 }
 `
