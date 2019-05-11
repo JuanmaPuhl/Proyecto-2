@@ -55,7 +55,7 @@ var obj_axis;
 var obj_plano;
 //LUCES
 var light;
-var light_position = [0.0,5.0,0.0,1.0];
+var light_position = [0.0,5.0,1.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = 0.0;
 var ax = 0.4;
@@ -97,7 +97,7 @@ function onLoad() {
 	//u_ay = gl.getUniformLocation(shaderProgram, 'ay');
 
 	obj_plano = new Object(parsedOBJ3);
-	obj_plano.setMaterial(getMaterialByName("Rock"));
+	obj_plano.setMaterial(getMaterialByName("Polished Gold"));
 	obj_plano.setVao(VAOHelper.create(obj_plano.getIndices(), [
     new VertexAttributeInfo(obj_plano.getPositions(), posLocation, 3),
     new VertexAttributeInfo(obj_plano.getNormals(), vertexNormal_location, 3)
@@ -166,7 +166,7 @@ function onRender(now){
       let matrix = arr[j].getObjectMatrix();
       let translationMatrix = mat4.create();
       let scaleMatrix = mat4.create();
-      mat4.fromTranslation(translationMatrix,[-3 ,1,-12.5]);
+      mat4.fromTranslation(translationMatrix,[-3 ,1.5,-12.5]);
       mat4.multiply(matrix,translationMatrix,matrix);
       translationMatrix = mat4.create();
       mat4.fromScaling(scaleMatrix,[0.08,0.08,0.08]);
@@ -176,8 +176,22 @@ function onRender(now){
       drawObject(arr[j]);
     }
 	}
-  drawObject(obj_axis);
+
+/*TENGO QUE HACER ESTO O NO FUNCIONA LA REFLEXION EN EL PLANO. NO SE POR QUE!!!!!!*/
+	obj_plano.resetObjectMatrix();
+	let matrix = obj_plano.getObjectMatrix();
+	let translationMatrix = mat4.create();
+	let scaleMatrix = mat4.create();
+	mat4.fromScaling(scaleMatrix,[100.0,1.0,100.0]);
+	mat4.fromTranslation(translationMatrix,[light.getLightPosition()[0],0.0,light.getLightPosition()[2]]);
+	mat4.multiply(matrix,scaleMatrix,matrix);
+	mat4.multiply(matrix,translationMatrix,matrix);
+
+
+
 	drawObject(obj_plano);
+  drawObject(obj_axis);
+
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
@@ -268,7 +282,7 @@ function passLight(light){
 	gl.uniform3fv(u_id, light.getIntensity()[1]);
 	gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit, light.getLimit());
-	gl.uniform4fv(u_dirL, [0.0,-1.0,0.0,0.0]);
+	gl.uniform3fv(u_dirL, [0.0,-1.0,0.0]);
 }
 
 function drawObject(object){
