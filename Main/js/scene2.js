@@ -6,8 +6,12 @@ var parsedOBJ2 = null;
 var parsedOBJ3 = null;
 var parsedOBJ4 = null;
 var parsedOBJ5 = null;
+var parsedOBJ_Ferrari = [];
+var parsedOBJ_BMW = [];
 
 //Uniform locations.
+var posLocation;
+var vertexNormal_location;
 var u_satelliteMatrix;
 var u_planetMatrix;
 var u_ring1Matrix;
@@ -26,13 +30,12 @@ var u_is;
 var u_MV;
 var u_ax;
 var u_ay;
-
+var u_ro;
+var u_sigma;
+var u_limit;
+var u_dirL;
 
 //Uniform values.
-var satelliteMatrix = mat4.create();
-var planetMatrix = mat4.create();
-var ring1Matrix = mat4.create();
-var ring2Matrix = mat4.create();
 var viewMatrix = mat4.create();
 var projMatrix = mat4.create();
 
@@ -58,17 +61,17 @@ var rotationSpeed = 30;
 var materials = [];
 
 //OBJETOS
-var obj_planet;
-var obj_satellite;
-var obj_ring1;
-var obj_ring2;
-var balls = [];
-
+var obj_bmw;
+var obj_ford;
+var obj_ferrari;
+var obj_piso;
+var ferrari;
+var bmw;
 //LUCES
 var light;
-var light_position = [0.0,5.0,5.0,1.0];
+var light_position = [0.0,5.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = 0.0;
+var light_angle = 0.3;
 var ax = 0.4;
 var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -85,8 +88,8 @@ function onLoad() {
 
 	//Creo las variables que voy a pasar a los shaders
 	shaderProgram = ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
-	let posLocation = gl.getAttribLocation(shaderProgram, 'vertexPos');
-	let vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
+	posLocation = gl.getAttribLocation(shaderProgram, 'vertexPos');
+	vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
 	u_modelMatrix = gl.getUniformLocation(shaderProgram, 'modelMatrix');
 	u_viewMatrix = gl.getUniformLocation(shaderProgram, 'viewMatrix');
 	u_projMatrix = gl.getUniformLocation(shaderProgram, 'projMatrix');
@@ -102,46 +105,80 @@ function onLoad() {
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
 	u_ax = gl.getUniformLocation(shaderProgram, 'ax');
 	u_ay = gl.getUniformLocation(shaderProgram, 'ay');
-
+	u_ro = gl.getUniformLocation(shaderProgram, 'p');
+	u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
+	u_limit = gl.getUniformLocation(shaderProgram, 'limit');
+	u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
 
 	//Creo objetos
-	obj_planet = new Object(parsedOBJ); //Planeta
-	obj_satellite = new Object(parsedOBJ2); //Satelite
-	// obj_ring1 = new Object(parsedOBJ3); //Anillo 1
-	// obj_ring2 = new Object(parsedOBJ4); //Anillo 2
+	ferrari = new Car();
+	let ferrari_chasis = new Object(parsedOBJ_Ferrari[0]);
+	let ferrari_ruedas = new Object(parsedOBJ_Ferrari[1]);
+	let ferrari_vidrio = new Object(parsedOBJ_Ferrari[2]);
+	createVAO(ferrari_chasis);
+	createVAO(ferrari_ruedas);
+	createVAO(ferrari_vidrio);
+	ferrari_chasis.setMaterial(getMaterialByName("Jade"));
+	ferrari_ruedas.setMaterial(getMaterialByName("Polished Bronze"));
+	ferrari_vidrio.setMaterial(getMaterialByName("Glass"));
+	ferrari.addObject(ferrari_chasis);
+	ferrari.addObject(ferrari_ruedas);
+	ferrari.addObject(ferrari_vidrio);
+	console.log(ferrari.getObjects()[2]);
+	//obj_ferrari = new Object(parsedOBJ);
+	//obj_bmw = new Object(parsedOBJ2);
+	bmw = new Car();
+	let bmw_chasis = new Object(parsedOBJ_BMW[0]);
+	let bmw_ruedas = new Object(parsedOBJ_BMW[1]);
+	let bmw_vidrio = new Object(parsedOBJ_BMW[2]);
+	createVAO(bmw_chasis);
+	createVAO(bmw_ruedas);
+	createVAO(bmw_vidrio);
+	bmw_chasis.setMaterial(getMaterialByName("Polished Gold"));
+	bmw_ruedas.setMaterial(getMaterialByName("Bronze"));
+	bmw_vidrio.setMaterial(getMaterialByName("Glass"));
+	bmw.addObject(bmw_chasis);
+	bmw.addObject(bmw_ruedas);
+	bmw.addObject(bmw_vidrio);
 
+
+	obj_ford = new Object(parsedOBJ3);
+	obj_piso = new Object(parsedOBJ4);
 
 	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
 
-	//Para el planeta
-	let vertexAttributeInfoArray = [
-		new VertexAttributeInfo(obj_planet.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_planet.getNormals(), vertexNormal_location, 3)
-	];
-	//Para el satelite
-	let vertexAttributeInfoArray2 = [
-		new VertexAttributeInfo(obj_satellite.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_satellite.getNormals(), vertexNormal_location, 3)
-	];
-	//Para el anillo interior
-	// let vertexAttributeInfoArray3 = [
-	// 	new VertexAttributeInfo(obj_ring1.getPositions(), posLocation, 3),
-	// 	new VertexAttributeInfo(obj_ring1.getNormals(), vertexNormal_location, 3)
-	// ];
-	// //Para el anillo exterior
-	// let vertexAttributeInfoArray4 = [
-	// 	new VertexAttributeInfo(obj_ring2.getPositions(), posLocation, 3),
-	// 	new VertexAttributeInfo(obj_ring2.getNormals(), vertexNormal_location, 3)
-	// ];
 
 	//Asigno VAOs
-	obj_planet.setVao(VAOHelper.create(obj_planet.getIndices(), vertexAttributeInfoArray));
-	obj_satellite.setVao(VAOHelper.create(obj_satellite.getIndices(), vertexAttributeInfoArray2));
-	//obj_ring1.setVao(VAOHelper.create(obj_ring1.getIndices(), vertexAttributeInfoArray3));
-	//obj_ring2.setVao(VAOHelper.create(obj_ring2.getIndices(), vertexAttributeInfoArray4));
+	// obj_ferrari.setVao(VAOHelper.create(obj_ferrari.getIndices(), [
+	// 	new VertexAttributeInfo(obj_ferrari.getPositions(), posLocation, 3),
+	// 	new VertexAttributeInfo(obj_ferrari.getNormals(), vertexNormal_location, 3)
+	// ]));
+	// obj_bmw.setVao(VAOHelper.create(obj_bmw.getIndices(),[
+	// 	new VertexAttributeInfo(obj_bmw.getPositions(), posLocation, 3),
+	// 	new VertexAttributeInfo(obj_bmw.getNormals(), vertexNormal_location, 3)
+	// ]));
+	obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
+		new VertexAttributeInfo(obj_ford.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(obj_ford.getNormals(), vertexNormal_location, 3)
+	]));
+	obj_piso.setVao(VAOHelper.create(obj_piso.getIndices(),[
+		new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
+	]));
+
+	//obj_ferrari.setMaterial(getMaterialByName("Jade"));
+	//obj_bmw.setMaterial(getMaterialByName("Brass"));
+	obj_ford.setMaterial(getMaterialByName("Polished Gold"));
+	obj_piso.setMaterial(getMaterialByName("Polished Bronze"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+	//console.log(obj_ferrari.getCenter());
+	//console.log(obj_bmw.getCenter());
+	//console.log(obj_ford.getCenter());
+
+
 	/*Creacion de camara*/
 	camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
 	viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
@@ -151,12 +188,8 @@ function onLoad() {
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
 
-	obj_planet.setMaterial(getMaterialByName("Jade"));
-	obj_satellite.setMaterial(getMaterialByName("Polished Gold"));
-	//obj_ring1.setMaterial(getMaterialByName("Rock"));
-	//obj_ring2.setMaterial(getMaterialByName("Jade"));
-
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
+	setObjects();
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
@@ -178,33 +211,49 @@ function onRender(now){
 	passLight(light);
 	passCamera();
 
-	let matrizTraslacion = mat4.create();
-	mat4.fromTranslation(matrizTraslacion,[1.5,0,0]);
-	mat4.multiply( obj_satellite.getObjectMatrix(),matrizTraslacion, obj_satellite.getObjectMatrix());
 
-	drawObject(obj_planet);
-	drawObject(obj_satellite);
-	//drawObject(obj_ring1);
-	//drawObject(obj_ring2);
+	//drawObject(obj_ferrari);
+	let arr = ferrari.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		drawObject(arr[i]);
+	}
+	let arr2 = bmw.getObjects();
+	for(let i = 0; i<arr2.length; i++){
+		drawObject(arr2[i]);
+	}
+	//drawObject(obj_bmw);
+	drawObject(obj_ford);
+	drawObject(obj_piso);
+
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
 
-function refreshFrame(){
-	obj_planet.resetObjectMatrix();
-	obj_satellite.resetObjectMatrix();
-	//obj_ring1.resetObjectMatrix();
-	//obj_ring2.resetObjectMatrix();
+function setObjects(){
 	/*Actualizo las transformaciones para cada uno de los objetos*/
-	//rotatePlanet();//Roto el planeta
-	rotateSatellite();//Roto el satelite
-	//orbitSatellite();//Orbito el satelite
-	scaleSatellite();//Escalo el satelite
-	scalePlanet();//Escalo el planeta
-	//rotateRing1();//Roto el anillo interior
-	//rotateRing2();//Roto el anillo exterior
-	//scaleRing1();//Escalo el anillo 1
-	//scaleRing2();//Escalo el anillo 2
+	let arr = ferrari.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+	}
+
+	//obj_bmw.resetObjectMatrix();
+	obj_ford.resetObjectMatrix();
+	obj_piso.resetObjectMatrix();
+	transformFerrari();
+	transformBMW();
+	transformFord();
+	transformPiso();
+}
+
+function createVAO(object){
+	object.setVao(VAOHelper.create(object.getIndices(), [
+		new VertexAttributeInfo(object.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(object.getNormals(), vertexNormal_location, 3)
+	]));
+}
+
+function refreshFrame(){
+
 	refreshCamera();
 }
 
@@ -226,12 +275,14 @@ function passCamera(){
 }
 
 function passLight(light){
-	gl.uniform1f(u_ax,ax);
-	gl.uniform1f(u_ay,ay);
+	//gl.uniform1f(u_ax,ax);
+	//gl.uniform1f(u_ay,ay);
 	gl.uniform4fv(u_posL, light.getLightPosition());
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
 	gl.uniform3fv(u_id, light.getIntensity()[1]);
 	gl.uniform3fv(u_is, light.getIntensity()[2]);
+	gl.uniform1f(u_limit, light.getAngle());
+	gl.uniform3fv(u_dirL, [0.0,-1.0,0.0]);
 }
 
 function drawObject(object){
@@ -244,7 +295,8 @@ function drawObject(object){
 	mat4.invert(MV,MV);
 	mat4.transpose(MV,MV);
 	gl.uniformMatrix4fv(u_normalMatrix, false, MV);
-
+	gl.uniform1f(u_ro,1.0);
+	gl.uniform1f(u_sigma,90.0);
 	let material = object.getMaterial();
 	/*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
 	gl.uniform4fv(u_ka,material.getKa());
@@ -298,161 +350,85 @@ function refreshAngles(deltaTime){
 	}
 }
 
-/*Funcion para rotar el anillo interior*/
-function rotateRing1(){
-	let escalar1Y = 2; //Establezco el valor del escalar por el cual multiplicare al angulo de rotacion segun Y
-	let escalar1Z = -1; //Establezco el valor del escalar por el cual multiplicare al angulo de rotacion segun Z
-	let matrix = obj_ring1.getObjectMatrix();
-	let rotationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de rotacion
-	if(animated[0]){ //Si el planeta esta siendo animado...
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(escalar1Y * rotationAngle[0]));//Roto con respecto a Y con el angulo de rotacion
-		mat4.multiply(matrix, rotationMatrix, matrix); //Aplico la rotacion
-		mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(escalar1Z * rotationAngle[0])); //Roto con respecto a Z con el angulo de rotacion
-	}else
-		if(animated[7]){ //Si el planeta esta siendo animado...
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(escalar1Y * rotationAngle[7]));//Roto con respecto a Y con el angulo de rotacion
-		mat4.multiply(matrix, rotationMatrix, matrix);//Aplico Rotacion
-		mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(escalar1Z * rotationAngle[7]));//Roto con respecto a Z con el angulo de rotacion
-	}
-	else{ //Sino...
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(escalar1Y * angle[0]));//Roto con respecto a Y con el angulo del slider
-		mat4.multiply(matrix, rotationMatrix, matrix);//Aplico la rotacion
-		mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(escalar1Z * angle[0]));//Roto con respecto a Z con el angulo del slider
-	}
-	mat4.multiply(matrix, rotationMatrix, matrix);//Aplico rotacion y escalo
-	let anguloX1 = 62;//Establezco el valor del escalar por el cual multiplicare al angulo de rotacion segun X
-	mat4.fromXRotation(rotationMatrix, glMatrix.toRadian(anguloX1));//Roto con respecto a X
-	mat4.multiply(matrix, rotationMatrix, matrix);//Aplico la rotacion
-}
 
-/*Funcion para rotar el anillo exterior*/
-function rotateRing2(){
-	let escalar2Y = -1; //Establezco el valor del escalar por el cual multiplicare al angulo de rotacion segun Y
-	let escalar2Z = 1; //Establezco el valor del escalar por el cual multiplicare al angulo de rotacion segun Z
-	let matrix = obj_ring2.getObjectMatrix();
-	let rotationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de rotacion
-	if(animated[0]){ //Si el planeta esta siendo animado...
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(escalar2Y * rotationAngle[0]));//Roto con respecto a Y con el angulo de rotacion
-		mat4.multiply(matrix, rotationMatrix, matrix);//Aplico Rotacion
-		mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(escalar2Z * rotationAngle[0]));//Roto con respecto a Z con el angulo de rotacion
-	}
-	else
-		if(animated[7]){ //Si el planeta esta siendo animado...
-			mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(escalar2Y * rotationAngle[7]));//Roto con respecto a Y con el angulo de rotacion
-			mat4.multiply(matrix, rotationMatrix, matrix);//Aplico Rotacion
-			mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(escalar2Z * rotationAngle[7]));//Roto con respecto a Z con el angulo de rotacion
-		}
-		else{ //Sino...
-			mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(escalar2Y * angle[0]));//Roto con respecto a Y con el angulo del slider
-			mat4.multiply(matrix, rotationMatrix, matrix);//Aplico Rotacion
-			mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(escalar2Z * angle[0]));//Roto con respecto a Z con el angulo del slider
-		}
-	mat4.multiply(matrix, rotationMatrix, matrix);//Aplico la rotacion
-	let anguloX2 = 21; //Establezco el valor del escalar por el cual multiplicare al angulo de rotacion segun X
-  mat4.fromXRotation(rotationMatrix, glMatrix.toRadian(anguloX2));//Roto con respecto a X
-	mat4.multiply(matrix, rotationMatrix, matrix);//Aplico la rotacion
-}
-
-/*Funcion para rotar el planeta*/
-function rotatePlanet(){
-	let rotationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de rotacion
-	let translationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de traslacion
-	let matrix = obj_planet.getObjectMatrix();
-	if(animated[0])//Si esta siendo animado...
-		//Creo matriz de rotacion para el planeta con el angulo de rotacion automatico
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[0]));
-		else
-			if(animated[7])//Si esta siendo animado...
-				//Creo matriz de rotacion para el planeta con el angulo de rotacion automatico
-				mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[7]));
-			else//sino... creo matriz de rotacion con el angulo del slider
-				mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(0));
-	//Aplico transformaciones al planeta
-	mat4.multiply(matrix, rotationMatrix, matrix);
-}
-
-/*Funcion para escalar el anillo interior*/
-function scaleRing1(){
-	let scaleMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de escalado
-	let matrix = obj_ring1.getObjectMatrix();
-	let scale = [0.079,0.079,0.079];//Seteo el vector de escalado
-	mat4.fromScaling(scaleMatrix,scale);//Creo la matriz de escalado
-	mat4.multiply(matrix, scaleMatrix, matrix);//Aplico escalado
-}
-
-/*Funcion para escalar el anillo exterior*/
-function scaleRing2(){
-	let scaleMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de escalado
-	let matrix = obj_ring2.getObjectMatrix();
-	let scale = [0.1,0.1,0.1];//Setep el vector de escalado
-	mat4.fromScaling(scaleMatrix,scale);//Creo la matriz de escalado
-	mat4.multiply(matrix, scaleMatrix, matrix);//Aplico escalado
-}
-
-/*Funcion para rotar el satelite*/
-function rotateSatellite(){
-	let rotationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de rotacion
-	let translationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de traslacion
-	let matrix = obj_satellite.getObjectMatrix();
-	if(animated[1])//Si esta siendo animado
-		//Creo matriz de rotacion para el satelite
-		mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[1]));
-		else
-			if(animated[8])
-				mat4.fromZRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[8]));
-	else//Sino... creo matriz de rotacion con el angulo del slider
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(180));
-	//Obtengo las componentes del punto central de rotacion del objeto y multiplico por -1 para obtener
-	//el vector de traslacion al 0,0,0
-	let center = obj_satellite.getCenter();
-	let vecTranslation =[-1*parseFloat(center[0]),-1*parseFloat(center[1]),-1*parseFloat(center[2])];
-	mat4.fromTranslation(translationMatrix,vecTranslation);//Creo matriz de traslacion
-	mat4.multiply(matrix,translationMatrix, matrix);//Traslado el satelite al 0,0,0
-	mat4.multiply(matrix, rotationMatrix, matrix);//Roto el satelite
-	mat4.invert(translationMatrix,translationMatrix)//Calculo la matriz de traslacion al punto original
-	mat4.multiply(matrix,translationMatrix,matrix);//Vuelvo a pos normal
-	mat4.fromTranslation(translationMatrix,[-10,0,-1.5]);
+function translateToOrigin(object){
+	let matrix = object.getObjectMatrix();
+	let translationVector = [-object.getCenter()[0],-object.getCenter()[1],-object.getCenter()[2]];
+	let translationMatrix = mat4.create();
+	mat4.fromTranslation(translationMatrix,translationVector);
 	mat4.multiply(matrix,translationMatrix,matrix);
 }
 
-/*Funcion para orbitar el satelite*/
-function orbitSatellite(){
-	let rotationMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de rotacion
-	let matrix = obj_satellite.getObjectMatrix();
-	if(animated[2])//Si esta siendo animado... Creo matriz de rotacion en orbita para el satelite con el angulo de rot automatica
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(-rotationAngle[2]));
-		else
-	if(animated[9])
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(rotationAngle[9]));
-	else//Sino... creo matriz de rotacion con el angulo del slider
-		mat4.fromYRotation(rotationMatrix, glMatrix.toRadian(-angle[2]));
-	mat4.multiply(matrix, rotationMatrix, matrix);//Muevo al satelite por la orbita
-}
-
-/*Funcion para escalar el satelite*/
-function scaleSatellite(){
-	let matrix = obj_satellite.getObjectMatrix();
-	let scale = [0.09,0.09,0.09];//Creo el vector de escalado
+function scaleObject(object,scale){
+	let matrix = object.getObjectMatrix();
 	let scaleMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de escalado
 	mat4.fromScaling(scaleMatrix,scale);//Creo la matriz de escalado
 	mat4.multiply(matrix, scaleMatrix, matrix);//Aplico el escalado
+}
+
+function translateObject(object,translationVector){
+	let matrix = object.getObjectMatrix();
+	let translationMatrix = mat4.create();
+	mat4.fromTranslation(translationMatrix,translationVector);
+	mat4.multiply(matrix,translationMatrix,matrix);
+}
+
+function rotateObject(object,angle){
+	let matrix = object.getObjectMatrix();
+	let rotationMatrix = mat4.create();
+	mat4.fromYRotation(rotationMatrix,glMatrix.toRadian(angle));
+	mat4.multiply(matrix,rotationMatrix,matrix);
 }
 
 /*Funcion para escalar el planeta*/
-function scalePlanet(){
-	let matrix = obj_planet.getObjectMatrix();
-	let scale = [0.08,0.08,0.08];//Creo el vector de escalado
-	let scaleMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de escalado
-	mat4.fromScaling(scaleMatrix,scale);//Creo la matriz de escalado
-	mat4.multiply(matrix, scaleMatrix, matrix);//Aplico el escalado
+function transformFerrari(){
+	let arr = ferrari.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		//translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.008,0.008,0.008]);
+		rotateObject(arr[i],180);
+		translateObject(arr[i],[0.4,0.05,-1]);
+	}
+	//translateObject(arr[1],[0,-0.08,0]);
+	//translateObject(arr[2],[-0.1,0.1,0]);
 }
+
+function transformBMW(){
+	let arr = bmw.getObjects();
+	rotateObject(arr[1],270);
+	for(let i = 0; i<arr.length; i++){
+		//translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.11,0.11,0.11]);
+		rotateObject(arr[i],90);
+		translateObject(arr[i],[0.3,-0.1,0])
+	}
+	scaleObject(arr[1],[0.3,0.3,0.3]);
+
+	translateObject(arr[1],[-(0.225),0,0]);
+
+}
+
+function transformFord(){
+	translateToOrigin(obj_ford);
+	scaleObject(obj_ford,[0.12,0.12,0.12]);
+	rotateObject(obj_ford,-90);
+	translateObject(obj_ford,[0,0.1,1]);
+}
+
+function transformPiso(){
+	translateToOrigin(obj_piso);
+	translateObject(obj_piso,[0,-1.17,0]);
+	translateObject(obj_piso,[light.getLightPosition()[0],0,light.getLightPosition()[2]]);
+}
+
 
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
-	//parsedOBJ = OBJParser.parseFile(teapot);
-	parsedOBJ = OBJParser.parseFile(bmw); //Cargo el planeta
-	parsedOBJ2 = OBJParser.parseFile(ford); //Cargo el satelite
-	//parsedOBJ3 = OBJParser.parseFile(anillo1); //Cargo el anillo interior
-	//parsedOBJ4 = OBJParser.parseFile(anillo2); //Cargo el anillo exterior
-	//parsedOBJ5 = OBJParser.parseFile(ball);
+	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
+	parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
+	parsedOBJ2 = OBJParser.parseFile(bmw); //Cargo el satelite
+	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio)];
+	parsedOBJ3 = OBJParser.parseFile(ford);
+	parsedOBJ4 = OBJParser.parseFile(piso);
+
 }

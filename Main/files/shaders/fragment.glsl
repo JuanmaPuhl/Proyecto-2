@@ -88,16 +88,16 @@ void main(){
 	//float angularAttenuationFactor = pow(cos(dotFromDirection * mapToCutOff), 0.5);
   vec4 ambiente = vec4(0.0,0.0,0.0,1.0);
   if(dotFromDirection < limit){
-    if(dotFromDirection > 0.05){
-      colorFrag = ka;
-    }
-    else{
+    // if(dotFromDirection > 0.05){
+    //   colorFrag = ka;
+    // }
+    // else{
       float componente = max(dot(N,V)*dot(N,L),0.0);
       if(componente>0.0){
       colorFrag = ka+ kd * f0N + +ks*(Fres/3.141516)* (Beckmann*GCT)/componente;
     }
       else colorFrag = ka+kd*f0N;
-    }
+    //}
 
   }
   else

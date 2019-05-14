@@ -8,7 +8,6 @@ class Light{
         this.lightPosition = lightPosition;
         this.intensity = intensity;
         this.angle = angle;
-        this.limit = 0.07;
   }
 
   setIntensity(intensity){
@@ -29,8 +28,6 @@ class Light{
   getAngle(){
     return this.angle;
   }
-  getLimit(){
-    return this.limit;
-  }
+
 
 }

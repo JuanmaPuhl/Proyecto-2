@@ -11,6 +11,7 @@ class Object{
     this.animated = false;
     this.vao = null;
     this.center = Utils.boundingBoxCenter(this.positions);
+    this.material = null;
   }
 
   /*-------------------SETTERS-------------------*/

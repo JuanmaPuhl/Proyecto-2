@@ -57,7 +57,7 @@ var obj_plano;
 var light;
 var light_position = [0.0,5.0,1.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = 0.0;
+var light_angle = 0.2;
 var ax = 0.4;
 var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -124,7 +124,6 @@ function onLoad() {
 	}
 	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
 
-
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
@@ -151,14 +150,11 @@ function onRender(now){
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Reinicio Matrices*/
 	refreshFrame();
-
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(shaderProgram);
 	passLight(light);
 	passCamera();
-
-	//console.log(matriz);
 	for(let i = 0; i<balls.length; i++){
     let arr = balls[i];
     for(let j = 0; j<arr.length; j++){
@@ -183,23 +179,18 @@ function onRender(now){
 	let translationMatrix = mat4.create();
 	let scaleMatrix = mat4.create();
 	mat4.fromScaling(scaleMatrix,[100.0,1.0,100.0]);
-	mat4.fromTranslation(translationMatrix,[light.getLightPosition()[0],0.0,light.getLightPosition()[2]]);
+	mat4.fromTranslation(translationMatrix,[light.getLightPosition()[0],-1.0,light.getLightPosition()[2]]);
+	//mat4.fromTranslation(translationMatrix,[0,-1,0]);
 	mat4.multiply(matrix,scaleMatrix,matrix);
 	mat4.multiply(matrix,translationMatrix,matrix);
-
-
-
 	drawObject(obj_plano);
   drawObject(obj_axis);
-
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
 
 function refreshFrame(){
-
 	/*Actualizo las transformaciones para cada uno de los objetos*/
-
 	refreshCamera();
 }
 
@@ -281,7 +272,7 @@ function passLight(light){
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
 	gl.uniform3fv(u_id, light.getIntensity()[1]);
 	gl.uniform3fv(u_is, light.getIntensity()[2]);
-	gl.uniform1f(u_limit, light.getLimit());
+	gl.uniform1f(u_limit, light.getAngle());
 	gl.uniform3fv(u_dirL, [0.0,-1.0,0.0]);
 }
 
@@ -340,5 +331,5 @@ function onModelLoad() {
 	//parsedOBJ = OBJParser.parseFile(teapot);
 	parsedOBJ = OBJParser.parseFile(ball);
   parsedOBJ2 = OBJParser.parseFile(axis);
-	parsedOBJ3 = OBJParser.parseFile(plano);
+	parsedOBJ3 = OBJParser.parseFile(piso);
 }

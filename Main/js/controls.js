@@ -6,6 +6,7 @@ function crearMateriales(){
 	materials.push(new Material("Brass",[0.329412,.223529,0.027451,0.0],[0.780392,0.568627,0.113725,0.0],[0.992157,0.941176,0.807843,0.0],27.8974));
 	materials.push(new Material("Bronze",[0.2125,0.1275,0.054,0.0],[0.714,0.4284,0.18144,0.0],[0.393548,0.271906,0.166721,0.0],25.6));
 	materials.push(new Material("Polished Bronze",[0.25,0.148,0.06475,0.0],[0.4,0.2368,0.1036,0.0],[0.774597,0.458561,0.200621,0.0],76.8));
+	materials.push(new Material("Glass",[0.0,0.0,0.0,1.0],[0.0,0.0,0.0,1.0],[1.0,1.0,1.0,1.0],500.2));
 }
 
 function getMaterialByName(name){
