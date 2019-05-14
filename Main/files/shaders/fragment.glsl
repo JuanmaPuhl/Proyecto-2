@@ -7,8 +7,8 @@ in vec3 vNE;
 in vec3 vLE;
 in vec3 vVE;
 out vec4 colorFrag;
+
 uniform vec4 ka;
-uniform float coefEspec;
 uniform vec4 kd;
 uniform vec4 ks;
 uniform float p;
@@ -16,15 +16,8 @@ uniform float sigma;
 uniform mat4 MV;
 uniform mat4 viewMatrix;
 
-uniform vec4 pa;
-uniform vec4 pd;
-uniform vec4 ps;
-uniform float ax;
-uniform float ay;
-
 uniform vec3 ia;
-uniform vec4 id;
-uniform vec4 is;
+
 uniform float limit;
 uniform vec4 posL;
 //uniform light [2];
@@ -94,9 +87,9 @@ void main(){
     // else{
       float componente = max(dot(N,V)*dot(N,L),0.0);
       if(componente>0.0){
-      colorFrag = ka+ kd * f0N + +ks*(Fres/3.141516)* (Beckmann*GCT)/componente;
+      colorFrag = vec4(ia,1.0)*(ka+ kd * f0N + +ks*(Fres/3.141516)* (Beckmann*GCT)/componente);
     }
-      else colorFrag = ka+kd*f0N;
+      else colorFrag = vec4(ia,1.0)*(ka+kd*f0N);
     //}
 
   }

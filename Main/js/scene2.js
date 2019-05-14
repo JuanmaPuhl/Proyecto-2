@@ -112,18 +112,19 @@ function onLoad() {
 
 	//Creo objetos
 	ferrari = new Car();
-	let ferrari_chasis = new Object(parsedOBJ_Ferrari[0]);
-	let ferrari_ruedas = new Object(parsedOBJ_Ferrari[1]);
-	let ferrari_vidrio = new Object(parsedOBJ_Ferrari[2]);
-	createVAO(ferrari_chasis);
-	createVAO(ferrari_ruedas);
-	createVAO(ferrari_vidrio);
-	ferrari_chasis.setMaterial(getMaterialByName("Jade"));
-	ferrari_ruedas.setMaterial(getMaterialByName("Polished Bronze"));
-	ferrari_vidrio.setMaterial(getMaterialByName("Glass"));
-	ferrari.addObject(ferrari_chasis);
-	ferrari.addObject(ferrari_ruedas);
-	ferrari.addObject(ferrari_vidrio);
+	for(let i = 0 ; i<parsedOBJ_Ferrari.length; i++){
+		let objeto = new Object(parsedOBJ_Ferrari[i]);
+		createVAO(objeto);
+		objeto.setMaterial(getMaterialByName("Default"));
+		ferrari.addObject(objeto);
+	}
+	let arr = ferrari.getObjects();
+	arr[0].setMaterial(getMaterialByName("Jade"));
+	arr[1].setMaterial(getMaterialByName("Polished Bronze"));
+	arr[2].setMaterial(getMaterialByName("Glass"));
+
+
+
 	console.log(ferrari.getObjects()[2]);
 	//obj_ferrari = new Object(parsedOBJ);
 	//obj_bmw = new Object(parsedOBJ2);
@@ -275,6 +276,62 @@ function passCamera(){
 }
 
 function passLight(light){
+	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+	let temperature = angle[1]/100;
+	let red;
+	let green;
+	let blue;
+	//Calculate red
+	if(temperature <= 66){
+		red = 1;
+	}
+	else{
+		red = temperature - 60;
+		red = (329.698727446 * Math.pow(red,-0.1332047592))/255;
+		if(red < 0)
+			red = 0;
+		if(red > 1)
+			red = 1;
+	}
+
+	//Calculate Green
+	if(temperature <= 66){
+		green = temperature;
+		green = (99.4708025861 * Math.log(green) - 161.1195681661)/255;
+		if(green < 0)
+			green = 0;
+		if(green > 1)
+			green = 1;
+	}
+	else{
+		green = temperature - 60;
+		green = (288.1221695283 * Math.pow(green,-0.0755148492))/255;
+		if(green < 0)
+			green = 0;
+		if(green > 1)
+			green = 1;
+	}
+
+
+	//Calculate blue
+	if(temperature >= 66)
+		blue = 1;
+	else{
+		if(temperature <= 19)
+			blue = 0;
+		else{
+			blue = temperature - 10;
+			blue = (138.5177312231 * Math.log(blue) - 305.0447927307)/255;
+			if(blue < 0)
+				blue = 0;
+			if(blue > 1)
+				blue = 1;
+		}
+	}
+	let intensity = [red,green,blue];
+	let intensity2 = [intensity,intensity,intensity];
+	light.setIntensity(intensity2);
+
 	//gl.uniform1f(u_ax,ax);
 	//gl.uniform1f(u_ay,ay);
 	gl.uniform4fv(u_posL, light.getLightPosition());
