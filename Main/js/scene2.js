@@ -112,36 +112,28 @@ function onLoad() {
 
 	//Creo objetos
 	ferrari = new Car();
+	let ferrari_colors = ["Jade","Polished Bronze","Glass"];
 	for(let i = 0 ; i<parsedOBJ_Ferrari.length; i++){
 		let objeto = new Object(parsedOBJ_Ferrari[i]);
 		createVAO(objeto);
-		objeto.setMaterial(getMaterialByName("Default"));
+		if(i<ferrari_colors.length)
+			objeto.setMaterial(getMaterialByName(ferrari_colors[i]));
+		else
+			objeto.setMaterial(getMaterialByName("Default"));
 		ferrari.addObject(objeto);
 	}
-	let arr = ferrari.getObjects();
-	arr[0].setMaterial(getMaterialByName("Jade"));
-	arr[1].setMaterial(getMaterialByName("Polished Bronze"));
-	arr[2].setMaterial(getMaterialByName("Glass"));
 
-
-
-	console.log(ferrari.getObjects()[2]);
-	//obj_ferrari = new Object(parsedOBJ);
-	//obj_bmw = new Object(parsedOBJ2);
 	bmw = new Car();
-	let bmw_chasis = new Object(parsedOBJ_BMW[0]);
-	let bmw_ruedas = new Object(parsedOBJ_BMW[1]);
-	let bmw_vidrio = new Object(parsedOBJ_BMW[2]);
-	createVAO(bmw_chasis);
-	createVAO(bmw_ruedas);
-	createVAO(bmw_vidrio);
-	bmw_chasis.setMaterial(getMaterialByName("Polished Gold"));
-	bmw_ruedas.setMaterial(getMaterialByName("Bronze"));
-	bmw_vidrio.setMaterial(getMaterialByName("Glass"));
-	bmw.addObject(bmw_chasis);
-	bmw.addObject(bmw_ruedas);
-	bmw.addObject(bmw_vidrio);
-
+	let bmw_colors = ["Polished Gold","Bronze","Glass"];
+	for(let i = 0 ; i<parsedOBJ_Ferrari.length; i++){
+		let objeto = new Object(parsedOBJ_BMW[i]);
+		createVAO(objeto);
+		if(i<bmw_colors.length)
+			objeto.setMaterial(getMaterialByName(bmw_colors[i]));
+		else
+			objeto.setMaterial(getMaterialByName("Default"));
+		bmw.addObject(objeto);
+	}
 
 	obj_ford = new Object(parsedOBJ3);
 	obj_piso = new Object(parsedOBJ4);
@@ -457,19 +449,19 @@ function transformBMW(){
 		//translateToOrigin(arr[i]);
 		scaleObject(arr[i],[0.11,0.11,0.11]);
 		rotateObject(arr[i],90);
-		translateObject(arr[i],[0.3,-0.1,0])
+		translateObject(arr[i],[0.3,-0.15,0])
 	}
 	scaleObject(arr[1],[0.3,0.3,0.3]);
 
-	translateObject(arr[1],[-(0.225),0,0]);
+	translateObject(arr[1],[-(0.225),-0.03,0]);
 
 }
 
 function transformFord(){
 	translateToOrigin(obj_ford);
-	scaleObject(obj_ford,[0.12,0.12,0.12]);
-	rotateObject(obj_ford,-90);
-	translateObject(obj_ford,[0,0.1,1]);
+	scaleObject(obj_ford,[0.06,0.06,0.06]);
+	rotateObject(obj_ford,90);
+	translateObject(obj_ford,[0,-0.05,1]);
 }
 
 function transformPiso(){
@@ -485,7 +477,8 @@ function onModelLoad() {
 	parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
 	parsedOBJ2 = OBJParser.parseFile(bmw); //Cargo el satelite
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio)];
-	parsedOBJ3 = OBJParser.parseFile(ford);
+	parsedOBJ3 = OBJParser.parseFile(lexus);
+	//parsedOBJ3 = OBJParser.parseFile(pg);
 	parsedOBJ4 = OBJParser.parseFile(piso);
 
 }

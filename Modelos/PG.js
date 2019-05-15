@@ -1,4 +1,4 @@
-var ferrari = `# Blender v2.79 (sub 0) OBJ File: 'PG.blend'
+var pg = `# Blender v2.79 (sub 0) OBJ File: 'PG.blend'
 # www.blender.org
 o Cylinder.003
 v 4.011712 -1.732782 -7.801510
