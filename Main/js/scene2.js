@@ -69,9 +69,9 @@ var ferrari;
 var bmw;
 //LUCES
 var light;
-var light_position = [0.0,5.0,0.0,1.0];
+var light_position = [0.0,1.0,1.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = 0.3;
+var light_angle = 0.7;
 var ax = 0.4;
 var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -88,11 +88,11 @@ function onLoad() {
 
 	//Creo las variables que voy a pasar a los shaders
 	shaderProgram = ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
-	posLocation = gl.getAttribLocation(shaderProgram, 'vertexPos');
+	posLocation = gl.getAttribLocation(shaderProgram, 'vertexPosition');
 	vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
 	u_modelMatrix = gl.getUniformLocation(shaderProgram, 'modelMatrix');
 	u_viewMatrix = gl.getUniformLocation(shaderProgram, 'viewMatrix');
-	u_projMatrix = gl.getUniformLocation(shaderProgram, 'projMatrix');
+	u_projMatrix = gl.getUniformLocation(shaderProgram, 'projectionMatrix');
 	u_ka = gl.getUniformLocation(shaderProgram, 'ka');
 	u_kd = gl.getUniformLocation(shaderProgram, 'kd');
 	u_ks = gl.getUniformLocation(shaderProgram, 'ks');
@@ -100,13 +100,13 @@ function onLoad() {
 	u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
 	u_posL = gl.getUniformLocation(shaderProgram, 'posL');
 	u_ia = gl.getUniformLocation(shaderProgram, 'ia');
-	u_id = gl.getUniformLocation(shaderProgram, 'id');
-	u_is = gl.getUniformLocation(shaderProgram, 'is');
+	//u_id = gl.getUniformLocation(shaderProgram, 'id');
+	//u_is = gl.getUniformLocation(shaderProgram, 'is');
 	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
-	u_ax = gl.getUniformLocation(shaderProgram, 'ax');
-	u_ay = gl.getUniformLocation(shaderProgram, 'ay');
-	u_ro = gl.getUniformLocation(shaderProgram, 'p');
-	u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
+	//u_ax = gl.getUniformLocation(shaderProgram, 'ax');
+	//u_ay = gl.getUniformLocation(shaderProgram, 'ay');
+	//u_ro = gl.getUniformLocation(shaderProgram, 'p');
+	//u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
 	u_limit = gl.getUniformLocation(shaderProgram, 'limit');
 	u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
 
@@ -141,15 +141,6 @@ function onLoad() {
 	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
 
 
-	//Asigno VAOs
-	// obj_ferrari.setVao(VAOHelper.create(obj_ferrari.getIndices(), [
-	// 	new VertexAttributeInfo(obj_ferrari.getPositions(), posLocation, 3),
-	// 	new VertexAttributeInfo(obj_ferrari.getNormals(), vertexNormal_location, 3)
-	// ]));
-	// obj_bmw.setVao(VAOHelper.create(obj_bmw.getIndices(),[
-	// 	new VertexAttributeInfo(obj_bmw.getPositions(), posLocation, 3),
-	// 	new VertexAttributeInfo(obj_bmw.getNormals(), vertexNormal_location, 3)
-	// ]));
 	obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
 		new VertexAttributeInfo(obj_ford.getPositions(), posLocation, 3),
 		new VertexAttributeInfo(obj_ford.getNormals(), vertexNormal_location, 3)
@@ -159,8 +150,6 @@ function onLoad() {
 		new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
 	]));
 
-	//obj_ferrari.setMaterial(getMaterialByName("Jade"));
-	//obj_bmw.setMaterial(getMaterialByName("Brass"));
 	obj_ford.setMaterial(getMaterialByName("Polished Gold"));
 	obj_piso.setMaterial(getMaterialByName("Polished Bronze"));
 
@@ -196,14 +185,14 @@ function onRender(now){
 	then = now; //Actualizo el valor
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Reinicio Matrices*/
-	refreshFrame();
 
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(shaderProgram);
-	passLight(light);
-	passCamera();
 
+	refreshCamera();
+	passCamera();
+	passLight(light);
 
 	//drawObject(obj_ferrari);
 	let arr = ferrari.getObjects();
@@ -231,7 +220,7 @@ function setObjects(){
 
 	//obj_bmw.resetObjectMatrix();
 	obj_ford.resetObjectMatrix();
-	obj_piso.resetObjectMatrix();
+	//obj_piso.resetObjectMatrix();
 	transformFerrari();
 	transformBMW();
 	transformFord();
@@ -268,59 +257,8 @@ function passCamera(){
 }
 
 function passLight(light){
-	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
-	let temperature = angle[1]/100;
-	let red;
-	let green;
-	let blue;
-	//Calculate red
-	if(temperature <= 66){
-		red = 1;
-	}
-	else{
-		red = temperature - 60;
-		red = (329.698727446 * Math.pow(red,-0.1332047592))/255;
-		if(red < 0)
-			red = 0;
-		if(red > 1)
-			red = 1;
-	}
 
-	//Calculate Green
-	if(temperature <= 66){
-		green = temperature;
-		green = (99.4708025861 * Math.log(green) - 161.1195681661)/255;
-		if(green < 0)
-			green = 0;
-		if(green > 1)
-			green = 1;
-	}
-	else{
-		green = temperature - 60;
-		green = (288.1221695283 * Math.pow(green,-0.0755148492))/255;
-		if(green < 0)
-			green = 0;
-		if(green > 1)
-			green = 1;
-	}
-
-
-	//Calculate blue
-	if(temperature >= 66)
-		blue = 1;
-	else{
-		if(temperature <= 19)
-			blue = 0;
-		else{
-			blue = temperature - 10;
-			blue = (138.5177312231 * Math.log(blue) - 305.0447927307)/255;
-			if(blue < 0)
-				blue = 0;
-			if(blue > 1)
-				blue = 1;
-		}
-	}
-	let intensity = [red,green,blue];
+	let intensity = colorLuz();
 	let intensity2 = [intensity,intensity,intensity];
 	light.setIntensity(intensity2);
 
@@ -328,8 +266,8 @@ function passLight(light){
 	//gl.uniform1f(u_ay,ay);
 	gl.uniform4fv(u_posL, light.getLightPosition());
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
-	gl.uniform3fv(u_id, light.getIntensity()[1]);
-	gl.uniform3fv(u_is, light.getIntensity()[2]);
+	//gl.uniform3fv(u_id, light.getIntensity()[1]);
+	//gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit, light.getAngle());
 	gl.uniform3fv(u_dirL, [0.0,-1.0,0.0]);
 }
@@ -340,17 +278,20 @@ function drawObject(object){
 	let MV = mat4.create();
 	mat4.multiply(MV , viewMatrix , matrix);
 
+
+
 	gl.uniformMatrix4fv(u_MV, false, MV);
 	mat4.invert(MV,MV);
 	mat4.transpose(MV,MV);
 	gl.uniformMatrix4fv(u_normalMatrix, false, MV);
-	gl.uniform1f(u_ro,1.0);
-	gl.uniform1f(u_sigma,90.0);
+	//gl.uniform1f(u_ro,1.0);
+	//gl.uniform1f(u_sigma,90.0);
 	let material = object.getMaterial();
 	/*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
-	gl.uniform4fv(u_ka,material.getKa());
-	gl.uniform4fv(u_kd,material.getKd());
-	gl.uniform4fv(u_ks,material.getKs());
+	gl.uniform3fv(u_ka,material.getKa());
+	gl.uniform3fv(u_kd,material.getKd());
+	gl.uniform3fv(u_ks,material.getKs());
+	//console.log(material.getKs());
 	gl.uniform1f(u_coefEspec,material.getShininess());
 
 	gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
@@ -465,9 +406,10 @@ function transformFord(){
 }
 
 function transformPiso(){
-	translateToOrigin(obj_piso);
-	translateObject(obj_piso,[0,-1.17,0]);
-	translateObject(obj_piso,[light.getLightPosition()[0],0,light.getLightPosition()[2]]);
+	//translateToOrigin(obj_piso);
+	//scaleObject(obj_piso,[1,1,1]);
+	translateObject(obj_piso,[0,-1.6,0]);
+	//translateObject(obj_piso,[light.getLightPosition()[0],0,light.getLightPosition()[2]]);
 }
 
 
@@ -479,6 +421,6 @@ function onModelLoad() {
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio)];
 	parsedOBJ3 = OBJParser.parseFile(lexus);
 	//parsedOBJ3 = OBJParser.parseFile(pg);
-	parsedOBJ4 = OBJParser.parseFile(piso);
+	parsedOBJ4 = OBJParser.parseFile(objeto);
 
 }
