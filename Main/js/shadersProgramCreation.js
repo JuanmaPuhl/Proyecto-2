@@ -44,6 +44,8 @@ function setShaderCookTorrance(){
   u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
   u_F0 = gl.getUniformLocation(shaderProgram,'F0');
   u_rugosidad = gl.getUniformLocation(shaderProgram,'rugosidad');
+  u_ro = gl.getUniformLocation(shaderProgram,'p');
+  u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
 }
 
 function setShaderOrenNayar(){

@@ -38,23 +38,23 @@ var obj_ball;
 var obj_ball2;
 var obj_ball3;
 //LUCES
-var light3;
-var light3_position = [0.0,2.0,-1.0,1.0];
-var light3_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light3_angle = Math.cos(glMatrix.toRadian(10));
-console.log(light3_angle);
-var light3_direction = [0.0,-1.0,0.0];
-
-var light2;
-var light2_position = [0.0,2.0,1.0,1.0];
-var light2_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light2_angle = Math.cos(glMatrix.toRadian(50));
-var light2_direction = [0.0,-1.0,0.0];
+// var light3;
+// var light3_position = [0.0,2.0,-1.0,1.0];
+// var light3_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+// var light3_angle = Math.cos(glMatrix.toRadian(10));
+// console.log(light3_angle);
+// var light3_direction = [0.0,-1.0,0.0];
+//
+// var light2;
+// var light2_position = [0.0,2.0,1.0,1.0];
+// var light2_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+// var light2_angle = Math.cos(glMatrix.toRadian(50));
+// var light2_direction = [0.0,-1.0,0.0];
 
 var light;
-var light_position = [0.0,10.0,0.0,1.0];
+var light_position = [0.0,2.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = Math.cos(glMatrix.toRadian(10));
+var light_angle = Math.cos(glMatrix.toRadian(30));
 var light_direction = [0.0,-1.0,0.0];
 // var ax = 0.4;
 // var ay = 0.41;
@@ -96,7 +96,7 @@ function onLoad() {
 
 
 	obj_piso = new Object(parsedOBJ3);
-	obj_piso.setMaterial(getMaterialByName("CACA"));
+	obj_piso.setMaterial(getMaterialByName("Rock"));
 	obj_piso.setVao(VAOHelper.create(obj_piso.getIndices(), [
     new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
     new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
@@ -124,8 +124,8 @@ function onLoad() {
 	}
 
 	light = new Light(light_position , light_intensity , light_angle, light_direction);//Creo la luz
-	light2 = new Light(light2_position , light2_intensity , light2_angle, light2_direction);//Creo la luz
-	light3 = new Light(light3_position , light3_intensity , light3_angle, light3_direction);//Creo la luz
+	// light2 = new Light(light2_position , light2_intensity , light2_angle, light2_direction);//Creo la luz
+	// light3 = new Light(light3_position , light3_intensity , light3_angle, light3_direction);//Creo la luz
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
@@ -168,8 +168,8 @@ function onRender(now){
 	}
 	transformBall();
 	drawObject(obj_ball);
-	drawObject(obj_ball2);
-	drawObject(obj_ball3);
+	//drawObject(obj_ball2);
+	//drawObject(obj_ball3);
 	drawObject(obj_piso);
   //drawObject(obj_axis);
 	gl.useProgram(null);
@@ -254,15 +254,15 @@ function transformBall(){
 	scaleObject(obj_ball,[0.1,0.1,0.1]);
 	translateObject(obj_ball,light.getLightPosition());
 
-	obj_ball2.resetObjectMatrix();
-	translateToOrigin(obj_ball2);
-	scaleObject(obj_ball2,[0.1,0.1,0.1]);
-	translateObject(obj_ball2,light2.getLightPosition());
-
-	obj_ball3.resetObjectMatrix();
-	translateToOrigin(obj_ball3);
-	scaleObject(obj_ball3,[0.1,0.1,0.1]);
-	translateObject(obj_ball3,light3.getLightPosition());
+	// obj_ball2.resetObjectMatrix();
+	// translateToOrigin(obj_ball2);
+	// scaleObject(obj_ball2,[0.1,0.1,0.1]);
+	// translateObject(obj_ball2,light2.getLightPosition());
+	//
+	// obj_ball3.resetObjectMatrix();
+	// translateToOrigin(obj_ball3);
+	// scaleObject(obj_ball3,[0.1,0.1,0.1]);
+	// translateObject(obj_ball3,light3.getLightPosition());
 
 }
 

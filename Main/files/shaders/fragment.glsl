@@ -17,7 +17,7 @@ uniform float rugosidad;
 //uniform vec4 ps;
 //uniform float ax;
 //uniform float ay;
-uniform float limit;
+//uniform float limit;
 uniform vec4 dirL;
 uniform float p;
 uniform float sigma;
