@@ -1,3 +1,6 @@
+
+
+
 var shaderProgramBLinnPhong  = null; //Shader program to use.
 var shaderProgramCookTorrance = null;
 var shaderProgramOrenNayar = null;
@@ -16,11 +19,17 @@ function setShaderBlinnPhong(){
   u_ks = gl.getUniformLocation(shaderProgram, 'ks');
   u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
   u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
-  u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-  u_ia = gl.getUniformLocation(shaderProgram, 'ia');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
-  u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-  u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
+
+  u_limit = gl.getUniformLocation(shaderProgram, 'limit1');
+  u_dirL = gl.getUniformLocation(shaderProgram,'dirL1');
+  u_posL = gl.getUniformLocation(shaderProgram, 'posL1');
+  u_ia = gl.getUniformLocation(shaderProgram, 'ia1');
+
+  u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
+  u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
+  u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
+  u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
 }
 
 function setShaderCookTorrance(){

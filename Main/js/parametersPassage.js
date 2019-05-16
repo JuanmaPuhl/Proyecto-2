@@ -43,19 +43,24 @@ function passLight2(light){
 	light.setIntensity(intensity2);
 	//gl.uniform1f(u_ax,ax);
 	//gl.uniform1f(u_ay,ay);
-	gl.uniform4fv(u_posL, light.getLightPosition());
-	gl.uniform3fv(u_ia, light.getIntensity()[0]);
+	let spot_position_eye = vec4.create();
+	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
+	gl.uniform4fv(u_posL2, spot_position_eye);
+	gl.uniform3fv(u_ia2, light.getIntensity()[0]);
 	//gl.uniform3fv(u_id, light.getIntensity()[1]);
 	//gl.uniform3fv(u_is, light.getIntensity()[2]);
-	gl.uniform1f(u_limit, light.getAngle());
-	gl.uniform4fv(u_dirL, light.getDirection());
+	gl.uniform1f(u_limit2, light.getAngle());
+	let spot_direction_eye = vec4.create();
+	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
+	gl.uniform4fv(u_dirL2, spot_direction_eye);
 }
 
 
 function drawBlinnPhong(object){
   setShaderBlinnPhong();
   gl.useProgram(shaderProgram);
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
   passCamera();
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);

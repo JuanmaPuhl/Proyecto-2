@@ -13,9 +13,9 @@ in vec3 vertexPosition;
 in vec3 vertexNormal;
 
 out vec3 vNE; //Normal del vertice en coordenadas del ojo
-out vec3 vLE; //Direccion de la luz al vertice en coordenadas del ojo
+//out vec3 vLE; //Direccion de la luz al vertice en coordenadas del ojo
 out vec3 vVE; //Direccion del ojo al vertice en coordenadas del ojo
-out vec3 vSD; //Direccion del spot
+//out vec3 vSD; //Direccion del spot
 
 
 void main(){
@@ -23,10 +23,10 @@ void main(){
 
     vec3 vertex_pos_eye = (MV*vec4(vertexPosition,1.0)).xyz; //posicion del vertice en coordenadas del ojo
     vVE = -vertex_pos_eye;
-    vec3 vertex_normal_eye = (normalMatrix * vec4(vertexNormal,1.0)).xyz; //normal del vertice en coordenadas del ojo
+    vec3 vertex_normal_eye = (normalMatrix * vec4(vertexNormal,0.0)).xyz; //normal del vertice en coordenadas del ojo
     vNE = vertex_normal_eye;
-    vec3 light_direction = posL.xyz - vertex_pos_eye; //direccion de la luz al vertice
-    vLE = light_direction;
-    vSD = dirL.xyz;
+    //vec3 light_direction = posL.xyz - vertex_pos_eye; //direccion de la luz al vertice
+    //vLE = light_direction;
+    //vSD = dirL.xyz;
 }
 `
