@@ -73,14 +73,18 @@ function setShaderOrenNayar(){
   u_kd = gl.getUniformLocation(shaderProgram, 'kd');
   u_ks = gl.getUniformLocation(shaderProgram, 'ks');
   u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
-  u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-  u_ia = gl.getUniformLocation(shaderProgram, 'ia');
+
+
   //u_id = gl.getUniformLocation(shaderProgram, 'id');
   //u_is = gl.getUniformLocation(shaderProgram, 'is');
   u_ro = gl.getUniformLocation(shaderProgram,'p');
   u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
+
+  u_posL = gl.getUniformLocation(shaderProgram, 'posL');
   u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
+  u_ia = gl.getUniformLocation(shaderProgram, 'ia');
+  u_limit = gl.getUniformLocation(shaderProgram, 'limit');
 }
 
 function setShaderCookTorranceShirley(){
@@ -111,7 +115,7 @@ function setShaderCookTorranceShirley(){
 
 function createShaderPrograms(){
   shaderProgramBLinnPhong = ShaderProgramHelper.create(VS_BlinnPhong_spot, FS_BlinnPhong_spot);
-  //shaderProgramCookTorrance =  ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
+  shaderProgramCookTorrance =  ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
   //shaderProgramOrenNayar = ShaderProgramHelper.create(VS_OrenNayar,FS_OrenNayar);
   //shaderProgramCookTorranceShirley = ShaderProgramHelper.create(VS_CookTorranceShirley, FS_CookTorranceShirley);
 }

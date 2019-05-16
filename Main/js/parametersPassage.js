@@ -2,16 +2,16 @@
 
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawBlinnPhong(object);
+    drawCookTorrance(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
-		drawBlinnPhong(object);
+		drawCookTorrance(object);
 	}
 	if(object.getMaterial().getType()=="Glass"){
-    drawBlinnPhong(object);
+    drawCookTorrance(object);
 	}
   if(object.getMaterial().getType()=="Satin"){
-    drawBlinnPhong(object);
+    drawCookTorrance(object);
   }
 }
 
@@ -108,7 +108,7 @@ function drawCookTorrance(object){
   setShaderCookTorrance();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light)
+  passLight1(light);
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();

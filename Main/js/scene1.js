@@ -68,8 +68,7 @@ var light_position3 = [0.0,2.0,-1.0,1.0];
 var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle3 = Math.cos(glMatrix.toRadian(30));
 var light_direction3 = [1.0,1.0,1.0,0.0];
-// var ax = 0.4;
-// var ay = 0.41;
+
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
