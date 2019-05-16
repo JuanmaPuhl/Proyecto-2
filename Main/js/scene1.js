@@ -4,26 +4,7 @@ var shaderProgram  = null; //Shader program to use.
 var parsedOBJ = null;
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
-//Uniform locations.
-var u_modelMatrix;
-var u_viewMatrix;
-var u_projMatrix;
-var u_ka;
-var u_kd;
-var u_ks;
-var u_normalMatrix;
-var u_coefEspec;
-var u_posL;
-var u_ia;
-var u_id;
-var u_is;
-var u_MV;
-var u_ax;
-var u_ay;
-var u_ro;
-var u_sigma;
-var u_limit;
-var u_dirL;
+
 //Uniform values.
 var viewMatrix = mat4.create();
 var projMatrix = mat4.create();
@@ -54,12 +35,27 @@ var balls = [];
 var obj_axis;
 var obj_piso;
 var obj_ball;
+var obj_ball2;
+var obj_ball3;
 //LUCES
+var light3;
+var light3_position = [0.0,2.0,-1.0,1.0];
+var light3_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+var light3_angle = Math.cos(glMatrix.toRadian(10));
+console.log(light3_angle);
+var light3_direction = [0.0,-1.0,0.0];
+
+var light2;
+var light2_position = [0.0,2.0,1.0,1.0];
+var light2_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+var light2_angle = Math.cos(glMatrix.toRadian(50));
+var light2_direction = [0.0,-1.0,0.0];
+
 var light;
-var light_position = [0.0,2,0.0,1.0];
+var light_position = [0.0,10.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = 0.0;
-var light_direction = [0.0,0.0,0.0];
+var light_angle = Math.cos(glMatrix.toRadian(10));
+var light_direction = [0.0,-1.0,0.0];
 // var ax = 0.4;
 // var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -75,7 +71,7 @@ function onLoad() {
 	crearMateriales();
 
 	createShaderPrograms();
-	setShaderCookTorrance();
+	setShaderBlinnPhong();
 
 	obj_ball = new Object(parsedOBJ);
 	obj_ball.setVao(VAOHelper.create(obj_ball.getIndices(),[
@@ -84,9 +80,23 @@ function onLoad() {
 	]));
 	obj_ball.setMaterial(getMaterialByName("Default"));
 
+	obj_ball2 = new Object(parsedOBJ);
+	obj_ball2.setVao(VAOHelper.create(obj_ball2.getIndices(),[
+		new VertexAttributeInfo(obj_ball2.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(obj_ball2.getNormals(), vertexNormal_location, 3)
+	]));
+	obj_ball2.setMaterial(getMaterialByName("Default"));
+
+	obj_ball3 = new Object(parsedOBJ);
+	obj_ball3.setVao(VAOHelper.create(obj_ball3.getIndices(),[
+		new VertexAttributeInfo(obj_ball3.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(obj_ball3.getNormals(), vertexNormal_location, 3)
+	]));
+	obj_ball3.setMaterial(getMaterialByName("Default"));
+
 
 	obj_piso = new Object(parsedOBJ3);
-	obj_piso.setMaterial(getMaterialByName("Rock"));
+	obj_piso.setMaterial(getMaterialByName("CACA"));
 	obj_piso.setVao(VAOHelper.create(obj_piso.getIndices(), [
     new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
     new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
@@ -114,7 +124,8 @@ function onLoad() {
 	}
 
 	light = new Light(light_position , light_intensity , light_angle, light_direction);//Creo la luz
-
+	light2 = new Light(light2_position , light2_intensity , light2_angle, light2_direction);//Creo la luz
+	light3 = new Light(light3_position , light3_intensity , light3_angle, light3_direction);//Creo la luz
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
@@ -157,18 +168,20 @@ function onRender(now){
 	}
 	transformBall();
 	drawObject(obj_ball);
+	drawObject(obj_ball2);
+	drawObject(obj_ball3);
 	drawObject(obj_piso);
-  drawObject(obj_axis);
+  //drawObject(obj_axis);
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
 
 function refreshCamera(){
 	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
-		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[4])); //Roto segun el angulo de rotacion 5
+		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
 	else
 		if(animated[6]) //Si esta rotando automaticamente a la derecha...
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[4])); //Roto segun el angulo de rotacion 6
+			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
 		else {// Si no esta siendo animada
 			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
 		}
@@ -240,6 +253,17 @@ function transformBall(){
 	translateToOrigin(obj_ball);
 	scaleObject(obj_ball,[0.1,0.1,0.1]);
 	translateObject(obj_ball,light.getLightPosition());
+
+	obj_ball2.resetObjectMatrix();
+	translateToOrigin(obj_ball2);
+	scaleObject(obj_ball2,[0.1,0.1,0.1]);
+	translateObject(obj_ball2,light2.getLightPosition());
+
+	obj_ball3.resetObjectMatrix();
+	translateToOrigin(obj_ball3);
+	scaleObject(obj_ball3,[0.1,0.1,0.1]);
+	translateObject(obj_ball3,light3.getLightPosition());
+
 }
 
 function transformBalls(){

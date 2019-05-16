@@ -19,6 +19,33 @@ uniform float rugosidad;
 //uniform float ay;
 uniform float limit;
 uniform vec4 dirL;
+uniform float p;
+uniform float sigma;
+
+float orenNayar(){
+
+  vec3 N = normalize(vNE);
+  vec3 L = normalize(vLE);
+  vec3 V = normalize(vVE);
+  vec3 H = normalize(L+V);
+
+  float f0N = 0.0;
+
+  float A = 1.0 - 0.5 * sigma/(pow(sigma,2.0)+0.33);
+  float B = 0.45 * (sigma/(pow(sigma,2.0)+0.09));
+  float cosR = max(dot(N,V),0.0);
+  float cosI = max(dot(N,L),0.0);
+  float anguloR = acos(cosR);
+  float anguloI = acos(cosI);
+  float a = max(anguloR,anguloI);
+  float b = min(anguloR,anguloI);
+  //f0N = (p/PI )* cosI*(A+B*max(0.0,phiDiff)*sin(a)*tan(b));
+  float cosPHI = dot( normalize(V-N*(cosR)), normalize(L - N*(cosI)) );
+  f0N = (p/PI)*cosI*(A+(B*max(0.0,cosPHI))*sin(a)*tan(b));
+  return f0N;
+}
+
+
 void main(){
     float PHI =3.141516;
     vec3 N = normalize(vNE);
@@ -28,11 +55,14 @@ void main(){
     //Calculo termino difuso + espec de Blinn-Phong
     vec3 direccion = normalize(vec3(dirL));
     vec3 H = normalize(L+V);
-    float difuso = max(dot(L,N),0.0) ;
-    float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);
-    if(dot(L,N)< 0.0){
-        specBlinnPhong = 0.0;
-    }
+    // float difuso = max(dot(L,N),0.0) ;
+    // float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);
+    // if(dot(L,N)< 0.0){
+    //     specBlinnPhong = 0.0;
+    // }
+
+    float F0N=orenNayar();
+
 
     float titaH = max(dot(N,H),0.0);
     float titaI = max(dot(N,L),0.0);
@@ -66,8 +96,8 @@ void main(){
     float componente1 = max(dot(N,V),0.0);
     float componente2 = max(dot(N,L),0.0);
     if(componente1*componente2!=0.0)
-		  colorFrag = vec4(ka +ia*(kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2)),1.0);
+		  colorFrag = vec4(ka +ia*(kd*F0N +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2)),1.0);
 	  else
-	     colorFrag = vec4(ka+ia*kd*difuso,1.0);
+	     colorFrag = vec4(ka+ia*kd*F0N,1.0);
 //colorFrag = ka+kd*difuso+ks*specBlinnPhong;
 }`
