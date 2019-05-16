@@ -1,12 +1,12 @@
 function crearMateriales(){
-	materials.push(new Material("Default",[1.0,1.0,1.0,1.0],[1.0,1.0,1.0,1.0],[1.0,1.0,1.0,1.0],100.0));
-	materials.push(new Material("Jade",[0.135,0.2225,0.1575,0],[0.54,0.89,0.63,0],[0.316228,0.316228,0.316228,0],12.8));
-	materials.push(new Material("Polished Gold",[0.24725,0.2245,0.0645,0.0],[0.34615,0.3143,0.0903,0.0],[0.797357,0.723991,0.208006,0.0],83.2));
-	materials.push(new Material("Rock",[0.2,0.1,0.0,0.0],[0.095466,0.114934,0.102149,0.0],[0.0,0.0,0.0,0.0],2.0));
-	materials.push(new Material("Brass",[0.329412,.223529,0.027451,0.0],[0.780392,0.568627,0.113725,0.0],[0.992157,0.941176,0.807843,0.0],27.8974));
-	materials.push(new Material("Bronze",[0.2125,0.1275,0.054,0.0],[0.714,0.4284,0.18144,0.0],[0.393548,0.271906,0.166721,0.0],25.6));
-	materials.push(new Material("Polished Bronze",[0.25,0.148,0.06475,0.0],[0.4,0.2368,0.1036,0.0],[0.774597,0.458561,0.200621,0.0],76.8));
-	materials.push(new Material("Glass",[0.0,0.0,0.0,1.0],[0.0,0.0,0.0,1.0],[1.0,1.0,1.0,1.0],500.2));
+	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0));
+	materials.push(new Material("Metal","Jade",[0.135,0.2225,0.1575],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8));
+	materials.push(new Material("Metal","Polished Gold",[0.24725,0.2245,0.0645],[0.34615,0.3143,0.0903],[0.797357,0.723991,0.208006],83.2));
+	materials.push(new Material("Plastic","Rock",[0.2,0.1,0.0],[0.095466,0.114934,0.102149],[0.0,0.0,0.0],2.0));
+	materials.push(new Material("Metal","Brass",[0.329412,.223529,0.027451],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974));
+	materials.push(new Material("Metal","Bronze",[0.2125,0.1275,0.054],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6));
+	materials.push(new Material("Metal","Polished Bronze",[0.25,0.148,0.06475],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8));
+	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2));
 }
 
 function getMaterialByName(name){
@@ -32,6 +32,64 @@ function getMaterialByIndex(index){
 		index = 0;
 	return materials[index];
 }
+
+function colorLuz(){
+	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+	let temperature = angle[1]/100;
+	let red;
+	let green;
+	let blue;
+	//Calculate red
+	if(temperature <= 66){
+		red = 1;
+	}
+	else{
+		red = temperature - 60;
+		red = (329.698727446 * Math.pow(red,-0.1332047592))/255;
+		if(red < 0)
+			red = 0;
+		if(red > 1)
+			red = 1;
+	}
+
+	//Calculate Green
+	if(temperature <= 66){
+		green = temperature;
+		green = (99.4708025861 * Math.log(green) - 161.1195681661)/255;
+		if(green < 0)
+			green = 0;
+		if(green > 1)
+			green = 1;
+	}
+	else{
+		green = temperature - 60;
+		green = (288.1221695283 * Math.pow(green,-0.0755148492))/255;
+		if(green < 0)
+			green = 0;
+		if(green > 1)
+			green = 1;
+	}
+
+
+	//Calculate blue
+	if(temperature >= 66)
+		blue = 1;
+	else{
+		if(temperature <= 19)
+			blue = 0;
+		else{
+			blue = temperature - 10;
+			blue = (138.5177312231 * Math.log(blue) - 305.0447927307)/255;
+			if(blue < 0)
+				blue = 0;
+			if(blue > 1)
+				blue = 1;
+		}
+	}
+	return [red,green,blue];
+}
+
+
 
 /*Funcion para cargar los sliders de la pagina*/
 function cargarSliders(){
