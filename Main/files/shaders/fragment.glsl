@@ -26,6 +26,20 @@ uniform vec4 dirL;
 uniform float limit;
 uniform vec3 ia;
 
+//light2
+uniform vec4 posL2;
+uniform vec4 dirL2;
+uniform float limit2;
+uniform vec3 ia2;
+
+//light3
+uniform vec4 posL3;
+uniform vec4 dirL3;
+uniform float limit3;
+uniform vec3 ia3;
+
+
+
 float orenNayar(vec3 N, vec3 V, vec3 L, vec3 H){
   float f0N = 0.0;
 
@@ -129,9 +143,52 @@ vec3 calcularAporteSpot(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, vec3
     return toReturn;
 }
 
+vec3 calcularAporteDireccional(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N , vec3 V){
+  vec3 light_direction = vec3(posL + vec4(vVE,1.0)); //direccion de la luz al vertice
+  vec3 S = normalize(vec3(dirL));
+  vec3 L = normalize(light_direction);
+  vec3 H = normalize(V+S);
+
+  float titaH = max(dot(N,H),0.0);
+  float titaI = max(dot(N,S),0.0);
+  //Variables de la atenuacion geometrica
+
+  float Beckmann;
+  //Termino de Fresnel
+  float Fres = pow(1.0 - titaH, 5.0);
+  Fres *= (1.0 - F0);
+  Fres += F0;
+
+  //Termino de Beackmann
+  float divisor = pow(rugosidad,2.0)* pow(titaH,4.0);
+  float exponente = -(pow(tan(acos(titaH))/rugosidad,2.0));
+  exponente = exp(exponente);
+  Beckmann = exponente/divisor;
+
+  //Variables de la atenuacion geometrica
+  float GCT;
+  float Ge;
+  float Gs;
+  float titaV = max(dot(V,H),0.0);
+  Ge = (2.0*titaH*titaV)/(titaV);
+  Gs = (2.0*titaH*titaI)/(titaV);
+
+  GCT=min(1.0,Ge);
+  GCT=min(GCT,Gs);
+  float componente1 = max(dot(N,V),0.0);
+  float componente2 = max(dot(N,S),0.0);
+
+  float value = orenNayar(N,V,S,H);
+  if(componente1*componente2!=0.0)
+    return ka+kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2);
+  else
+     return ka+ia*kd * value;
+}
+
+
 void main(){
     vec3 N = normalize(vNE);
     vec3 V = normalize(vVE);
-    colorFrag = vec4(calcularAporteSpot(posL,dirL,ia,limit,N,V),1.0);
+    colorFrag = vec4(calcularAporteDireccional(posL,dirL,ia,limit,N,V),1.0);
     //colorFrag = ka+kd*difuso+ks*specBlinnPhong;
 }`
