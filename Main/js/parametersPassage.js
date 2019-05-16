@@ -2,16 +2,16 @@
 
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawCookTorrance(object);
+    drawOrenNayar(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
-		drawCookTorrance(object);
+		drawOrenNayar(object);
 	}
 	if(object.getMaterial().getType()=="Glass"){
-    drawCookTorrance(object);
+    drawOrenNayar(object);
 	}
   if(object.getMaterial().getType()=="Satin"){
-    drawCookTorrance(object);
+    drawOrenNayar(object);
   }
 }
 
@@ -145,7 +145,10 @@ function drawOrenNayar(object){
   setShaderOrenNayar();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
+
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();
