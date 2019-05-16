@@ -109,6 +109,8 @@ function drawCookTorrance(object){
   gl.useProgram(shaderProgram);
   passCamera();
   passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();

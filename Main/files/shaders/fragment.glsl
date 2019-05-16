@@ -189,6 +189,6 @@ vec3 calcularAporteDireccional(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 
 void main(){
     vec3 N = normalize(vNE);
     vec3 V = normalize(vVE);
-    colorFrag = vec4(calcularAporteDireccional(posL,dirL,ia,limit,N,V),1.0);
+    colorFrag = vec4(calcularAporteSpot(posL,dirL,ia,limit,N,V) + calcularAportePuntual(posL2,dirL2,ia2,limit2,N,V) + calcularAporteDireccional(posL3,dirL3,ia3,limit3,N,V),1.0);
     //colorFrag = ka+kd*difuso+ks*specBlinnPhong;
 }`
