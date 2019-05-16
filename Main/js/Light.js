@@ -18,6 +18,10 @@ class Light{
   setDirection(direction){
     this.direction = direction;
   }
+
+  setLightPosition(position){
+    this.lightPosition = position;
+  }
   //Retorno la posicion de la luz
   getLightPosition(){
     return this.lightPosition;

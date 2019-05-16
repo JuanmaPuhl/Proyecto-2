@@ -13,6 +13,14 @@
 	<script src="js/sphericalCamera.js"></script>
 	<script src="files/shaders/vertex.glsl"></script>
 	<script src="files/shaders/fragment.glsl"></script>
+	<script src="files/shaders/VS-BlinnPhong-spot.glsl"></script>
+	<script src="files/shaders/FS-BlinnPhong-spot.glsl"></script>
+	<script src="files/shaders/vertex.glsl"></script>
+	<script src="files/shaders/fragment.glsl"></script>
+	<script src="files/shaders/VS-OrenNayar.glsl"></script>
+	<script src="files/shaders/FS-OrenNayar.glsl"></script>
+	<script src="files/shaders/VS-CookTorranceShirley.glsl"></script>
+	<script src="files/shaders/FS-CookTorranceShirley.glsl"></script>
 	<script src="../Modelos/axis.js"></script>
 	<script src="../Modelos/teapot.obj.js"></script>
 	<script src="../Modelos/bmw_m3_gt3_cycles.js"></script>
@@ -22,11 +30,13 @@
 	<script src="../Modelos/PG.js"></script>
 	<script src="../Modelos/plano.js"></script>
 	<script src="../Modelos/ball.js"></script>
-	<script src="../Modelos/piso.js"></script>
+	<script src="../Modelos/caja.js"></script>
 	<script src="js/controls.js"></script>
 	<script src="js/Material.js"></script>
 	<script src="js/Object.js"></script>
 	<script src="js/Light.js"></script>
+	<script src="js/parametersPassage.js"></script>
+	<script src="js/shadersProgramCreation.js"></script>
 	<script src="js/scene1.js"></script>
 
 	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
@@ -52,27 +62,15 @@
 						<input type="text" id="textInput1" value="20" onchange="setNewValue(1,this.value)">
 					</td>
 				</tr>
-				<!-- <tr>
-					<td>PosicionX</td>
+				<tr>
+					<td>Posicion</td>
 					<td>
-						<input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);">
-						<input type="text" id="textInput1" value="20" onchange="setNewValue(1,this.value)">
+						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
+						<input type="text" id="textInputX" value="0" onchange="setNewLightPosition()">
+						<input type="text" id="textInputY" value="2" onchange="setNewLightPosition()">
+						<input type="text" id="textInputZ" value="0" onchange="setNewLightPosition()">
 					</td>
 				</tr>
-				<tr>
-					<td>PosicionY</td>
-					<td>
-						<input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);">
-						<input type="text" id="textInput1" value="20" onchange="setNewValue(1,this.value)">
-					</td>
-				</tr>
-				<tr>
-					<td>PosicionZ</td>
-					<td>
-						<input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);">
-						<input type="text" id="textInput1" value="20" onchange="setNewValue(1,this.value)">
-					</td>
-				</tr> -->
 			</table>
 			<table id='myTable'>
 				<tr id='myTableRow' >

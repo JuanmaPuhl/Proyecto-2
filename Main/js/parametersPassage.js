@@ -102,8 +102,11 @@ function drawCookTorrance(object){
   gl.uniform3fv(u_ks,material.getKs());
   //console.log(material.getKs());
   gl.uniform1f(u_coefEspec,material.getShininess());
-  gl.uniform1f(u_F0,3.81);
-  gl.uniform1f(u_rugosidad,0.3);
+	gl.uniform1f(u_F0,material.getF0());
+	gl.uniform1f(u_rugosidad,material.getRugosidad());
+	//console.log(material.getRugosidad());
+	//gl.uniform1f(u_F0,3.81);
+  //gl.uniform1f(u_rugosidad,0.3);
   gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
   gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
   gl.bindVertexArray(null);

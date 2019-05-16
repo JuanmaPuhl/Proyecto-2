@@ -11,6 +11,7 @@ uniform float coefEspec;
 uniform vec3 kd;
 uniform vec3 ks;
 uniform float F0;
+uniform vec3 ia;
 uniform float rugosidad;
 //uniform vec4 pd;
 //uniform vec4 ps;
@@ -65,8 +66,8 @@ void main(){
     float componente1 = max(dot(N,V),0.0);
     float componente2 = max(dot(N,L),0.0);
     if(componente1*componente2!=0.0)
-		  colorFrag = vec4(ka +kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2),1.0);
+		  colorFrag = vec4(ka +ia*(kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2)),1.0);
 	  else
-	     colorFrag = vec4(ka+kd*difuso,1.0);
+	     colorFrag = vec4(ka+ia*kd*difuso,1.0);
 //colorFrag = ka+kd*difuso+ks*specBlinnPhong;
 }`

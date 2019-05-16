@@ -1,9 +1,6 @@
 //Variables para los objetos
 var gl = null;
-var shaderProgramBLinnPhong  = null; //Shader program to use.
-var shaderProgramCookTorrance = null;
-var shaderProgramOrenNayar = null;
-var shaderProgramCookTorranceShirley = null;
+
 var parsedOBJ = null; //Archivos OBJ Traducidos para que los pueda leer webgl2
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
@@ -156,7 +153,7 @@ function onLoad() {
 		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
 	]));
 	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
-	obj_piso.setMaterial(getMaterialByName("Jade"));
+	obj_piso.setMaterial(getMaterialByName("Rock"));
 	obj_ball.setMaterial(getMaterialByName("Default"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
@@ -199,7 +196,8 @@ function onRender(now){
 	gl.useProgram(shaderProgram);
 
 	refreshCamera();
-
+	obj_ball.resetObjectMatrix();
+	transformBall();
 	//passLight(light);
 
 	//drawObject(obj_ferrari);
@@ -225,10 +223,6 @@ function onRender(now){
 
 function setObjects(){
 	/*Actualizo las transformaciones para cada uno de los objetos*/
-	let arr = ferrari.getObjects();
-	for(let i = 0; i<arr.length; i++){
-		arr[i].resetObjectMatrix();
-	}
 	transformFerrari();
 	transformBMW();
 	transformLexus();

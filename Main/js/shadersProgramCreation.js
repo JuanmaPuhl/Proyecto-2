@@ -1,3 +1,8 @@
+var shaderProgramBLinnPhong  = null; //Shader program to use.
+var shaderProgramCookTorrance = null;
+var shaderProgramOrenNayar = null;
+var shaderProgramCookTorranceShirley = null;
+
 
 function setShaderBlinnPhong(){
   shaderProgram = shaderProgramBLinnPhong;

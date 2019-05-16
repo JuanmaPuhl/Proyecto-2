@@ -13,7 +13,7 @@ uniform vec3 CoeficienteDifuso;
 uniform vec3 CoeficienteEspecular;
 
 uniform float coefEspec;
-
+uniform vec3 ia;
 
 uniform float rugosidad; // Se usa en las funciones de microfacetas
 uniform float F0;        //Se usa en las funciones de fresnel
@@ -141,7 +141,7 @@ void main()
 
     //float CookTorrenceBRDF = (TrRe)/(4.0*(NdotV * NdotL));
 
-    colorFrag= vec4((DifusoAshShi + SpecularAshiShi) * NdotL,1.0);
+    colorFrag= vec4(ia*(DifusoAshShi + SpecularAshiShi) * NdotL,1.0);
 	//colorFrag = kd*(Fres/3.141516)+ks*(Beckmann*GCT)/(dot(N,V)*dot(N,L));
 	//colorFrag = ka +kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/max(dot(N,V),0.0)*max(dot(N,L),0.0);
 }`

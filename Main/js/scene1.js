@@ -52,14 +52,16 @@ var materials = [];
 //OBJETOS
 var balls = [];
 var obj_axis;
-var obj_plano;
+var obj_piso;
+var obj_ball;
 //LUCES
 var light;
-var light_position = [0.0,5.0,1.0,1.0];
+var light_position = [0.0,2,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = 0.2;
-var ax = 0.4;
-var ay = 0.41;
+var light_angle = 0.0;
+var light_direction = [0.0,0.0,0.0];
+// var ax = 0.4;
+// var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -72,35 +74,22 @@ function onLoad() {
 	//Creacion de MATERIALES
 	crearMateriales();
 
-	//Creo las variables que voy a pasar a los shaders
-	shaderProgram = ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
-	let posLocation = gl.getAttribLocation(shaderProgram, 'vertexPos');
-	let vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
-	u_modelMatrix = gl.getUniformLocation(shaderProgram, 'modelMatrix');
-	u_viewMatrix = gl.getUniformLocation(shaderProgram, 'viewMatrix');
-	u_projMatrix = gl.getUniformLocation(shaderProgram, 'projMatrix');
-	u_ka = gl.getUniformLocation(shaderProgram, 'ka');
-	u_kd = gl.getUniformLocation(shaderProgram, 'kd');
-	u_ks = gl.getUniformLocation(shaderProgram, 'ks');
-	u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
-	u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
-	u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-	u_ia = gl.getUniformLocation(shaderProgram, 'ia');
-	u_id = gl.getUniformLocation(shaderProgram, 'id');
-	u_is = gl.getUniformLocation(shaderProgram, 'is');
-	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
-	u_ro = gl.getUniformLocation(shaderProgram, 'p');
-	u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
-	u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-	u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
-	//u_ax = gl.getUniformLocation(shaderProgram, 'ax');
-	//u_ay = gl.getUniformLocation(shaderProgram, 'ay');
+	createShaderPrograms();
+	setShaderCookTorrance();
 
-	obj_plano = new Object(parsedOBJ3);
-	obj_plano.setMaterial(getMaterialByName("Polished Gold"));
-	obj_plano.setVao(VAOHelper.create(obj_plano.getIndices(), [
-    new VertexAttributeInfo(obj_plano.getPositions(), posLocation, 3),
-    new VertexAttributeInfo(obj_plano.getNormals(), vertexNormal_location, 3)
+	obj_ball = new Object(parsedOBJ);
+	obj_ball.setVao(VAOHelper.create(obj_ball.getIndices(),[
+		new VertexAttributeInfo(obj_ball.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
+	]));
+	obj_ball.setMaterial(getMaterialByName("Default"));
+
+
+	obj_piso = new Object(parsedOBJ3);
+	obj_piso.setMaterial(getMaterialByName("Rock"));
+	obj_piso.setVao(VAOHelper.create(obj_piso.getIndices(), [
+    new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
+    new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
   ]));
 
   obj_axis = new Object(parsedOBJ2);
@@ -109,11 +98,12 @@ function onLoad() {
     new VertexAttributeInfo(obj_axis.getPositions(), posLocation, 3),
     new VertexAttributeInfo(obj_axis.getNormals(), vertexNormal_location, 3)
   ]));
+
 	for(let i = 0; i<6; i++){ //Pelotas
     let arr = [];
       for(let j=0; j<4; j++){
         arr.push(new Object(parsedOBJ));
-  			arr[j].setMaterial(getMaterialByIndex((i+j)%materials.length));
+  			arr[j].setMaterial(getMaterialByIndex(i));
   			arr[j].setVao(VAOHelper.create(arr[j].getIndices(), [
   				new VertexAttributeInfo(arr[j].getPositions(), posLocation, 3),
   				new VertexAttributeInfo(arr[j].getNormals(), vertexNormal_location, 3)
@@ -122,7 +112,8 @@ function onLoad() {
     balls.push(arr);
     arr = [];
 	}
-	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
+
+	light = new Light(light_position , light_intensity , light_angle, light_direction);//Creo la luz
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -137,8 +128,11 @@ function onLoad() {
 
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	//Dibujara los que esten mas cerca de la pantalla.
+	setObjects();
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
+
+
 
 /*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
 se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
@@ -149,49 +143,24 @@ function onRender(now){
 	then = now; //Actualizo el valor
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Reinicio Matrices*/
-	refreshFrame();
+
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(shaderProgram);
-	passLight(light);
-	passCamera();
+
+	refreshCamera();
 	for(let i = 0; i<balls.length; i++){
     let arr = balls[i];
     for(let j = 0; j<arr.length; j++){
-      arr[j].resetObjectMatrix();
-      let matrix = arr[j].getObjectMatrix();
-      let translationMatrix = mat4.create();
-      let scaleMatrix = mat4.create();
-      mat4.fromTranslation(translationMatrix,[-3 ,1.5,-12.5]);
-      mat4.multiply(matrix,translationMatrix,matrix);
-      translationMatrix = mat4.create();
-      mat4.fromScaling(scaleMatrix,[0.08,0.08,0.08]);
-      mat4.fromTranslation(translationMatrix,[2*j,0,5*i]);
-      mat4.multiply(matrix,translationMatrix,matrix);
-      mat4.multiply(matrix,scaleMatrix,matrix);
       drawObject(arr[j]);
     }
 	}
-
-/*TENGO QUE HACER ESTO O NO FUNCIONA LA REFLEXION EN EL PLANO. NO SE POR QUE!!!!!!*/
-	obj_plano.resetObjectMatrix();
-	let matrix = obj_plano.getObjectMatrix();
-	let translationMatrix = mat4.create();
-	let scaleMatrix = mat4.create();
-	mat4.fromScaling(scaleMatrix,[100.0,1.0,100.0]);
-	mat4.fromTranslation(translationMatrix,[light.getLightPosition()[0],-1.0,light.getLightPosition()[2]]);
-	//mat4.fromTranslation(translationMatrix,[0,-1,0]);
-	mat4.multiply(matrix,scaleMatrix,matrix);
-	mat4.multiply(matrix,translationMatrix,matrix);
-	drawObject(obj_plano);
+	transformBall();
+	drawObject(obj_ball);
+	drawObject(obj_piso);
   drawObject(obj_axis);
 	gl.useProgram(null);
 	requestAnimationFrame(onRender); //Continua el bucle
-}
-
-function refreshFrame(){
-	/*Actualizo las transformaciones para cada uno de los objetos*/
-	refreshCamera();
 }
 
 function refreshCamera(){
@@ -206,101 +175,6 @@ function refreshCamera(){
 	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
 }
 
-function passCamera(){
-	gl.uniformMatrix4fv(u_viewMatrix, false, viewMatrix);
-	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
-}
-
-function passLight(light){
-	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
-	let temperature = angle[1]/100;
-	let red;
-	let green;
-	let blue;
-	//Calculate red
-	if(temperature <= 66){
-		red = 1;
-	}
-	else{
-		red = temperature - 60;
-		red = (329.698727446 * Math.pow(red,-0.1332047592))/255;
-		if(red < 0)
-			red = 0;
-		if(red > 1)
-			red = 1;
-	}
-
-	//Calculate Green
-	if(temperature <= 66){
-		green = temperature;
-		green = (99.4708025861 * Math.log(green) - 161.1195681661)/255;
-		if(green < 0)
-			green = 0;
-		if(green > 1)
-			green = 1;
-	}
-	else{
-		green = temperature - 60;
-		green = (288.1221695283 * Math.pow(green,-0.0755148492))/255;
-		if(green < 0)
-			green = 0;
-		if(green > 1)
-			green = 1;
-	}
-
-
-	//Calculate blue
-	if(temperature >= 66)
-		blue = 1;
-	else{
-		if(temperature <= 19)
-			blue = 0;
-		else{
-			blue = temperature - 10;
-			blue = (138.5177312231 * Math.log(blue) - 305.0447927307)/255;
-			if(blue < 0)
-				blue = 0;
-			if(blue > 1)
-				blue = 1;
-		}
-	}
-	let intensity = [red,green,blue];
-	let intensity2 = [intensity,intensity,intensity];
-	light.setIntensity(intensity2);
-
-	gl.uniform4fv(u_posL, light.getLightPosition());
-	gl.uniform3fv(u_ia, light.getIntensity()[0]);
-	gl.uniform3fv(u_id, light.getIntensity()[1]);
-	gl.uniform3fv(u_is, light.getIntensity()[2]);
-	gl.uniform1f(u_limit, light.getAngle());
-	gl.uniform3fv(u_dirL, [0.0,-1.0,0.0]);
-}
-
-function drawObject(object){
-	let matrix = object.getObjectMatrix();
-	gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
-	let MV = mat4.create();
-	mat4.multiply(MV , viewMatrix , matrix);
-
-	gl.uniformMatrix4fv(u_MV, false, MV);
-	mat4.invert(MV,MV);
-	mat4.transpose(MV,MV);
-	gl.uniformMatrix4fv(u_normalMatrix, false, MV);
-	gl.uniform1f(u_ro,1.0);
-	gl.uniform1f(u_sigma,90.0);
-
-	let material = object.getMaterial();
-	/*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
-	gl.uniform4fv(u_ka,material.getKa());
-	gl.uniform4fv(u_kd,material.getKd());
-	gl.uniform4fv(u_ks,material.getKs());
-	gl.uniform1f(u_coefEspec,material.getShininess());
-	//gl.uniform1f(u_ax,ax);
-	//gl.uniform1f(u_ay,ay);
-	gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
-	gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
-	gl.bindVertexArray(null);
-}
 /*Funcion para refrescar los angulos de rotacion automatica*/
 function refreshAngles(deltaTime){
 	 // A partir del tiempo que pasó desde el ultimo frame (timeDelta), calculamos los cambios que tenemos que aplicar al cubo
@@ -326,10 +200,71 @@ function refreshAngles(deltaTime){
 	}
 }
 
+
+function setObjects(){
+	transformBalls();
+	transformPiso();
+}
+
+function translateToOrigin(object){
+	let matrix = object.getObjectMatrix();
+	let translationVector = [-object.getCenter()[0],-object.getCenter()[1],-object.getCenter()[2]];
+	let translationMatrix = mat4.create();
+	mat4.fromTranslation(translationMatrix,translationVector);
+	mat4.multiply(matrix,translationMatrix,matrix);
+}
+
+function scaleObject(object,scale){
+	let matrix = object.getObjectMatrix();
+	let scaleMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de escalado
+	mat4.fromScaling(scaleMatrix,scale);//Creo la matriz de escalado
+	mat4.multiply(matrix, scaleMatrix, matrix);//Aplico el escalado
+}
+
+function translateObject(object,translationVector){
+	let matrix = object.getObjectMatrix();
+	let translationMatrix = mat4.create();
+	mat4.fromTranslation(translationMatrix,translationVector);
+	mat4.multiply(matrix,translationMatrix,matrix);
+}
+
+function rotateObject(object,angle){
+	let matrix = object.getObjectMatrix();
+	let rotationMatrix = mat4.create();
+	mat4.fromYRotation(rotationMatrix,glMatrix.toRadian(angle));
+	mat4.multiply(matrix,rotationMatrix,matrix);
+}
+
+function transformBall(){
+	obj_ball.resetObjectMatrix();
+	translateToOrigin(obj_ball);
+	scaleObject(obj_ball,[0.1,0.1,0.1]);
+	translateObject(obj_ball,light.getLightPosition());
+}
+
+function transformBalls(){
+	for(let i = 0; i<balls.length; i++){
+    let arr = balls[i];
+    for(let j = 0; j<arr.length; j++){
+      arr[j].resetObjectMatrix();
+			translateObject(arr[j],[-3 ,1.5,-7.5]);
+			translateObject(arr[j],[2*j,0,3*i]);
+			scaleObject(arr[j],[0.2,0.2,0.2])
+    }
+	}
+}
+
+function transformPiso(){
+	translateToOrigin(obj_piso);
+	scaleObject(obj_piso,[1,1,1]);
+	scaleObject(obj_piso,[5,1,5]);
+	translateObject(obj_piso,[0,-	1.15,0]);
+}
+
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
 	//parsedOBJ = OBJParser.parseFile(teapot);
 	parsedOBJ = OBJParser.parseFile(ball);
   parsedOBJ2 = OBJParser.parseFile(axis);
-	parsedOBJ3 = OBJParser.parseFile(piso);
+	parsedOBJ3 = OBJParser.parseFile(caja);
 }
