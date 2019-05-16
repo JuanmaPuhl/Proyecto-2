@@ -33,11 +33,11 @@ void main(void){
     gl_Position = projectionMatrix  *MV* vec4(vertexPosition,1.0);
 
     vec3 vertex_pos_eye = vec3(MV*vec4(vertexPosition,1.0)); //posicion del vertice en coordenadas del ojo
-    vVE = normalize(-vertex_pos_eye);
+    vVE = -vertex_pos_eye;
     vec3 vertex_normal_eye = vec3(normalMatrix * vec4(vertexNormal,0.0)); //normal del vertice en coordenadas del ojo
-    vNE = normalize(vertex_normal_eye);
+    vNE = vertex_normal_eye;
     vec3 light_direction = vec3( posL - vec4(vertex_pos_eye,1.0)); //direccion de la luz al vertice
-    vLE = normalize(light_direction);
+    vLE = light_direction;
     //vSD = (modelViewMatrix*spot_direction).xyz;
 
 }

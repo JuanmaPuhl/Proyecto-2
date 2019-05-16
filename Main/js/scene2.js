@@ -155,7 +155,7 @@ function onLoad() {
 		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
 	]));
 	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
-	obj_piso.setMaterial(getMaterialByName("Default"));
+	obj_piso.setMaterial(getMaterialByName("Polished Bronze"));
 	obj_ball.setMaterial(getMaterialByName("Default"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
