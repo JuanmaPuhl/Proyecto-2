@@ -6,15 +6,16 @@ in vec3 vNE;
 in vec3 vLE;
 in vec3 vVE;
 out vec4 colorFrag;
-uniform vec4 ka;
+uniform vec3 ka;
 uniform float coefEspec;
-uniform vec4 kd;
-uniform vec4 ks;
+uniform vec3 kd;
+uniform vec3 ks;
 
 //uniform vec4 pd;
 //uniform vec4 ps;
 //uniform float ax;
 //uniform float ay;
+uniform float limit;
 uniform vec4 dirL;
 void main(){
     float PHI =3.141516;
@@ -24,15 +25,15 @@ void main(){
 
     //Calculo termino difuso + espec de Blinn-Phong
     vec3 direccion = normalize(vec3(dirL));
-    vec3 H = normalize(direccion+V);
-    float difuso = max(dot(direccion,N),0.0) ;
+    vec3 H = normalize(L+V);
+    float difuso = max(dot(L,N),0.0) ;
     float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);
-    if(dot(direccion,N)< 0.0){
+    if(dot(L,N)< 0.0){
         specBlinnPhong = 0.0;
     }
 
     float titaH = max(dot(N,H),0.0);
-    float titaI = max(dot(N,direccion),0.0);
+    float titaI = max(dot(N,L),0.0);
     //Variables de la atenuacion geometrica
 
     float Beckmann;
@@ -61,10 +62,10 @@ void main(){
     GCT=min(1.0,Ge);
     GCT=min(GCT,Gs);
     float componente1 = max(dot(N,V),0.0);
-    float componente2 = max(dot(N,direccion),0.0);
-    if(componente1*componente2>0.0)
-		colorFrag = ka +kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2);
-	else
-	colorFrag = ka+kd*difuso;
+    float componente2 = max(dot(N,L),0.0);
+    if(componente1*componente2!=0.0)
+		  colorFrag = vec4(ka +kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2),1.0);
+	  else
+	     colorFrag = vec4(ka+kd*difuso,1.0);
 //colorFrag = ka+kd*difuso+ks*specBlinnPhong;
 }`

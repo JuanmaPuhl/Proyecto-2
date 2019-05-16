@@ -2,6 +2,7 @@
 var gl = null;
 var shaderProgramBLinnPhong  = null; //Shader program to use.
 var shaderProgramCookTorrance = null;
+var shaderOrenNayar = null;
 var parsedOBJ = null; //Archivos OBJ Traducidos para que los pueda leer webgl2
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
@@ -94,7 +95,7 @@ function onLoad() {
 
 
 	createShaderPrograms();
-	setShaderBlinnPhong();
+	setShaderCookTorrance();
 
 	//Creo objetos
 	ferrari = new Car();
@@ -154,7 +155,7 @@ function onLoad() {
 		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
 	]));
 	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
-	obj_piso.setMaterial(getMaterialByName("Polished Bronze"));
+	obj_piso.setMaterial(getMaterialByName("Default"));
 	obj_ball.setMaterial(getMaterialByName("Default"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
@@ -227,10 +228,6 @@ function setObjects(){
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
 	}
-
-	//obj_bmw.resetObjectMatrix();
-	//obj_ford.resetObjectMatrix();
-	//obj_piso.resetObjectMatrix();
 	transformFerrari();
 	transformBMW();
 	transformLexus();
@@ -245,10 +242,6 @@ function createVAO(object){
 	]));
 }
 
-function refreshFrame(){
-
-	refreshCamera();
-}
 
 function refreshCamera(){
 	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
@@ -267,7 +260,7 @@ function passCamera(){
 	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
 }
 
-function passLight(light){
+function passLight1(light){
 	let intensity = colorLuz();
 	let intensity2 = [intensity,intensity,intensity];
 	light.setIntensity(intensity2);
@@ -286,20 +279,33 @@ function passLight(light){
 	gl.uniform4fv(u_dirL, spot_direction_eye);
 }
 
+function passLight2(light){
+	let intensity = colorLuz();
+	let intensity2 = [intensity,intensity,intensity];
+	light.setIntensity(intensity2);
+
+	//gl.uniform1f(u_ax,ax);
+	//gl.uniform1f(u_ay,ay);
+	gl.uniform4fv(u_posL, light.getLightPosition());
+	gl.uniform3fv(u_ia, light.getIntensity()[0]);
+	//gl.uniform3fv(u_id, light.getIntensity()[1]);
+	//gl.uniform3fv(u_is, light.getIntensity()[2]);
+	gl.uniform1f(u_limit, light.getAngle());
+	gl.uniform4fv(u_dirL, light.getDirection());
+}
+
+
+
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawBlinnPhong(object);
-    //console.log("Metal");
+    drawCookTorrance(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
 		drawBlinnPhong(object);
-    //console.log("Plastic");
 	}
 	if(object.getMaterial().getType()=="Glass"){
-    drawBlinnPhong(object);
-    //console.log("Glass");
+    drawCookTorrance(object);
 	}
-	//if(object.getMaterial().getType()==)
 }
 
 /*Funcion para refrescar los angulos de rotacion automatica*/

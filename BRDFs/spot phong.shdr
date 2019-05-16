@@ -1,0 +1,82 @@
+{
+  "vertexSource": "#version 300 es\n//Modelo de iluminacion de Blinn-Phong\n//Implementado en los fragmentos (sombreado de Phong)\nuniform mat4 modelViewMatrix;\nuniform mat4 modelViewProjMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform vec4 light_pos; // coordenadas del ojo\nuniform vec4 spot_direction; //coordenadas del ojo\n\nin vec3 vertexPosition;\nin vec3 vertexNormal;\n\nout vec3 vNE; //Normal del vertice en coordenadas del ojo\nout vec3 vLE; //Direccion de la luz al vertice en coordenadas del ojo\nout vec3 vVE; //Direccion del ojo al vertice en coordenadas del ojo\nout vec3 vSD; //Direccion del spot\n\n\nvoid main(){\n    gl_Position = projectionMatrix  *modelViewMatrix* vec4(vertexPosition,1);\n    \n    vec3 vertex_pos_eye = (modelViewMatrix*vec4(vertexPosition,1.0)).xyz; //posicion del vertice en coordenadas del ojo\n    vVE = -vertex_pos_eye;\n    vec3 vertex_normal_eye = (normalMatrix * vec4(vertexNormal,1.0)).xyz; //normal del vertice en coordenadas del ojo\n    vNE = vertex_normal_eye;\n    vec3 light_direction = (modelViewMatrix * light_pos).xyz - vertex_pos_eye; //direccion de la luz al vertice   \n    vLE = light_direction;\n    vSD = (modelViewMatrix*spot_direction).xyz;\n}",
+  "fragmentSource": "#version 300 es\n//Modelo de iluminacion de Blinn-Phong\n//Implementado en los fragmentos (sombreado de Phong)\nprecision highp float;\n\nuniform vec3 k_ambient; \nuniform vec3 k_diffuse;\nuniform vec3 k_spec;\nuniform float exp_spec;\nuniform vec3 light_intensity;\nuniform float spot_angle; //coseno del angulo\n\nin vec3 vNE; //Normal del vertice en coordenadas del ojo\nin vec3 vLE; //Direccion de la luz al vertice en coordenadas del ojo\nin vec3 vVE; //Direccion del ojo al vertice en coordenadas del ojo\nin vec3 vSD; //Direccion del spot\n\nout vec4 fragColor;\n \nvoid main()\n{\n    vec3 N = normalize(vNE);\n    vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    vec3 H = normalize(L+V);\n    vec3 S = normalize(vSD);\n    float diffuse = 0.0;\n    float specular = 0.0;\n    if(max(dot(S,-L),0.0) > spot_angle){\n        diffuse = max(dot(L,N),0.0);\n        specular = pow(max(dot(N,H),0.0),exp_spec);\n        if (dot(L,N) < 0.0){\n            specular = 0.0;\n        }\n    }\n    //float fac_att = pow(0.2*length(vLE),-1.0); //factor de atenuacion\n    float fac_att = 1.0;\n    \n    fragColor = vec4(k_ambient + light_intensity * fac_att * (k_diffuse * diffuse + k_spec * specular),1.0);\n\n}",
+  "model": "cube",
+  "uniforms": [
+    {
+      "name": "k_ambient",
+      "type": "vec3",
+      "value": [
+        0.10000000149011612,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "k_diffuse",
+      "type": "vec3",
+      "value": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "name": "k_spec",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "exp_spec",
+      "type": "float",
+      "value": 100
+    },
+    {
+      "name": "light_intensity",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "spot_angle",
+      "type": "float",
+      "value": 0.94
+    },
+    {
+      "name": "light_pos",
+      "type": "vec4",
+      "value": [
+        0,
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "spot_direction",
+      "type": "vec4",
+      "value": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    }
+  ],
+  "textureUnits": [
+    "blank",
+    "blank",
+    "blank",
+    "blank",
+    "blank",
+    "blank",
+    "blank"
+  ]
+}
