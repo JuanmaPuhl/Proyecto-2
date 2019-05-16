@@ -52,10 +52,10 @@ var obj_ball3;
 // var light2_direction = [0.0,-1.0,0.0];
 
 var light;
-var light_position = [0.0,2.0,0.0,1.0];
+var light_position = [0.0,5.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle = Math.cos(glMatrix.toRadian(30));
-var light_direction = [0.0,-1.0,0.0];
+var light_direction = [0.0,-1.0,0.0,0.0];
 // var ax = 0.4;
 // var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -123,7 +123,7 @@ function onLoad() {
     arr = [];
 	}
 
-	light = new Light(light_position , light_intensity , light_angle, light_direction);//Creo la luz
+light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
 	// light2 = new Light(light2_position , light2_intensity , light2_angle, light2_direction);//Creo la luz
 	// light3 = new Light(light3_position , light3_intensity , light3_angle, light3_direction);//Creo la luz
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo

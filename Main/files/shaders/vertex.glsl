@@ -38,6 +38,8 @@ void main(void){
     vNE = vertex_normal_eye;
     vec3 light_direction = vec3( posL - vec4(vertex_pos_eye,1.0)); //direccion de la luz al vertice
     vLE = light_direction;
+
+
     //vSD = (modelViewMatrix*spot_direction).xyz;
 
 }

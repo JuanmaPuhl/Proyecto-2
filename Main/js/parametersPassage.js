@@ -2,16 +2,16 @@
 
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawCookTorrance(object);
+    drawBlinnPhong(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
-		drawCookTorrance(object);
+		drawBlinnPhong(object);
 	}
 	if(object.getMaterial().getType()=="Glass"){
-    drawCookTorrance(object);
+    drawBlinnPhong(object);
 	}
   if(object.getMaterial().getType()=="Satin"){
-    drawCookTorrance(object);
+    drawBlinnPhong(object);
   }
 }
 

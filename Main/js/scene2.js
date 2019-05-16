@@ -67,7 +67,7 @@ function onLoad() {
 
 
 	createShaderPrograms();
-	setShaderCookTorrance();
+	setShaderBlinnPhong();
 
 	//Creo objetos
 	ferrari = new Car();
