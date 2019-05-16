@@ -30,6 +30,11 @@ function setShaderBlinnPhong(){
   u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
   u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
   u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
+
+  u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
+  u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
+  u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
+  u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
 }
 
 function setShaderCookTorrance(){

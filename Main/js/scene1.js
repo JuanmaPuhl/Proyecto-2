@@ -67,7 +67,7 @@ var light3;
 var light_position3 = [0.0,2.0,-1.0,1.0];
 var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_angle3 = Math.cos(glMatrix.toRadian(30));
-var light_direction3 = [0.0,-1.0,0.0,0.0];
+var light_direction3 = [1.0,1.0,1.0,0.0];
 // var ax = 0.4;
 // var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -135,10 +135,10 @@ function onLoad() {
     arr = [];
 	}
 
-light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
-light2 = new Light(light_position2 , light_intensity2 , light_angle,light_direction2);//Creo la luz
-	// light2 = new Light(light2_position , light2_intensity , light2_angle, light2_direction);//Creo la luz
-	// light3 = new Light(light3_position , light3_intensity , light3_angle, light3_direction);//Creo la luz
+	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
+	light2 = new Light(light_position2 , light_intensity2 , light_angle,light_direction2);//Creo la luz
+	light3 = new Light(light_position3 , light_intensity3 , light_angle,light_direction3);//Creo la luz
+
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
