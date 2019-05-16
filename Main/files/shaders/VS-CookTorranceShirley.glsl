@@ -1,4 +1,4 @@
-var VS_OrenNayar = `#version 300 es
+var VS_CookTorranceShirley = `#version 300 es
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
@@ -16,7 +16,7 @@ out vec3 vVE; //Vector de vista (al ojo)
 
 uniform vec4 posL; //Posicion luz
 void main(void){
-    //mat4 MV =  viewMatrix * modelMatrix;
+    // mat4 MV =  viewMatrix * modelMatrix;
     // gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
     //
     // vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));
@@ -28,6 +28,7 @@ void main(void){
     //
     // //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.
     // vVE= normalize(-posVE);
+
     gl_Position = projectionMatrix  *MV* vec4(vertexPosition,1.0);
 
     vec3 vertex_pos_eye = vec3(MV*vec4(vertexPosition,1.0)); //posicion del vertice en coordenadas del ojo
@@ -36,4 +37,5 @@ void main(void){
     vNE = vertex_normal_eye;
     vec3 light_direction = vec3( posL - vec4(vertex_pos_eye,1.0)); //direccion de la luz al vertice
     vLE = light_direction;
+
 }`

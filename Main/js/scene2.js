@@ -2,7 +2,8 @@
 var gl = null;
 var shaderProgramBLinnPhong  = null; //Shader program to use.
 var shaderProgramCookTorrance = null;
-var shaderOrenNayar = null;
+var shaderProgramOrenNayar = null;
+var shaderProgramCookTorranceShirley = null;
 var parsedOBJ = null; //Archivos OBJ Traducidos para que los pueda leer webgl2
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
@@ -111,7 +112,7 @@ function onLoad() {
 	}
 
 	bmw = new Car();
-	let bmw_colors = ["Polished Gold","Bronze","Glass"];
+	let bmw_colors = ["Silver","Caucho","Glass","Bronze","Scarlet"];
 	for(let i = 0 ; i<parsedOBJ_BMW.length; i++){
 		let objeto = new Object(parsedOBJ_BMW[i]);
 		createVAO(objeto);
@@ -123,7 +124,7 @@ function onLoad() {
 	}
 
 	lexus = new Car();
-	let lexus_colors = ["Brass"];
+	let lexus_colors = ["Polished Gold","Bronze","Caucho","Glass"];
 	for(let i = 0 ; i<parsedOBJ_Lexus.length; i++){
 		let objeto = new Object(parsedOBJ_Lexus[i]);
 		createVAO(objeto);
@@ -155,7 +156,7 @@ function onLoad() {
 		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
 	]));
 	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
-	obj_piso.setMaterial(getMaterialByName("Polished Bronze"));
+	obj_piso.setMaterial(getMaterialByName("Jade"));
 	obj_ball.setMaterial(getMaterialByName("Default"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
@@ -255,59 +256,6 @@ function refreshCamera(){
 	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
 }
 
-function passCamera(){
-	gl.uniformMatrix4fv(u_viewMatrix, false, viewMatrix);
-	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
-}
-
-function passLight1(light){
-	let intensity = colorLuz();
-	let intensity2 = [intensity,intensity,intensity];
-	light.setIntensity(intensity2);
-
-	//gl.uniform1f(u_ax,ax);
-	//gl.uniform1f(u_ay,ay);
-	let spot_position_eye = vec4.create();
-	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
-	gl.uniform4fv(u_posL, spot_position_eye);
-	gl.uniform3fv(u_ia, light.getIntensity()[0]);
-	//gl.uniform3fv(u_id, light.getIntensity()[1]);
-	//gl.uniform3fv(u_is, light.getIntensity()[2]);
-	gl.uniform1f(u_limit, light.getAngle());
-	let spot_direction_eye = vec4.create();
-	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
-	gl.uniform4fv(u_dirL, spot_direction_eye);
-}
-
-function passLight2(light){
-	let intensity = colorLuz();
-	let intensity2 = [intensity,intensity,intensity];
-	light.setIntensity(intensity2);
-
-	//gl.uniform1f(u_ax,ax);
-	//gl.uniform1f(u_ay,ay);
-	gl.uniform4fv(u_posL, light.getLightPosition());
-	gl.uniform3fv(u_ia, light.getIntensity()[0]);
-	//gl.uniform3fv(u_id, light.getIntensity()[1]);
-	//gl.uniform3fv(u_is, light.getIntensity()[2]);
-	gl.uniform1f(u_limit, light.getAngle());
-	gl.uniform4fv(u_dirL, light.getDirection());
-}
-
-
-
-function drawObject(object){
-	if(object.getMaterial().getType()=="Metal"){
-    drawCookTorrance(object);
-	}
-	if(object.getMaterial().getType()=="Plastic"){
-		drawBlinnPhong(object);
-	}
-	if(object.getMaterial().getType()=="Glass"){
-    drawCookTorrance(object);
-	}
-}
-
 /*Funcion para refrescar los angulos de rotacion automatica*/
 function refreshAngles(deltaTime){
 	 // A partir del tiempo que pasó desde el ultimo frame (timeDelta), calculamos los cambios que tenemos que aplicar al cubo
@@ -402,16 +350,22 @@ function transformBMW(){
 	}
 	scaleObject(arr[1],[0.3,0.3,0.3]);
 	translateObject(arr[1],[-(0.225),-0.03,0]);
+	rotateObject(arr[3],-90);
+	scaleObject(arr[3],[0.3,0.3,0.3]);
+	translateObject(arr[3],[-(0.137),-0.03,-0.0898]);
+	rotateObject(arr[4],-90);
+	scaleObject(arr[4],[0.3,0.3,0.3]);
+	translateObject(arr[4],[-(0.137),-0.03,-0.0898]);
 }
 
 function transformLexus(){
 	let arr = lexus.getObjects();
 	for(let i = 0; i<arr.length; i++){
-		translateToOrigin(arr[i]);
-		console.log(arr);
+		//translateToOrigin(arr[i]);
+		//console.log(arr);
 		scaleObject(arr[i],[0.06,0.06,0.06]);
 		rotateObject(arr[i],90);
-		translateObject(arr[i],[0,-0.05,1])
+		translateObject(arr[i],[0,-0.282,1])
 	}
 	// translateToOrigin(obj_ford);
 	// scaleObject(obj_ford,[0.06,0.06,0.06]);
@@ -437,9 +391,9 @@ function onModelLoad() {
 	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
 	//parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
 	parsedOBJ2 = OBJParser.parseFile(ball); //Cargo el satelite
-	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio)];
+	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos)];
 	//parsedOBJ3 = OBJParser.parseFile(lexus);
-	parsedOBJ_Lexus = [OBJParser.parseFile(lexus)];
+	parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
 	//parsedOBJ3 = OBJParser.parseFile(pg);
 	parsedOBJ4 = OBJParser.parseFile(caja);
 

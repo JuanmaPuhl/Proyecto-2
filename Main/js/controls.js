@@ -1,12 +1,15 @@
 function crearMateriales(){
 	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0));
-	materials.push(new Material("Metal","Jade",[0.135,0.2225,0.1575],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8));
+	materials.push(new Material("Plastic","Jade",[0.135,0.2225,0.1575],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8));
 	materials.push(new Material("Metal","Polished Gold",[0.24725,0.2245,0.0645],[0.34615,0.3143,0.0903],[0.797357,0.723991,0.208006],83.2));
 	materials.push(new Material("Plastic","Rock",[0.2,0.1,0.0],[0.095466,0.114934,0.102149],[0.0,0.0,0.0],2.0));
 	materials.push(new Material("Metal","Brass",[0.329412,.223529,0.027451],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974));
 	materials.push(new Material("Metal","Bronze",[0.2125,0.1275,0.054],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6));
 	materials.push(new Material("Metal","Polished Bronze",[0.25,0.148,0.06475],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8));
 	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2));
+	materials.push(new Material("Satin","Silver",[0.0,0.0,0.0],[0.5,0.6,0.5],[0.6,0.5,0.2],89.5));
+	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0));
+	materials.push(new Material("Metal","Scarlet",[0.15,0.0,0.0],[0.7,0.0,0.0],[0.5,0.0,0.0],100));
 }
 
 function getMaterialByName(name){

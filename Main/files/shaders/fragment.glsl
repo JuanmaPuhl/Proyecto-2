@@ -10,7 +10,8 @@ uniform vec3 ka;
 uniform float coefEspec;
 uniform vec3 kd;
 uniform vec3 ks;
-
+uniform float F0;
+uniform float rugosidad;
 //uniform vec4 pd;
 //uniform vec4 ps;
 //uniform float ax;
@@ -39,15 +40,15 @@ void main(){
     float Beckmann;
 
     //Termino de Fresnel
-    float F0 = 0.713;
+    //float F0 = 0.713;
     float Fres = pow(1.0 - titaH, 5.0);
     Fres *= (1.0 - F0);
 	  Fres += F0;
 
     //Termino de Beackmann
- 	float coeficienteA = 0.214187;
-    float divisor = pow(coeficienteA,2.0)* pow(titaH,4.0);
-    float exponente = -(pow(tan(acos(titaH))/coeficienteA,2.0));
+ 	//float coeficienteA = 0.214187;
+    float divisor = pow(rugosidad,2.0)* pow(titaH,4.0);
+    float exponente = -(pow(tan(acos(titaH))/rugosidad,2.0));
     exponente = exp(exponente);
     Beckmann = exponente/divisor;
 

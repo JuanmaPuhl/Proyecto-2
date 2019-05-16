@@ -6,13 +6,12 @@ in vec3 vNE;
 in vec3 vLE;
 in vec3 vVE;
 out vec4 colorFrag;
-uniform vec4 ka;
-uniform float coefEspec;
-uniform vec4 kd;
-uniform vec4 ks;
+uniform vec3 ka;
+uniform vec3 kd;
+uniform vec3 ks;
 uniform float p;
 uniform float sigma;
-uniform vec4 ia;
+uniform vec3 ia;
 
 void main(){
     vec3 N = normalize(vNE);
@@ -37,6 +36,6 @@ void main(){
     //f0N = (p/PI )* cosI*(A+B*max(0.0,phiDiff)*sin(a)*tan(b));
     float cosPHI = dot( normalize(V-N*(cosR)), normalize(L - N*(cosI)) );
 	  f0N = (p/PI)*cosI*(A+(B*max(0.0,cosPHI))*sin(a)*tan(b));
-  	colorFrag = ka + kd * ia* f0N ;
+  	colorFrag = vec4(ka,1.0) + vec4(kd * ia* f0N,1.0) ;
 
 }`
