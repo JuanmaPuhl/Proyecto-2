@@ -1,6 +1,7 @@
 //Variables para los objetos
 var gl = null;
-var shaderProgram  = null; //Shader program to use.
+var shaderProgramBLinnPhong  = null; //Shader program to use.
+var shaderProgramCookTorrance = null;
 var parsedOBJ = null; //Archivos OBJ Traducidos para que los pueda leer webgl2
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
@@ -67,11 +68,14 @@ var obj_ferrari;
 var obj_piso;
 var ferrari;
 var bmw;
+var lexus;
+var obj_ball;
 //LUCES
 var light;
-var light_position = [0.0,1.0,1.0,1.0];
+var light_position = [0.0,2.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = 0.7;
+var light_direction = [0.0,-1.0,0.0,0.0];
+var light_angle = Math.cos(glMatrix.toRadian(30));
 var ax = 0.4;
 var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -87,28 +91,10 @@ function onLoad() {
 	crearMateriales();
 
 	//Creo las variables que voy a pasar a los shaders
-	shaderProgram = ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
-	posLocation = gl.getAttribLocation(shaderProgram, 'vertexPosition');
-	vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
-	u_modelMatrix = gl.getUniformLocation(shaderProgram, 'modelMatrix');
-	u_viewMatrix = gl.getUniformLocation(shaderProgram, 'viewMatrix');
-	u_projMatrix = gl.getUniformLocation(shaderProgram, 'projectionMatrix');
-	u_ka = gl.getUniformLocation(shaderProgram, 'ka');
-	u_kd = gl.getUniformLocation(shaderProgram, 'kd');
-	u_ks = gl.getUniformLocation(shaderProgram, 'ks');
-	u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
-	u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
-	u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-	u_ia = gl.getUniformLocation(shaderProgram, 'ia');
-	//u_id = gl.getUniformLocation(shaderProgram, 'id');
-	//u_is = gl.getUniformLocation(shaderProgram, 'is');
-	u_MV = gl.getUniformLocation(shaderProgram, 'MV');
-	//u_ax = gl.getUniformLocation(shaderProgram, 'ax');
-	//u_ay = gl.getUniformLocation(shaderProgram, 'ay');
-	//u_ro = gl.getUniformLocation(shaderProgram, 'p');
-	//u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
-	u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-	u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
+
+
+	createShaderPrograms();
+	setShaderBlinnPhong();
 
 	//Creo objetos
 	ferrari = new Car();
@@ -125,7 +111,7 @@ function onLoad() {
 
 	bmw = new Car();
 	let bmw_colors = ["Polished Gold","Bronze","Glass"];
-	for(let i = 0 ; i<parsedOBJ_Ferrari.length; i++){
+	for(let i = 0 ; i<parsedOBJ_BMW.length; i++){
 		let objeto = new Object(parsedOBJ_BMW[i]);
 		createVAO(objeto);
 		if(i<bmw_colors.length)
@@ -135,23 +121,41 @@ function onLoad() {
 		bmw.addObject(objeto);
 	}
 
-	obj_ford = new Object(parsedOBJ3);
+	lexus = new Car();
+	let lexus_colors = ["Brass"];
+	for(let i = 0 ; i<parsedOBJ_Lexus.length; i++){
+		let objeto = new Object(parsedOBJ_Lexus[i]);
+		createVAO(objeto);
+		if(i<lexus_colors.length)
+			objeto.setMaterial(getMaterialByName(lexus_colors[i]));
+		else
+			objeto.setMaterial(getMaterialByName("Default"));
+		lexus.addObject(objeto);
+	}
+
+	//console.log(lexus.getObjects());
+	obj_ball = new Object(parsedOBJ2);
+	//obj_ford = new Object(parsedOBJ3);
 	obj_piso = new Object(parsedOBJ4);
 
-	light = new Light(light_position , light_intensity , light_angle);//Creo la luz
+	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
 
 
-	obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
-		new VertexAttributeInfo(obj_ford.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_ford.getNormals(), vertexNormal_location, 3)
-	]));
+	// obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
+	// 	new VertexAttributeInfo(obj_ford.getPositions(), posLocation, 3),
+	// 	new VertexAttributeInfo(obj_ford.getNormals(), vertexNormal_location, 3)
+	// ]));
 	obj_piso.setVao(VAOHelper.create(obj_piso.getIndices(),[
 		new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
 		new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
 	]));
-
-	obj_ford.setMaterial(getMaterialByName("Polished Gold"));
+	obj_ball.setVao(VAOHelper.create(obj_ball.getIndices(),[
+		new VertexAttributeInfo(obj_ball.getPositions(), posLocation, 3),
+		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
+	]));
+	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
 	obj_piso.setMaterial(getMaterialByName("Polished Bronze"));
+	obj_ball.setMaterial(getMaterialByName("Default"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -172,6 +176,8 @@ function onLoad() {
 
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	setObjects();
+	//console.log(ferrari.getObjects()[1].getVao());
+
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
@@ -191,8 +197,8 @@ function onRender(now){
 	gl.useProgram(shaderProgram);
 
 	refreshCamera();
-	passCamera();
-	passLight(light);
+
+	//passLight(light);
 
 	//drawObject(obj_ferrari);
 	let arr = ferrari.getObjects();
@@ -200,11 +206,15 @@ function onRender(now){
 		drawObject(arr[i]);
 	}
 	let arr2 = bmw.getObjects();
+	//console.log("" +arr2[1].getVao());
 	for(let i = 0; i<arr2.length; i++){
 		drawObject(arr2[i]);
 	}
-	//drawObject(obj_bmw);
-	drawObject(obj_ford);
+	let arr3 = lexus.getObjects();
+	for(let i = 0; i<arr3.length; i++){
+		drawObject(arr3[i]);
+	}
+	drawObject(obj_ball);
 	drawObject(obj_piso);
 
 	gl.useProgram(null);
@@ -219,12 +229,13 @@ function setObjects(){
 	}
 
 	//obj_bmw.resetObjectMatrix();
-	obj_ford.resetObjectMatrix();
+	//obj_ford.resetObjectMatrix();
 	//obj_piso.resetObjectMatrix();
 	transformFerrari();
 	transformBMW();
-	transformFord();
+	transformLexus();
 	transformPiso();
+	transformBall();
 }
 
 function createVAO(object){
@@ -257,46 +268,38 @@ function passCamera(){
 }
 
 function passLight(light){
-
 	let intensity = colorLuz();
 	let intensity2 = [intensity,intensity,intensity];
 	light.setIntensity(intensity2);
 
 	//gl.uniform1f(u_ax,ax);
 	//gl.uniform1f(u_ay,ay);
-	gl.uniform4fv(u_posL, light.getLightPosition());
+	let spot_position_eye = vec4.create();
+	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
+	gl.uniform4fv(u_posL, spot_position_eye);
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
 	//gl.uniform3fv(u_id, light.getIntensity()[1]);
 	//gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit, light.getAngle());
-	gl.uniform3fv(u_dirL, [0.0,-1.0,0.0]);
+	let spot_direction_eye = vec4.create();
+	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
+	gl.uniform4fv(u_dirL, spot_direction_eye);
 }
 
 function drawObject(object){
-	let matrix = object.getObjectMatrix();
-	gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
-	let MV = mat4.create();
-	mat4.multiply(MV , viewMatrix , matrix);
-
-
-
-	gl.uniformMatrix4fv(u_MV, false, MV);
-	mat4.invert(MV,MV);
-	mat4.transpose(MV,MV);
-	gl.uniformMatrix4fv(u_normalMatrix, false, MV);
-	//gl.uniform1f(u_ro,1.0);
-	//gl.uniform1f(u_sigma,90.0);
-	let material = object.getMaterial();
-	/*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
-	gl.uniform3fv(u_ka,material.getKa());
-	gl.uniform3fv(u_kd,material.getKd());
-	gl.uniform3fv(u_ks,material.getKs());
-	//console.log(material.getKs());
-	gl.uniform1f(u_coefEspec,material.getShininess());
-
-	gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
-	gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
-	gl.bindVertexArray(null);
+	if(object.getMaterial().getType()=="Metal"){
+    drawBlinnPhong(object);
+    //console.log("Metal");
+	}
+	if(object.getMaterial().getType()=="Plastic"){
+		drawBlinnPhong(object);
+    //console.log("Plastic");
+	}
+	if(object.getMaterial().getType()=="Glass"){
+    drawBlinnPhong(object);
+    //console.log("Glass");
+	}
+	//if(object.getMaterial().getType()==)
 }
 
 /*Funcion para refrescar los angulos de rotacion automatica*/
@@ -339,7 +342,6 @@ function refreshAngles(deltaTime){
 		}
 	}
 }
-
 
 function translateToOrigin(object){
 	let matrix = object.getObjectMatrix();
@@ -393,34 +395,46 @@ function transformBMW(){
 		translateObject(arr[i],[0.3,-0.15,0])
 	}
 	scaleObject(arr[1],[0.3,0.3,0.3]);
-
 	translateObject(arr[1],[-(0.225),-0.03,0]);
-
 }
 
-function transformFord(){
-	translateToOrigin(obj_ford);
-	scaleObject(obj_ford,[0.06,0.06,0.06]);
-	rotateObject(obj_ford,90);
-	translateObject(obj_ford,[0,-0.05,1]);
+function transformLexus(){
+	let arr = lexus.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		translateToOrigin(arr[i]);
+		console.log(arr);
+		scaleObject(arr[i],[0.06,0.06,0.06]);
+		rotateObject(arr[i],90);
+		translateObject(arr[i],[0,-0.05,1])
+	}
+	// translateToOrigin(obj_ford);
+	// scaleObject(obj_ford,[0.06,0.06,0.06]);
+	// rotateObject(obj_ford,90);
+	// translateObject(obj_ford,[0,-0.05,1]);
 }
 
 function transformPiso(){
-	//translateToOrigin(obj_piso);
-	//scaleObject(obj_piso,[1,1,1]);
-	translateObject(obj_piso,[0,-1.6,0]);
-	//translateObject(obj_piso,[light.getLightPosition()[0],0,light.getLightPosition()[2]]);
+	translateToOrigin(obj_piso);
+	scaleObject(obj_piso,[1,1,1]);
+	scaleObject(obj_piso,[5,1,5]);
+	translateObject(obj_piso,[0,-	1.15,0]);
 }
 
+function transformBall(){
+	translateToOrigin(obj_ball);
+	scaleObject(obj_ball,[0.1,0.1,0.1]);
+	translateObject(obj_ball,light.getLightPosition());
+}
 
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
 	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
-	parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
-	parsedOBJ2 = OBJParser.parseFile(bmw); //Cargo el satelite
+	//parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
+	parsedOBJ2 = OBJParser.parseFile(ball); //Cargo el satelite
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio)];
-	parsedOBJ3 = OBJParser.parseFile(lexus);
+	//parsedOBJ3 = OBJParser.parseFile(lexus);
+	parsedOBJ_Lexus = [OBJParser.parseFile(lexus)];
 	//parsedOBJ3 = OBJParser.parseFile(pg);
-	parsedOBJ4 = OBJParser.parseFile(objeto);
+	parsedOBJ4 = OBJParser.parseFile(caja);
 
 }

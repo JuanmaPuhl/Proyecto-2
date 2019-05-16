@@ -1,48 +1,70 @@
-// Fragment Shader source, asignado a una variable para usarlo en un tag <script>
-var fragmentShaderSource =`#version 300 es
+var fragmentShaderSource = `#version 300 es
+#define PI 3.1415926535897932384626433832795
 precision highp float;
-uniform mat4 viewMatrix;
+
 in vec3 vNE;
 in vec3 vLE;
 in vec3 vVE;
 out vec4 colorFrag;
-uniform vec3 ka;
+uniform vec4 ka;
 uniform float coefEspec;
-uniform vec3 kd;
-uniform vec3 ks;
-uniform vec3 dirL;
-uniform float limit;
+uniform vec4 kd;
+uniform vec4 ks;
+
+//uniform vec4 pd;
+//uniform vec4 ps;
+//uniform float ax;
+//uniform float ay;
+uniform vec4 dirL;
 void main(){
+    float PHI =3.141516;
     vec3 N = normalize(vNE);
     vec3 L = normalize(vLE);
     vec3 V = normalize(vVE);
-    vec3 H = normalize(L+V);
 
-    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(dirL,0.0));
-    vec3 D = normalize(lightDirection_EyeSpace);
-
-
-    float LdotN = max(dot(L,N),0.0);
-    float HdotV = max(dot(H,N),0.0);
-    float LdotD = max(dot(-L,D),0.0);
-    float angle = acos(LdotD);
-    bool insideSpot = angle<limit;
-
-    vec3 ambient = ka;
-    vec3 diffuse = vec3(0.0,0.0,0.0);
-    vec3 specular = vec3(0.0,0.0,0.0);
-    if(insideSpot){
-        diffuse = kd * LdotN;
-        specular = ks * pow(HdotV,coefEspec);
-    }
-    colorFrag =vec4( ambient+diffuse + specular,1.0);
     //Calculo termino difuso + espec de Blinn-Phong
-    //float difuso = max(dot(L,N),0.0) ;
-    //float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);
-    //if(dot(L,N)< 0.0){
-    //    specBlinnPhong = 0.0;
-    //}
-  	//colorFrag = ka + kd*difuso + ks*specBlinnPhong;
+    vec3 direccion = normalize(vec3(dirL));
+    vec3 H = normalize(direccion+V);
+    float difuso = max(dot(direccion,N),0.0) ;
+    float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);
+    if(dot(direccion,N)< 0.0){
+        specBlinnPhong = 0.0;
+    }
 
-}
-`
+    float titaH = max(dot(N,H),0.0);
+    float titaI = max(dot(N,direccion),0.0);
+    //Variables de la atenuacion geometrica
+
+    float Beckmann;
+
+    //Termino de Fresnel
+    float F0 = 0.713;
+    float Fres = pow(1.0 - titaH, 5.0);
+    Fres *= (1.0 - F0);
+	  Fres += F0;
+
+    //Termino de Beackmann
+ 	float coeficienteA = 0.214187;
+    float divisor = pow(coeficienteA,2.0)* pow(titaH,4.0);
+    float exponente = -(pow(tan(acos(titaH))/coeficienteA,2.0));
+    exponente = exp(exponente);
+    Beckmann = exponente/divisor;
+
+    //Variables de la atenuacion geometrica
+ 	float GCT;
+    float Ge;
+    float Gs;
+    float titaV = max(dot(V,H),0.0);
+    Ge = (2.0*titaH*titaV)/(titaV);
+    Gs = (2.0*titaH*titaI)/(titaV);
+
+    GCT=min(1.0,Ge);
+    GCT=min(GCT,Gs);
+    float componente1 = max(dot(N,V),0.0);
+    float componente2 = max(dot(N,direccion),0.0);
+    if(componente1*componente2>0.0)
+		colorFrag = ka +kd*difuso +ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2);
+	else
+	colorFrag = ka+kd*difuso;
+//colorFrag = ka+kd*difuso+ks*specBlinnPhong;
+}`

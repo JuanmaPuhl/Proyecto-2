@@ -1,6 +1,7 @@
 class Material{
 
-  constructor(name,ka,kd,ks,shininess){
+  constructor(type,name,ka,kd,ks,shininess){
+    this.type = type;
     this.name = name;
     this.ka = ka;
     this.kd = kd;
@@ -26,5 +27,9 @@ class Material{
 
   getShininess(){
     return this.shininess;
+  }
+
+  getType(){
+    return this.type;
   }
 }

@@ -5,7 +5,7 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 normalMatrix;
-uniform mat4 MV ;
+uniform mat4 MV;
 
 
 in vec3 vertexPosition;
@@ -17,11 +17,11 @@ out vec3 vVE; //Vector de vista (al ojo)
 
 uniform vec4 posL; //Posicion luz
 void main(void){
-
+    //mat4 MV =  viewMatrix * modelMatrix;
     gl_Position = projectionMatrix * MV * vec4(vertexPosition, 1.0);
-    vec3 lightPosition_Eyespace = vec3(viewMatrix*posL);
+
     vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));
-    vLE = normalize(vec3(lightPosition_Eyespace-posVE));
+    vLE = normalize(vec3(posL-vec4(posVE,1.0)));
 
     mat4 MN = normalMatrix;
     //Transformar normal del espacio objeto al ojo
@@ -29,6 +29,8 @@ void main(void){
 
     //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.
     vVE= normalize(-posVE);
+
+
 
 }
 `
