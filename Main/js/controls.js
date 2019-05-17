@@ -176,6 +176,52 @@ function setNewLightPosition(){
 	let valueZ = parseFloat(document.getElementById("textInputZ").value);
 	light.setLightPosition([valueX,valueY,valueZ,1.0]);
 }
+function setNewLightPosition2(){
+	let valueX = parseFloat(document.getElementById("textInputX2").value);
+	let valueY = parseFloat(document.getElementById("textInputY2").value);
+	let valueZ = parseFloat(document.getElementById("textInputZ2").value);
+	light2.setLightPosition([valueX,valueY,valueZ,1.0]);
+}
+function setNewLightPosition3(){
+	let valueX = parseFloat(document.getElementById("textInputX3").value);
+	let valueY = parseFloat(document.getElementById("textInputY3").value);
+	let valueZ = parseFloat(document.getElementById("textInputZ3").value);
+	light3.setDirection([valueX,valueY,valueZ,1.0]);
+}
+
+
+function activarSpot(){
+	if(light.isEnabled()){
+		console.log("Apago");
+		light.disable();
+	}
+	else {
+		console.log("Prendo");
+		light.enable();
+	}
+}
+
+
+function activarPuntual(){
+	if(light2.isEnabled()){
+		console.log("Apago");
+		light2.disable();
+	}
+	else {
+		console.log("Prendo");
+		light2.enable();
+	}
+}
+function activarDireccional(){
+	if(light3.isEnabled()){
+		console.log("Apago");
+		light3.disable();
+	}
+	else {
+		console.log("Prendo");
+		light3.enable();
+	}
+}
 
 /*Funcion usada para animar*/
 /*Funcionamiento: Se pasa al metodo un indice, el cual indica que boton se ha pulsado
