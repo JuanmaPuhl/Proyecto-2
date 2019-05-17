@@ -24,7 +24,7 @@ body{
 
 #controlDiv{
 	width : 525px;
-	height : 875px;
+	height : auto;
 	background-color : #222831;
 	margin-right : 100px;
 	float : right;
