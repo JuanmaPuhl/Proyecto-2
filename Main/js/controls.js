@@ -314,7 +314,7 @@ function resetScene(){
 		//El 6 esta afuera porque es un caso especial.Corresponde a la rotacion de la camara automatica a la derecha
 		//animated[6]=false; //Seteo todas las animaciones en falso
 		//rotationAngle[6]=slider[5].defaultValue; //Seteo los valores de los angulos a los iniciales de cada slider
-		for(let x=1; x<5; x++){
+		for(let x=2; x<5; x++){
 			animated[x]=false;
 			rotationAngle[x]=slider[x].defaultValue;
 			angle[x]=slider[x].defaultValue;
@@ -326,6 +326,21 @@ function resetScene(){
 		angle[2]= 91-slider[2].defaultValue;
 		changed=false;//Marco que no hay ningun cambio
 		updateTextInput(2,slider[2].defaultValue);
+
+		angle[10] = document.getElementById("sliderColor1").defaultValue;
+		angle[11] = document.getElementById("sliderColor2").defaultValue;
+		angle[12] = document.getElementById("sliderColor3").defaultValue;
+
+		document.getElementById("sliderColor1").value=angle[10];
+		document.getElementById("sliderColor2").value=angle[11];
+		document.getElementById("sliderColor3").value=angle[12];
+
+		document.getElementById("textInputSpot").value=angle[10];
+		document.getElementById("textInputPuntual").value=angle[11];
+		document.getElementById("textInputDireccional").value=angle[12];
+
+
+
 	}
 	console.log("RESET");//Escribo un RESET para avisar que hizo algo
 }

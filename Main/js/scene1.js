@@ -4,7 +4,8 @@ var shaderProgram  = null; //Shader program to use.
 var parsedOBJ = null;
 var parsedOBJ2 = null;
 var parsedOBJ3 = null;
-
+var parsedOBJ10 = null;
+var parsedOBJ11 = null;
 //Uniform values.
 var viewMatrix = mat4.create();
 var projMatrix = mat4.create();
@@ -84,7 +85,7 @@ function onLoad() {
 	createShaderPrograms();
 	setShaderBlinnPhong();
 
-	obj_ball = new Object(parsedOBJ);
+	obj_ball = new Object(parsedOBJ10);
 	obj_ball.setVao(VAOHelper.create(obj_ball.getIndices(),[
 		new VertexAttributeInfo(obj_ball.getPositions(), posLocation, 3),
 		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
@@ -98,7 +99,7 @@ function onLoad() {
 	]));
 	obj_ball2.setMaterial(getMaterialByName("Default"));
 
-	obj_ball3 = new Object(parsedOBJ);
+	obj_ball3 = new Object(parsedOBJ11);
 	obj_ball3.setVao(VAOHelper.create(obj_ball3.getIndices(),[
 		new VertexAttributeInfo(obj_ball3.getPositions(), posLocation, 3),
 		new VertexAttributeInfo(obj_ball3.getNormals(), vertexNormal_location, 3)
@@ -259,6 +260,12 @@ function rotateObject(object,angle){
 	mat4.fromYRotation(rotationMatrix,glMatrix.toRadian(angle));
 	mat4.multiply(matrix,rotationMatrix,matrix);
 }
+function rotateObjectZ(object,angle){
+	let matrix = object.getObjectMatrix();
+	let rotationMatrix = mat4.create();
+	mat4.fromZRotation(rotationMatrix,glMatrix.toRadian(angle));
+	mat4.multiply(matrix,rotationMatrix,matrix);
+}
 
 function transformBall(){
 	obj_ball.resetObjectMatrix();
@@ -282,12 +289,29 @@ function transformBall(){
 
 	obj_ball3.resetObjectMatrix();
 	translateToOrigin(obj_ball3);
-	scaleObject(obj_ball3,[0.1,0.1,0.1]);
+	scaleObject(obj_ball3,[0.03,0.03,0.03]);
+	let matrix = mat4.create();
+
+	let matrizObjeto = obj_ball3.getObjectMatrix();
+	//mat4.targetTo(matrix,camaraEsferica.getPosition(),[light3.getDirection()[0],light3.getDirection()[1],light3.getDirection()[2]],[0,1,0]);
+	let direccion = light3.getDirection();
+	if(direccion[0]==0 && direccion[2]==0){
+		if(direccion[1]>0){
+			rotateObjectZ(obj_ball3,-90);
+		}
+		if(direccion[1]<0){
+			rotateObjectZ(obj_ball3,90);
+		}
+	}else{
+	mat4.targetTo(matrix, [0,0,0], [-direccion[2],light3.getDirection()[1],-direccion[0]],[0,1,0]);
+	mat4.multiply(matrizObjeto,matrix,matrizObjeto);
+}
 	if(light3.isEnabled())
 		translateObject(obj_ball3,light3.getLightPosition());
 	else {
 		translateObject(obj_ball3,0.0,100.0,0.0);
 	}
+
 
 }
 
@@ -307,7 +331,7 @@ function transformPiso(){
 	translateToOrigin(obj_piso);
 	scaleObject(obj_piso,[1,1,1]);
 	scaleObject(obj_piso,[5,1,5]);
-	translateObject(obj_piso,[0,-	1.15,0]);
+	translateObject(obj_piso,[0,-	0.9,0]);
 }
 
 /*Funcion para cargar los objetos*/
@@ -316,4 +340,6 @@ function onModelLoad() {
 	parsedOBJ = OBJParser.parseFile(ball);
   parsedOBJ2 = OBJParser.parseFile(axis);
 	parsedOBJ3 = OBJParser.parseFile(caja);
+	parsedOBJ10 = OBJParser.parseFile(cone);
+	parsedOBJ11 = OBJParser.parseFile(arrow);
 }

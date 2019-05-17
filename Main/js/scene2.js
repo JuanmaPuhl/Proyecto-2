@@ -124,8 +124,8 @@ function onLoad() {
 
 	//console.log(lexus.getObjects());
 	obj_ball = new Object(parsedOBJ2);
-	obj_ball2 = new Object(parsedOBJ2);
-	obj_ball3 = new Object(parsedOBJ2);
+	obj_ball2 = new Object(parsedOBJ3);
+	obj_ball3 = new Object(parsedOBJ5);
 	//obj_ford = new Object(parsedOBJ3);
 	obj_piso = new Object(parsedOBJ4);
 
@@ -318,6 +318,14 @@ function rotateObject(object,angle){
 	mat4.multiply(matrix,rotationMatrix,matrix);
 }
 
+
+function rotateObjectZ(object,angle){
+	let matrix = object.getObjectMatrix();
+	let rotationMatrix = mat4.create();
+	mat4.fromZRotation(rotationMatrix,glMatrix.toRadian(angle));
+	mat4.multiply(matrix,rotationMatrix,matrix);
+}
+
 /*Funcion para escalar el planeta*/
 function transformFerrari(){
 	let arr = ferrari.getObjects();
@@ -395,7 +403,23 @@ function transformPiso(){
 
 		obj_ball3.resetObjectMatrix();
 		translateToOrigin(obj_ball3);
-		scaleObject(obj_ball3,[0.1,0.1,0.1]);
+		scaleObject(obj_ball3,[0.03,0.03,0.03]);
+		let matrix = mat4.create();
+
+		let matrizObjeto = obj_ball3.getObjectMatrix();
+		//mat4.targetTo(matrix,camaraEsferica.getPosition(),[light3.getDirection()[0],light3.getDirection()[1],light3.getDirection()[2]],[0,1,0]);
+		let direccion = light3.getDirection();
+		if(direccion[0]==0 && direccion[2]==0){
+			if(direccion[1]>0){
+				rotateObjectZ(obj_ball3,-90);
+			}
+			if(direccion[1]<0){
+				rotateObjectZ(obj_ball3,90);
+			}
+		}else{
+		mat4.targetTo(matrix, [0,0,0], [-direccion[2],light3.getDirection()[1],-direccion[0]],[0,1,0]);
+		mat4.multiply(matrizObjeto,matrix,matrizObjeto);
+	}
 		if(light3.isEnabled())
 			translateObject(obj_ball3,light3.getLightPosition());
 		else {
@@ -409,11 +433,13 @@ function transformPiso(){
 function onModelLoad() {
 	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
 	//parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
-	parsedOBJ2 = OBJParser.parseFile(ball); //Cargo el satelite
+	parsedOBJ2 = OBJParser.parseFile(cone); //Cargo el satelite
+	parsedOBJ3 = OBJParser.parseFile(ball);
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos)];
 	//parsedOBJ3 = OBJParser.parseFile(lexus);
 	parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
 	//parsedOBJ3 = OBJParser.parseFile(pg);
 	parsedOBJ4 = OBJParser.parseFile(caja);
+	parsedOBJ5 = OBJParser.parseFile(arrow);
 
 }
