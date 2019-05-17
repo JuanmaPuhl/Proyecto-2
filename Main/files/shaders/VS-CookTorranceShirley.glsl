@@ -11,7 +11,7 @@ in vec3 vertexPosition;
 in vec3 vertexNormal;
 
 out vec3 vNE; //Vector normal en espacio ojo
-out vec3 vLE; //Vector de direccion de luz
+//out vec3 vLE; //Vector de direccion de luz
 out vec3 vVE; //Vector de vista (al ojo)
 
 uniform vec4 posL; //Posicion luz
@@ -35,7 +35,7 @@ void main(void){
     vVE = -vertex_pos_eye;
     vec3 vertex_normal_eye = vec3(normalMatrix * vec4(vertexNormal,0.0)); //normal del vertice en coordenadas del ojo
     vNE = vertex_normal_eye;
-    vec3 light_direction = vec3( posL - vec4(vertex_pos_eye,1.0)); //direccion de la luz al vertice
-    vLE = light_direction;
+    // vec3 light_direction = vec3( posL - vec4(vertex_pos_eye,1.0)); //direccion de la luz al vertice
+    // vLE = light_direction;
 
 }`

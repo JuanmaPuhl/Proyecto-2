@@ -2,16 +2,16 @@
 
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawOrenNayar(object);
+    drawCookTorranceShirley(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
-		drawOrenNayar(object);
+		drawCookTorranceShirley(object);
 	}
 	if(object.getMaterial().getType()=="Glass"){
-    drawOrenNayar(object);
+    drawCookTorranceShirley(object);
 	}
   if(object.getMaterial().getType()=="Satin"){
-    drawOrenNayar(object);
+    drawCookTorranceShirley(object);
   }
 }
 
@@ -174,7 +174,10 @@ function drawCookTorranceShirley(object){
   setShaderCookTorranceShirley();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
+
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();
