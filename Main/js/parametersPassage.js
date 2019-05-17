@@ -2,13 +2,13 @@
 
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawCookTorranceShirley(object);
+    drawCookTorrance(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
-		drawCookTorranceShirley(object);
+		drawOrenNayar(object);
 	}
 	if(object.getMaterial().getType()=="Glass"){
-    drawCookTorranceShirley(object);
+    drawCookTorrance(object);
 	}
   if(object.getMaterial().getType()=="Satin"){
     drawCookTorranceShirley(object);

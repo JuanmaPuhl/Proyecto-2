@@ -49,6 +49,19 @@ var light_position = [0.0,2.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_direction = [0.0,-1.0,0.0,0.0];
 var light_angle = Math.cos(glMatrix.toRadian(30));
+
+var light2;
+var light_position2 = [0.0,2.0,0.0,1.0];
+var light_intensity2 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+var light_direction2 = [0.0,-1.0,0.0,0.0];
+var light_angle2 = Math.cos(glMatrix.toRadian(30));
+
+var light3;
+var light_position3 = [0.0,2.0,0.0,1.0];
+var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+var light_direction3 = [0.0,-1.0,0.0,0.0];
+var light_angle3 = Math.cos(glMatrix.toRadian(30));
+
 var ax = 0.4;
 var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -112,6 +125,8 @@ function onLoad() {
 	obj_piso = new Object(parsedOBJ4);
 
 	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
+	light2 = new Light(light_position2 , light_intensity2 , light_angle2,light_direction2);//Creo la luz
+	light3 = new Light(light_position3 , light_intensity3 , light_angle3,light_direction3);//Creo la luz
 
 
 	// obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
