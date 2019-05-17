@@ -37,9 +37,27 @@ function getMaterialByIndex(index){
 	return materials[index];
 }
 
-function colorLuz(){
+function colorLuz(num){
 	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
-	let temperature = angle[1]/100;
+	let temperature;
+	if(num==1){
+		temperature = angle[10]/100;
+		//console.log(temperature);
+	}
+	else {
+		if(num==2){
+			temperature = angle[11]/100;
+			//console.log(temperature);
+		}
+			else {
+				if(num==3){
+					temperature = angle[12]/100;
+					//console.log(temperature);
+				}
+			}
+
+	}
+
 	let red;
 	let green;
 	let blue;
@@ -97,13 +115,44 @@ function colorLuz(){
 
 /*Funcion para cargar los sliders de la pagina*/
 function cargarSliders(){
-	for(let i=1; i<5; i++){
+	for(let i=2; i<5; i++){
 		slider[i]=document.getElementById("slider"+(i));//Guardo el slider
 		angle[i]=parseFloat(slider[i].defaultValue);//Actualizo el valor del angulo asociado al slider
 		updateTextInput(i,slider[i].value);//Actualizo el valor del campo de texto asociado al slider
 	}
 	angle[2] = 91-slider[2].defaultValue; //Este es el angulo del slider del zoom
+	angle[10] = parseFloat(document.getElementById("sliderColor1").value);
+	angle[11] = parseFloat(document.getElementById("sliderColor2").value);
+	angle[12] = parseFloat(document.getElementById("sliderColor3").value);
+
 	//Debo cargarlo asi para que cuando aumente se acerque, y cuando disminuye se aleje
+}
+
+function onSliderLuzSpot(slider){
+	angle[10] = parseFloat(slider.value);
+	changed=true;
+	document.getElementById("textInputSpot").value=slider.value;
+}
+function setNewValueSpot(value){
+	document.getElementById("sliderColor1").value=parseFloat(value);
+}
+
+function onSliderLuzPuntual(slider){
+	angle[11] = parseFloat(slider.value);
+	changed=true;
+	document.getElementById("textInputPuntual").value=slider.value;
+}
+function setNewValuePuntual(value){
+	document.getElementById("sliderColor2").value=parseFloat(value);
+}
+
+function onSliderLuzDireccional(slider){
+	angle[12] = parseFloat(slider.value);
+	changed=true;
+	document.getElementById("textInputDireccional").value=slider.value;
+}
+function setNewValuePuntual(value){
+	document.getElementById("sliderColor3").value=parseFloat(value);
 }
 
 
@@ -305,17 +354,6 @@ function launchFullScreen(element) {
 					document.webkitCancelFullScreen();
 	 fullScreen=false; //Ya no lo esta
 	}
-}
-function revisarMenus(){
-	let menu1 = document.getElementById("select1");
-	let menu2 = document.getElementById("select2");
-	let menu3 = document.getElementById("select3");
-	console.log(menu1);
-
-	console.log(menu1.value);
-	// console.log(menu2.options[menu2.selectedIndex].value);
-	// console.log(menu3.options[menu3.selectedIndex].value);
-
 }
 
 function cambiarMaterial1(value){

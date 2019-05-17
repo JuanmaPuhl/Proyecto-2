@@ -20,7 +20,7 @@ function passCamera(){
 	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
 }
 function passLight1(light){
-	let intensity = colorLuz();
+	let intensity = colorLuz(1);
 	let intensity2 = [intensity,intensity,intensity];
 	light.setIntensity(intensity2);
 	//gl.uniform1f(u_ax,ax);
@@ -38,7 +38,7 @@ function passLight1(light){
 }
 
 function passLight2(light){
-	let intensity = colorLuz();
+	let intensity = colorLuz(2);
 	let intensity2 = [intensity,intensity,intensity];
 	light.setIntensity(intensity2);
 	//gl.uniform1f(u_ax,ax);
@@ -56,7 +56,7 @@ function passLight2(light){
 }
 
 function passLight3(light){
-	let intensity = colorLuz();
+	let intensity = colorLuz(3);
 	let intensity2 = [intensity,intensity,intensity];
 	light.setIntensity(intensity2);
 	//gl.uniform1f(u_ax,ax);

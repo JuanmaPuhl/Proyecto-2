@@ -167,11 +167,10 @@ function onLoad() {
 	let near = 0.1;//Establezco la distancia minima que renderizare
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
-
+	console.log(angle[10]);
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	setObjects();
 	//console.log(ferrari.getObjects()[1].getVao());
-	revisarMenus();
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
