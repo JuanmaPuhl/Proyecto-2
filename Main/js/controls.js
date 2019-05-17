@@ -7,7 +7,7 @@ function crearMateriales(){
 	materials.push(new Material("Metal","Polished Bronze",[0.25,0.148,0.06475],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8,0.2,0.3));
 	materials.push(new Material("Metal","Brass",[0.329412,.223529,0.027451],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974,0.2,0.05));
 	materials.push(new Material("Metal","Bronze",[0.2125,0.1275,0.054],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6,0.09,0.1));
-	materials.push(new Material("Plastic","CACA",[0.0,0.0,0.0],[1.0,0.5,0.0],[0.0,0.0,0.0],0.0,0.09,0.1));
+	//materials.push(new Material("Plastic","CACA",[0.0,0.0,0.0],[1.0,0.5,0.0],[0.0,0.0,0.0],0.0,0.09,0.1));
 	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2,0.2,0.05));
 	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
 	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0,0.2,0.05));
@@ -305,4 +305,28 @@ function launchFullScreen(element) {
 					document.webkitCancelFullScreen();
 	 fullScreen=false; //Ya no lo esta
 	}
+}
+function revisarMenus(){
+	let menu1 = document.getElementById("select1");
+	let menu2 = document.getElementById("select2");
+	let menu3 = document.getElementById("select3");
+	console.log(menu1);
+
+	console.log(menu1.value);
+	// console.log(menu2.options[menu2.selectedIndex].value);
+	// console.log(menu3.options[menu3.selectedIndex].value);
+
+}
+
+function cambiarMaterial1(value){
+	let material= getMaterialByIndex(parseFloat(value)-1);
+	lexus.getObjects()[0].setMaterial(material);
+}
+function cambiarMaterial2(value){
+	let material= getMaterialByIndex(parseFloat(value)-1);
+	bmw.getObjects()[0].setMaterial(material);
+}
+function cambiarMaterial3(value){
+	let material= getMaterialByIndex(parseFloat(value)-1);
+	ferrari.getObjects()[0].setMaterial(material);
 }

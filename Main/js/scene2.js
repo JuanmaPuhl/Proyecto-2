@@ -171,7 +171,7 @@ function onLoad() {
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	setObjects();
 	//console.log(ferrari.getObjects()[1].getVao());
-
+	revisarMenus();
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
@@ -185,7 +185,7 @@ function onRender(now){
 	then = now; //Actualizo el valor
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Reinicio Matrices*/
-
+	//revisarMenus();
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(shaderProgram);
