@@ -180,8 +180,8 @@ function onRender(now){
 	}
 	transformBall();
 	drawObject(obj_ball);
-	//drawObject(obj_ball2);
-	//drawObject(obj_ball3);
+	drawObject(obj_ball2);
+	drawObject(obj_ball3);
 	drawObject(obj_piso);
   //drawObject(obj_axis);
 	gl.useProgram(null);
@@ -264,17 +264,30 @@ function transformBall(){
 	obj_ball.resetObjectMatrix();
 	translateToOrigin(obj_ball);
 	scaleObject(obj_ball,[0.1,0.1,0.1]);
-	translateObject(obj_ball,light.getLightPosition());
+	if(light.isEnabled()){
+		translateObject(obj_ball,light.getLightPosition());
+	}
+	else {
+		translateObject(obj_ball,0.0,100.0,0.0);
+	}
 
-	// obj_ball2.resetObjectMatrix();
-	// translateToOrigin(obj_ball2);
-	// scaleObject(obj_ball2,[0.1,0.1,0.1]);
-	// translateObject(obj_ball2,light2.getLightPosition());
-	//
-	// obj_ball3.resetObjectMatrix();
-	// translateToOrigin(obj_ball3);
-	// scaleObject(obj_ball3,[0.1,0.1,0.1]);
-	// translateObject(obj_ball3,light3.getLightPosition());
+	obj_ball2.resetObjectMatrix();
+	translateToOrigin(obj_ball2);
+	scaleObject(obj_ball2,[0.1,0.1,0.1]);
+	if(light2.isEnabled())
+		translateObject(obj_ball2,light2.getLightPosition());
+	else {
+		translateObject(obj_ball2,0.0,100.0,0.0);
+	}
+
+	obj_ball3.resetObjectMatrix();
+	translateToOrigin(obj_ball3);
+	scaleObject(obj_ball3,[0.1,0.1,0.1]);
+	if(light3.isEnabled())
+		translateObject(obj_ball3,light3.getLightPosition());
+	else {
+		translateObject(obj_ball3,0.0,100.0,0.0);
+	}
 
 }
 

@@ -9,6 +9,7 @@ class Light{
         this.intensity = intensity;
         this.angle = angle;
         this.direction = direction;
+        this.enabled = true;
   }
 
   setIntensity(intensity){
@@ -24,21 +25,48 @@ class Light{
   }
   //Retorno la posicion de la luz
   getLightPosition(){
+    if(this.enabled)
     return this.lightPosition;
+    else {
+      return [0.0,0.0,0.0];
+    }
   }
 
   getDirection(){
-    return this.direction;
+    if(this.enabled)
+      return this.direction;
+    else {
+      return [0.0,0.0,0.0];
+    }
   }
   //Retorno la intensidad de la luz
   getIntensity(){
-    return this.intensity;
+    if(this.enabled)
+      return this.intensity;
+      else {
+        return [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]];
+      }
   }
 
   //Retorno el Angulo de la luz
   getAngle(){
+    if(this.enabled)
     return this.angle;
+    else {
+      return [0.0,0.0,0.0];
+    }
   }
 
+  isEnabled(){
+    return this.enabled;
+  }
+
+  enable(){
+    this.enabled = true;
+  }
+
+  disable(){
+    this.enabled = false;
+  }
 
 }

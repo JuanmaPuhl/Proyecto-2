@@ -63,7 +63,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Posicion</td>
+					<td>Posicion Luz Spot</td>
 					<td>
 						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
 						<input type="text" id="textInputX" value="0" onchange="setNewLightPosition()">
@@ -71,6 +71,58 @@
 						<input type="text" id="textInputZ" value="0" onchange="setNewLightPosition()">
 					</td>
 				</tr>
+				<!-- <tr>
+					<td>Color</td>
+					<td>
+						<input id="sliderColor1" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzSpot(this);">
+						<input type="text" id="textInput10" value="20" onchange="">
+					</td>
+				</tr> -->
+				<tr>
+					<td colspan="2"><button onclick="activarSpot()">Activar/Desactivar Spot</button></td>
+					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
+				</tr>
+				<tr>
+					<td>Posicion Luz Puntual</td>
+					<td>
+						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
+						<input type="text" id="textInputX2" value="0" onchange="setNewLightPosition2()">
+						<input type="text" id="textInputY2" value="2" onchange="setNewLightPosition2()">
+						<input type="text" id="textInputZ2" value="1" onchange="setNewLightPosition2()">
+					</td>
+				</tr>
+				<!-- <tr>
+					<td>Color</td>
+					<td>
+						<input id="sliderColor2" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzPuntual(this);">
+						<input type="text" id="textInput11" value="20" onchange="">
+					</td>
+				</tr> -->
+				<tr>
+					<td colspan="2"><button onclick="activarPuntual()">Activar/Desactivar Puntual</button></td>
+					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
+				</tr>
+				<tr>
+					<td>Direccion Luz Direccional</td>
+					<td>
+						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
+						<input type="text" id="textInputX3" value="0" onchange="setNewLightPosition3()">
+						<input type="text" id="textInputY3" value="-1" onchange="setNewLightPosition3()">
+						<input type="text" id="textInputZ3" value="0" onchange="setNewLightPosition3()">
+					</td>
+				</tr>
+				<!-- <tr>
+					<td>Color</td>
+					<td>
+						<input id="sliderColor3" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzDireccional(this);">
+						<input type="text" id="textInput12" value="20" onchange="">
+					</td>
+				</tr> -->
+				<tr>
+					<td colspan="2"><button onclick="activarDireccional()">Activar/Desactivar Direccional</button></td>
+					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
+				</tr>
+
 			</table>
 			<table id='myTable'>
 				<tr id='myTableRow' >

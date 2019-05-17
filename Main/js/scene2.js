@@ -43,6 +43,9 @@ var ferrari;
 var bmw;
 var lexus;
 var obj_ball;
+var obj_ball2;
+var obj_ball3;
+
 //LUCES
 var light;
 var light_position = [0.0,2.0,0.0,1.0];
@@ -51,13 +54,13 @@ var light_direction = [0.0,-1.0,0.0,0.0];
 var light_angle = Math.cos(glMatrix.toRadian(30));
 
 var light2;
-var light_position2 = [0.0,2.0,0.0,1.0];
+var light_position2 = [0.0,2.0,1.0,1.0];
 var light_intensity2 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_direction2 = [0.0,-1.0,0.0,0.0];
 var light_angle2 = Math.cos(glMatrix.toRadian(30));
 
 var light3;
-var light_position3 = [0.0,2.0,0.0,1.0];
+var light_position3 = [0.0,2.0,-1.0,1.0];
 var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_direction3 = [0.0,-1.0,0.0,0.0];
 var light_angle3 = Math.cos(glMatrix.toRadian(30));
@@ -121,6 +124,8 @@ function onLoad() {
 
 	//console.log(lexus.getObjects());
 	obj_ball = new Object(parsedOBJ2);
+	obj_ball2 = new Object(parsedOBJ2);
+	obj_ball3 = new Object(parsedOBJ2);
 	//obj_ford = new Object(parsedOBJ3);
 	obj_piso = new Object(parsedOBJ4);
 
@@ -137,13 +142,14 @@ function onLoad() {
 		new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
 		new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
 	]));
-	obj_ball.setVao(VAOHelper.create(obj_ball.getIndices(),[
-		new VertexAttributeInfo(obj_ball.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_ball.getNormals(), vertexNormal_location, 3)
-	]));
+	createVAO(obj_ball);
+	createVAO(obj_ball2);
+	createVAO(obj_ball3);
 	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
 	obj_piso.setMaterial(getMaterialByName("Rock"));
 	obj_ball.setMaterial(getMaterialByName("Default"));
+	obj_ball2.setMaterial(getMaterialByName("Default"));
+	obj_ball3.setMaterial(getMaterialByName("Default"));
 
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -186,7 +192,7 @@ function onRender(now){
 
 	refreshCamera();
 	obj_ball.resetObjectMatrix();
-	transformBall();
+
 	//passLight(light);
 
 	//drawObject(obj_ferrari);
@@ -203,7 +209,11 @@ function onRender(now){
 	for(let i = 0; i<arr3.length; i++){
 		drawObject(arr3[i]);
 	}
+
+	transformBall();
 	drawObject(obj_ball);
+	drawObject(obj_ball2);
+	drawObject(obj_ball3);
 	drawObject(obj_piso);
 
 	gl.useProgram(null);
@@ -363,11 +373,38 @@ function transformPiso(){
 	translateObject(obj_piso,[0,-	1.15,0]);
 }
 
-function transformBall(){
-	translateToOrigin(obj_ball);
-	scaleObject(obj_ball,[0.1,0.1,0.1]);
-	translateObject(obj_ball,light.getLightPosition());
-}
+
+	function transformBall(){
+		obj_ball.resetObjectMatrix();
+		translateToOrigin(obj_ball);
+		scaleObject(obj_ball,[0.1,0.1,0.1]);
+		if(light.isEnabled()){
+			translateObject(obj_ball,light.getLightPosition());
+		}
+		else {
+			translateObject(obj_ball,0.0,100.0,0.0);
+		}
+
+		obj_ball2.resetObjectMatrix();
+		translateToOrigin(obj_ball2);
+		scaleObject(obj_ball2,[0.1,0.1,0.1]);
+		if(light2.isEnabled())
+			translateObject(obj_ball2,light2.getLightPosition());
+		else {
+			translateObject(obj_ball2,0.0,100.0,0.0);
+		}
+
+		obj_ball3.resetObjectMatrix();
+		translateToOrigin(obj_ball3);
+		scaleObject(obj_ball3,[0.1,0.1,0.1]);
+		if(light3.isEnabled())
+			translateObject(obj_ball3,light3.getLightPosition());
+		else {
+			translateObject(obj_ball3,0.0,100.0,0.0);
+		}
+
+	}
+
 
 /*Funcion para cargar los objetos*/
 function onModelLoad() {

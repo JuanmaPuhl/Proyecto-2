@@ -92,7 +92,7 @@ vec3 calcularAportePuntual(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N , 
 
   float value = orenNayar(N,V,L,H);
   if(componente1*componente2!=0.0)
-    return ka+kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2);
+    return ka+ia*(kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
   else
      return ka+ia*kd * value;
 }
@@ -135,7 +135,7 @@ vec3 calcularAporteSpot(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, vec3
 
     float value = orenNayar(N,V,L,H);
     if(componente1*componente2!=0.0)
-      toReturn = ka+kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2);
+      toReturn = ka+ia*(kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
     else
        toReturn = ka+ia*kd * value;
   }
@@ -180,7 +180,7 @@ vec3 calcularAporteDireccional(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 
 
   float value = orenNayar(N,V,S,H);
   if(componente1*componente2!=0.0)
-    return ka+kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2);
+    return ka+ia*(kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
   else
      return ka+ia*kd * value;
 }
