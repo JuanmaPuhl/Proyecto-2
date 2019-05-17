@@ -1,16 +1,16 @@
 function crearMateriales(){
-	materials.push(new Material("Metal","Scarlet",[0.15,0.0,0.0],[0.7,0.0,0.0],[1.0,1.0,1.0],89.5,1.5,0.05));
-	materials.push(new Material("Plastic","Jade",[0.135,0.2225,0.1575],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8,2.81,0.05));
-	materials.push(new Material("Satin","Silver",[0.0,0.0,0.0],[0.5,0.6,0.5],[0.6,0.5,0.2],89.5,2.81,0.05));
-	materials.push(new Material("Metal","Polished Gold",[0.24725,0.2245,0.0645],[0.34615,0.3143,0.0903],[0.797357,0.723991,0.208006],83.2,2.81,0.05));
+	materials.push(new Material("Metal","Scarlet",[0.15,0.0,0.0],[0.7,0.0,0.0],[1.0,1.0,1.0],89.5,0.09,0.1));
+	materials.push(new Material("Plastic","Jade",[0.135,0.2225,0.1575],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8,0.09,0.1));
+	materials.push(new Material("Satin","Silver",[0.0,0.0,0.0],[0.5,0.6,0.5],[0.6,0.5,0.2],89.5,0.09,0.1));
+	materials.push(new Material("Metal","Polished Gold",[0.0,0.0,0.0],[0.34615,0.3143,0.0903],[0.797357,0.723991,0.208006],83.2,0.1,0.1));
 	materials.push(new Material("Plastic","Rock",[0.0,0.0,0.0],[0.95466,0.078,0.0],[0.00,0.0,0.0],0.0,2.81,0.05));
-	materials.push(new Material("Metal","Polished Bronze",[0.25,0.148,0.06475],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8,2.81,0.05));
-	materials.push(new Material("Metal","Brass",[0.329412,.223529,0.027451],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974,2.81,0.05));
-	materials.push(new Material("Metal","Bronze",[0.2125,0.1275,0.054],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6,2.81,0.01));
-
-	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2,2.81,0.05));
-	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,2.81,0.05));
-	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0,2.81,0.05));
+	materials.push(new Material("Metal","Polished Bronze",[0.25,0.148,0.06475],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8,0.2,0.3));
+	materials.push(new Material("Metal","Brass",[0.329412,.223529,0.027451],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974,0.2,0.05));
+	materials.push(new Material("Metal","Bronze",[0.2125,0.1275,0.054],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6,0.09,0.1));
+	materials.push(new Material("Plastic","CACA",[0.0,0.0,0.0],[1.0,0.5,0.0],[0.0,0.0,0.0],0.0,0.09,0.1));
+	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2,0.2,0.05));
+	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
+	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0,0.2,0.05));
 }
 
 function getMaterialByName(name){
@@ -189,35 +189,29 @@ function animateObject(index){
 		if(index==5){//Si se trata de la rotacion automatica de la camara antihorario
 			if(animated[6])//Si estaba rotando automaticamente horario
 				animateObject(6);//Termino la animacion anterior
-			rotationAngle[5]=parseFloat(angle[5]); //Tomo el angulo del slider 5
+			rotationAngle[5]=parseFloat(angle[4]); //Tomo el angulo del slider 5
 		}
 		if(index==6){ //Si se trata de la rotacion automatica de la camara horario
 			if(animated[5])//Si estaba rotando automaticamente antihorario
 				animateObject(5);//Termino la animacion anterior
-			rotationAngle[6]=parseFloat(angle[5]); //Tomo el angulo del slider 5
+			rotationAngle[6]=parseFloat(angle[4]); //Tomo el angulo del slider 5
 		}
 	}
 	else { //Si ya se encontraba animandose, deseo pararlo
 		animated[index]=false; //Termino la animacion
 	//Tengo que hacer un caso especial en el 6 porque comparte el slider 5 y no existe slider 6, por lo tanto el caso general falla.
 		if(index==6){ //Si se trata de la rotacion automatica de la camara a la derecha
-			slider[5].value=rotationAngle[6]; //Seteo el valor del slider 5 como el angulo de rotacion 6
-			angle[5] = rotationAngle[6]; //Hago lo mismo con el angulo
-			updateTextInput(6,rotationAngle[6]); //Y con el campo de texto
+			slider[4].value=rotationAngle[6]; //Seteo el valor del slider 5 como el angulo de rotacion 6
+			angle[4] = rotationAngle[6]; //Hago lo mismo con el angulo
+			updateTextInput(4,rotationAngle[6]); //Y con el campo de texto
 		}else{
-			if(index==7){
-				slider[0].value = rotationAngle[7];
-				angle[0] = rotationAngle[7];
-				updateTextInput(1,rotationAngle[7]);
-			}
-			else{ //Sino, en el caso general....
 				slider[index].value=rotationAngle[index]; //Asigno al slider asociado con el valor de rotacion asociado
 				angle[index]=rotationAngle[index]; //Lo mismo con el angulo
-				updateTextInput(index+1,rotationAngle[index]); //Lo mismo con el campo de texto
+				updateTextInput(index,rotationAngle[index]); //Lo mismo con el campo de texto
 			}
 		}
 	}
-}
+
 
 /*Funcion para resetear la escena.*/
 function resetScene(){

@@ -43,19 +43,43 @@ function passLight2(light){
 	light.setIntensity(intensity2);
 	//gl.uniform1f(u_ax,ax);
 	//gl.uniform1f(u_ay,ay);
-	gl.uniform4fv(u_posL, light.getLightPosition());
-	gl.uniform3fv(u_ia, light.getIntensity()[0]);
+	let spot_position_eye = vec4.create();
+	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
+	gl.uniform4fv(u_posL2, spot_position_eye);
+	gl.uniform3fv(u_ia2, light.getIntensity()[0]);
 	//gl.uniform3fv(u_id, light.getIntensity()[1]);
 	//gl.uniform3fv(u_is, light.getIntensity()[2]);
-	gl.uniform1f(u_limit, light.getAngle());
-	gl.uniform4fv(u_dirL, light.getDirection());
+	gl.uniform1f(u_limit2, light.getAngle());
+	let spot_direction_eye = vec4.create();
+	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
+	gl.uniform4fv(u_dirL2, spot_direction_eye);
+}
+
+function passLight3(light){
+	let intensity = colorLuz();
+	let intensity2 = [intensity,intensity,intensity];
+	light.setIntensity(intensity2);
+	//gl.uniform1f(u_ax,ax);
+	//gl.uniform1f(u_ay,ay);
+	let spot_position_eye = vec4.create();
+	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
+	gl.uniform4fv(u_posL3, spot_position_eye);
+	gl.uniform3fv(u_ia3, light.getIntensity()[0]);
+	//gl.uniform3fv(u_id, light.getIntensity()[1]);
+	//gl.uniform3fv(u_is, light.getIntensity()[2]);
+	gl.uniform1f(u_limit3, light.getAngle());
+	let spot_direction_eye = vec4.create();
+	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
+	gl.uniform4fv(u_dirL3, spot_direction_eye);
 }
 
 
 function drawBlinnPhong(object){
   setShaderBlinnPhong();
   gl.useProgram(shaderProgram);
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
   passCamera();
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
@@ -84,7 +108,9 @@ function drawCookTorrance(object){
   setShaderCookTorrance();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();
@@ -107,6 +133,8 @@ function drawCookTorrance(object){
 	//console.log(material.getRugosidad());
 	//gl.uniform1f(u_F0,3.81);
   //gl.uniform1f(u_rugosidad,0.3);
+	gl.uniform1f(u_ro,1.0);
+	gl.uniform1f(u_sigma,90.0);
   gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
   gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
   gl.bindVertexArray(null);
@@ -117,7 +145,10 @@ function drawOrenNayar(object){
   setShaderOrenNayar();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
+
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();
@@ -143,7 +174,10 @@ function drawCookTorranceShirley(object){
   setShaderCookTorranceShirley();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light)
+  passLight1(light);
+	passLight2(light2);
+	passLight3(light3);
+
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();

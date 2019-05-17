@@ -9,32 +9,6 @@ var parsedOBJ5 = null;
 var parsedOBJ_Ferrari = [];
 var parsedOBJ_BMW = [];
 
-//Uniform locations.
-var posLocation;
-var vertexNormal_location;
-var u_satelliteMatrix;
-var u_planetMatrix;
-var u_ring1Matrix;
-var u_ring2Matrix;
-var u_viewMatrix;
-var u_projMatrix;
-var u_ka;
-var u_kd;
-var u_ks;
-var u_normalMatrix;
-var u_coefEspec;
-var u_posL;
-var u_ia;
-var u_id;
-var u_is;
-var u_MV;
-var u_ax;
-var u_ay;
-var u_ro;
-var u_sigma;
-var u_limit;
-var u_dirL;
-
 //Uniform values.
 var viewMatrix = mat4.create();
 var projMatrix = mat4.create();
@@ -75,6 +49,19 @@ var light_position = [0.0,2.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_direction = [0.0,-1.0,0.0,0.0];
 var light_angle = Math.cos(glMatrix.toRadian(30));
+
+var light2;
+var light_position2 = [0.0,2.0,0.0,1.0];
+var light_intensity2 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+var light_direction2 = [0.0,-1.0,0.0,0.0];
+var light_angle2 = Math.cos(glMatrix.toRadian(30));
+
+var light3;
+var light_position3 = [0.0,2.0,0.0,1.0];
+var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
+var light_direction3 = [0.0,-1.0,0.0,0.0];
+var light_angle3 = Math.cos(glMatrix.toRadian(30));
+
 var ax = 0.4;
 var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
@@ -93,7 +80,7 @@ function onLoad() {
 
 
 	createShaderPrograms();
-	setShaderCookTorrance();
+	setShaderBlinnPhong();
 
 	//Creo objetos
 	ferrari = new Car();
@@ -138,6 +125,8 @@ function onLoad() {
 	obj_piso = new Object(parsedOBJ4);
 
 	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
+	light2 = new Light(light_position2 , light_intensity2 , light_angle2,light_direction2);//Creo la luz
+	light3 = new Light(light_position3 , light_intensity3 , light_angle3,light_direction3);//Creo la luz
 
 
 	// obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
@@ -240,10 +229,10 @@ function createVAO(object){
 
 function refreshCamera(){
 	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
-		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[4])); //Roto segun el angulo de rotacion 5
+		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
 	else
 		if(animated[6]) //Si esta rotando automaticamente a la derecha...
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[4])); //Roto segun el angulo de rotacion 6
+			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
 		else {// Si no esta siendo animada
 			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
 		}
