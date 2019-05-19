@@ -235,7 +235,7 @@ function setNewLightPosition3(){
 	let valueX = parseFloat(document.getElementById("textInputX3").value);
 	let valueY = parseFloat(document.getElementById("textInputY3").value);
 	let valueZ = parseFloat(document.getElementById("textInputZ3").value);
-	light3.setDirection([valueX,valueY,valueZ,1.0]);
+	light3.setDirection([valueX,valueY,valueZ,0.0]);
 }
 
 
