@@ -325,9 +325,13 @@ function transformBMW(){
 function transformLexus(){
 	let arr = lexus.getObjects();
 	for(let i = 0; i<arr.length; i++){
-		scaleObject(arr[i],[0.06,0.06,0.06]);
-		rotateObject(arr[i],90);
-		translateObject(arr[i],[0,-0.282,1])
+		// scaleObject(arr[i],[0.06,0.06,0.06]);
+		// rotateObject(arr[i],90);
+		// translateObject(arr[i],[0,-0.282,1])
+		translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.2,0.2,0.2]);
+		rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,1])
 	}
 }
 
@@ -395,7 +399,8 @@ function onModelLoad() {
 	parsedOBJ2 = OBJParser.parseFile(cone); //Cargo el satelite
 	parsedOBJ3 = OBJParser.parseFile(ball);
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos),OBJParser.parseFile(bmw_luces_freno)];
-	parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
+	//parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
+	parsedOBJ_Lexus = [OBJParser.parseFile(lambo)];
 	parsedOBJ4 = OBJParser.parseFile(caja);
 	parsedOBJ5 = OBJParser.parseFile(arrow);
 }
