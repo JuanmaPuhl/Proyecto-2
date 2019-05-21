@@ -23,6 +23,7 @@
 	<script src="../Modelos/bmw_vidrio.js"></script>
 	<script src="../Modelos/bmw_llantas.js"></script>
 	<script src="../Modelos/bmw_frenos.js"></script>
+	<script src="../Modelos/bmw_luces_freno.js"></script>
 	<script src="../Modelos/ball.js"></script>
 	<script src="../Modelos/lexus_chasis.js"></script>
 	<script src="../Modelos/lexus_llantas.js"></script>
@@ -35,6 +36,12 @@
 	<script src="../Modelos/ferrari_vidrio.js"></script>
 	<script src="../Modelos/cone.js"></script>
 	<script src="../Modelos/arrow.js"></script>
+	<script src="../Modelos/Buggatti.js"></script>
+	<script src="../Modelos/bugatti_llantas.js"></script>
+	<script src="../Modelos/bugatti_ruedas.js"></script>
+	<script src="../Modelos/bugatti_vidrios.js"></script>
+	<script src="../Modelos/bugatti_luces_freno.js"></script>
+	<script src="../Modelos/bugatti_chasis.js"></script>
 	<script src="js/Light.js"></script>
 	<script src="js/Material.js"></script>
 	<script src="js/controls.js"></script>
@@ -49,11 +56,8 @@
 <body onload='onLoad();onRender();'>
 	<div id='myDiv'>
 		<h1>Escena</h1>
-		<div id='canvasDiv'>
-			<canvas id='webglCanvas' width = "1000" height = "700">
-			</canvas>
-		</div>
-		<div id='controlDiv'>
+
+		<div id = "controlDiv2">
 			<table id='myTable'>
 				<tr id='myTableRow'>
 					<th colspan="3">Luz</th>
@@ -117,6 +121,16 @@
 					<td colspan="2" ><button id="botonActivar" onclick="activarLuz(3)">Activar/Desactivar Direccional</button></td>
 				</tr>
 			</table>
+		</div>
+
+
+		<div id='canvasDiv'>
+			<canvas id='webglCanvas' width = "1300" height = "700">
+			</canvas>
+		</div>
+
+
+		<div id='controlDiv'>
 			<table id="myTable">
 				<tr id="myTableRow">
 					<th colspan="3">Materiales</th>
