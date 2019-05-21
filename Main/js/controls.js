@@ -230,59 +230,33 @@ function setLightPosition(index){
 		light3.setDirection([valueX,valueY,valueZ,0.0]);
 }
 
-
-function setNewLightPosition(){
-	let valueX = parseFloat(document.getElementById("textInputX").value);
-	let valueY = parseFloat(document.getElementById("textInputY").value);
-	let valueZ = parseFloat(document.getElementById("textInputZ").value);
-	light.setLightPosition([valueX,valueY,valueZ,1.0]);
-}
-function setNewLightPosition2(){
-	let valueX = parseFloat(document.getElementById("textInputX2").value);
-	let valueY = parseFloat(document.getElementById("textInputY2").value);
-	let valueZ = parseFloat(document.getElementById("textInputZ2").value);
-	light2.setLightPosition([valueX,valueY,valueZ,1.0]);
-}
-function setNewLightPosition3(){
-	let valueX = parseFloat(document.getElementById("textInputX3").value);
-	let valueY = parseFloat(document.getElementById("textInputY3").value);
-	let valueZ = parseFloat(document.getElementById("textInputZ3").value);
-	light3.setDirection([valueX,valueY,valueZ,0.0]);
-}
-
-
-function activarSpot(){
-	if(light.isEnabled()){
-		console.log("Apago");
-		light.disable();
+function activarLuz(index){
+	if(index == 1){
+		if(light.isEnabled()){
+			light.disable();
+		}
+		else {
+			light.enable();
+		}
 	}
-	else {
-		console.log("Prendo");
-		light.enable();
+	if(index == 2){
+		if(light2.isEnabled()){
+			light2.disable();
+		}
+		else {
+			light2.enable();
+		}
+	}
+	if(index == 3){
+		if(light3.isEnabled()){
+			light3.disable();
+		}
+		else {
+			light3.enable();
+		}
 	}
 }
 
-
-function activarPuntual(){
-	if(light2.isEnabled()){
-		console.log("Apago");
-		light2.disable();
-	}
-	else {
-		console.log("Prendo");
-		light2.enable();
-	}
-}
-function activarDireccional(){
-	if(light3.isEnabled()){
-		console.log("Apago");
-		light3.disable();
-	}
-	else {
-		console.log("Prendo");
-		light3.enable();
-	}
-}
 
 /*Funcion usada para animar*/
 /*Funcionamiento: Se pasa al metodo un indice, el cual indica que boton se ha pulsado

@@ -24,8 +24,7 @@ function passCamera(){
 /*Funcion que pasa a los shaders los parametros de cada luz*/
 function passLight(index,light){
 	//Hecho lo mas general posible
-	//Creo un string para cada variable y
-	//la asocio con un parametro en el shader
+	//Creo un string para cada variable y la asocio con un parametro en el shader
 	//Posicion
 	let str = "lights["+(index-1)+"].posL";
 	let u_posL = gl.getUniformLocation(shaderProgram,str);
@@ -42,7 +41,6 @@ function passLight(index,light){
 	//paso esto y listo)
 	str = "lights["+(index-1)+"].type";
 	let u_type = gl.getUniformLocation(shaderProgram,str);
-
 	//Comienzo a transformar a coord. vista y pasar los parametros
 	//Transformo la posicion
 	let spot_position_eye = vec4.create();

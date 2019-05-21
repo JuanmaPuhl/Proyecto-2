@@ -135,10 +135,11 @@ function onLoad() {
     arr = [];
 	}
 
-	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
-	light2 = new Light(light_position2 , light_intensity2 , light_angle,light_direction2);//Creo la luz
-	light3 = new Light(light_position3 , light_intensity3 , light_angle,light_direction3);//Creo la luz
-
+	// light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
+	// light2 = new Light(light_position2 , light_intensity2 , light_angle,light_direction2);//Creo la luz
+	// light3 = new Light(light_position3 , light_intensity3 , light_angle,light_direction3);//Creo la luz
+	createLights();
+	loadLights();
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
