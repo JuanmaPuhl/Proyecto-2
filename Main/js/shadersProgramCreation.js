@@ -17,20 +17,23 @@ function setShaderBlinnPhong(){
   u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
 
-  u_limit = gl.getUniformLocation(shaderProgram, 'limit1');
-  u_dirL = gl.getUniformLocation(shaderProgram,'dirL1');
-  u_posL = gl.getUniformLocation(shaderProgram, 'posL1');
-  u_ia = gl.getUniformLocation(shaderProgram, 'ia1');
+  // u_limit = gl.getUniformLocation(shaderProgram, 'l1.limit');
+  // u_dirL = gl.getUniformLocation(shaderProgram,'l1.dirL');
+  // u_posL = gl.getUniformLocation(shaderProgram, 'l1.posL');
+  // u_ia = gl.getUniformLocation(shaderProgram, 'l1.ia');
+  //
+  // u_limit2 = gl.getUniformLocation(shaderProgram, 'l2.limit');
+  // u_dirL2 = gl.getUniformLocation(shaderProgram,'l2.dirL');
+  // u_posL2 = gl.getUniformLocation(shaderProgram, 'l2.posL');
+  // u_ia2 = gl.getUniformLocation(shaderProgram, 'l2.ia');
+  //
+  // u_limit3 = gl.getUniformLocation(shaderProgram, 'l3.limit');
+  // u_dirL3 = gl.getUniformLocation(shaderProgram,'l3.dirL');
+  // u_posL3 = gl.getUniformLocation(shaderProgram, 'l3.posL');
+  // u_ia3 = gl.getUniformLocation(shaderProgram, 'l3.ia');
 
-  u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
-  u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
-  u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
-  u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
 
-  u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
-  u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
-  u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
-  u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
+
 }
 
 function setShaderCookTorrance(){
@@ -53,20 +56,20 @@ function setShaderCookTorrance(){
   u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
 
 
-  u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-  u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
-  u_ia = gl.getUniformLocation(shaderProgram, 'ia');
-  u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-
-  u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
-  u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
-  u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
-  u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
-
-  u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
-  u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
-  u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
-  u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
+  // u_limit = gl.getUniformLocation(shaderProgram, 'l1.limit');
+  // u_dirL = gl.getUniformLocation(shaderProgram,'l1.dirL');
+  // u_posL = gl.getUniformLocation(shaderProgram, 'l1.posL');
+  // u_ia = gl.getUniformLocation(shaderProgram, 'l1.ia');
+  //
+  // u_limit2 = gl.getUniformLocation(shaderProgram, 'l2.limit');
+  // u_dirL2 = gl.getUniformLocation(shaderProgram,'l2.dirL');
+  // u_posL2 = gl.getUniformLocation(shaderProgram, 'l2.posL');
+  // u_ia2 = gl.getUniformLocation(shaderProgram, 'l2.ia');
+  //
+  // u_limit3 = gl.getUniformLocation(shaderProgram, 'l3.limit');
+  // u_dirL3 = gl.getUniformLocation(shaderProgram,'l3.dirL');
+  // u_posL3 = gl.getUniformLocation(shaderProgram, 'l3.posL');
+  // u_ia3 = gl.getUniformLocation(shaderProgram, 'l3.ia');
 }
 
 function setShaderOrenNayar(){
@@ -85,20 +88,20 @@ function setShaderOrenNayar(){
   u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
 
-  u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-  u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
-  u_ia = gl.getUniformLocation(shaderProgram, 'ia');
-  u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-
-  u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
-  u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
-  u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
-  u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
-
-  u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
-  u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
-  u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
-  u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
+  // u_posL = gl.getUniformLocation(shaderProgram, 'posL');
+  // u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
+  // u_ia = gl.getUniformLocation(shaderProgram, 'ia');
+  // u_limit = gl.getUniformLocation(shaderProgram, 'limit');
+  //
+  // u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
+  // u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
+  // u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
+  // u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
+  //
+  // u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
+  // u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
+  // u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
+  // u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
 }
 
 function setShaderCookTorranceShirley(){
@@ -120,20 +123,20 @@ function setShaderCookTorranceShirley(){
   u_Nu= gl.getUniformLocation(shaderProgram, 'Nu');
   u_Nv = gl.getUniformLocation(shaderProgram, 'Nv');
 
-  u_posL = gl.getUniformLocation(shaderProgram, 'posL');
-  u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
-  u_ia = gl.getUniformLocation(shaderProgram, 'ia');
-  u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-
-  u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
-  u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
-  u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
-  u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
-
-  u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
-  u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
-  u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
-  u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
+  // u_posL = gl.getUniformLocation(shaderProgram, 'posL');
+  // u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
+  // u_ia = gl.getUniformLocation(shaderProgram, 'ia');
+  // u_limit = gl.getUniformLocation(shaderProgram, 'limit');
+  //
+  // u_posL2 = gl.getUniformLocation(shaderProgram, 'posL2');
+  // u_dirL2 = gl.getUniformLocation(shaderProgram,'dirL2');
+  // u_ia2 = gl.getUniformLocation(shaderProgram, 'ia2');
+  // u_limit2 = gl.getUniformLocation(shaderProgram, 'limit2');
+  //
+  // u_posL3 = gl.getUniformLocation(shaderProgram, 'posL3');
+  // u_dirL3 = gl.getUniformLocation(shaderProgram,'dirL3');
+  // u_ia3 = gl.getUniformLocation(shaderProgram, 'ia3');
+  // u_limit3 = gl.getUniformLocation(shaderProgram, 'limit3');
 
 }
 

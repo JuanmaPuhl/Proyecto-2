@@ -1,5 +1,5 @@
 
-
+/*Funcion que dicta que materiales se dibujan con cada modelo*/
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
     drawCookTorrance(object);
@@ -15,50 +15,60 @@ function drawObject(object){
   }
 }
 
+/*Funcion que pasa a los shaders los parametros de la camara*/
 function passCamera(){
 	gl.uniformMatrix4fv(u_viewMatrix, false, viewMatrix);
 	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
 }
-function passLight1(light){
+
+/*Funcion que pasa a los shaders los parametros de cada luz*/
+function passLight(index,light){
+	//Hecho lo mas general posible
+	//Creo un string para cada variable y
+	//la asocio con un parametro en el shader
+	//Posicion
+	let str = "lights["+(index-1)+"].posL";
+	let u_posL = gl.getUniformLocation(shaderProgram,str);
+	//Direccion
+	str = "lights["+(index-1)+"].dirL";
+	let u_dirL = gl.getUniformLocation(shaderProgram,str);
+	//Intensidad o color
+	str = "lights["+(index-1)+"].ia";
+	let u_ia = gl.getUniformLocation(shaderProgram,str);
+	//Angulo (Solo usado si es spot)
+	str = "lights["+(index-1)+"].limit";
+	let u_limit = gl.getUniformLocation(shaderProgram,str);
+	//Tipo. (Como de todas formas tengo que poner ifs en los shader mejor le
+	//paso esto y listo)
+	str = "lights["+(index-1)+"].type";
+	let u_type = gl.getUniformLocation(shaderProgram,str);
+
+	//Comienzo a transformar a coord. vista y pasar los parametros
+	//Transformo la posicion
 	let spot_position_eye = vec4.create();
 	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
-	gl.uniform4fv(u_posL, spot_position_eye);
+	gl.uniform4fv(u_posL, spot_position_eye);//La paso
+	//Color y angulo
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
 	gl.uniform1f(u_limit, light.getAngle());
+	//Direccion
 	let spot_direction_eye = vec4.create();
 	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
 	gl.uniform4fv(u_dirL, spot_direction_eye);
+	//Tipo
+	gl.uniform1i(u_type, light.getType());
 }
 
-function passLight2(light){
-	let spot_position_eye = vec4.create();
-	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
-	gl.uniform4fv(u_posL2, spot_position_eye);
-	gl.uniform3fv(u_ia2, light.getIntensity()[0]);
-	gl.uniform1f(u_limit2, light.getAngle());
-	let spot_direction_eye = vec4.create();
-	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
-	gl.uniform4fv(u_dirL2, spot_direction_eye);
-}
+/*En las siguientes funciones se sigue el mismo procedimiento,
+Se setea el shaderProgram, se pasan las luces asi como el resto de uniforms*/
 
-function passLight3(light){
-	let spot_position_eye = vec4.create();
-	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
-	gl.uniform4fv(u_posL3, spot_position_eye);
-	gl.uniform3fv(u_ia3, light.getIntensity()[0]);
-	gl.uniform1f(u_limit3, light.getAngle());
-	let spot_direction_eye = vec4.create();
-	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
-	gl.uniform4fv(u_dirL3, spot_direction_eye);
-}
-
-
+/*Funcion para dibujar con Blinn Phong*/
 function drawBlinnPhong(object){
   setShaderBlinnPhong();
   gl.useProgram(shaderProgram);
-  passLight1(light);
-	passLight2(light2);
-	passLight3(light3);
+  passLight(1,light);
+	passLight(2,light2);
+	passLight(3,light3);
   passCamera();
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
@@ -75,18 +85,19 @@ function drawBlinnPhong(object){
   gl.uniform3fv(u_ks,material.getKs());
   gl.uniform1f(u_coefEspec,material.getShininess());
   gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
-  gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
+  gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);
   gl.bindVertexArray(null);
   gl.useProgram(null);
 }
 
+/*Funcion para dibujar con Cook Torrance*/
 function drawCookTorrance(object){
   setShaderCookTorrance();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light);
-	passLight2(light2);
-	passLight3(light3);
+	passLight(1,light);
+	passLight(2,light2);
+	passLight(3,light3);
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();
@@ -111,13 +122,14 @@ function drawCookTorrance(object){
   gl.useProgram(null);
 }
 
+/*Funcion para dibujar con Oren Nayar*/
 function drawOrenNayar(object){
   setShaderOrenNayar();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light);
-	passLight2(light2);
-	passLight3(light3);
+	passLight(1,light);
+	passLight(2,light2);
+	passLight(3,light3);
 
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
@@ -140,13 +152,14 @@ function drawOrenNayar(object){
   gl.useProgram(null);
 }
 
+/*Funcion para dibujar con Shirley*/
 function drawCookTorranceShirley(object){
   setShaderCookTorranceShirley();
   gl.useProgram(shaderProgram);
   passCamera();
-  passLight1(light);
-	passLight2(light2);
-	passLight3(light3);
+	passLight(1,light);
+	passLight(2,light2);
+	passLight(3,light3);
 
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);

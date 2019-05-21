@@ -13,25 +13,22 @@ uniform float p;
 uniform float sigma;
 
 
-//Light 1
-uniform vec4 posL;
-uniform vec4 dirL;
-uniform float limit;
-uniform vec3 ia;
+struct Light{
+  vec4 posL;
+  vec4 dirL;
+  float limit;
+  vec3 ia;
+  int type;
+};
 
-//light2
-uniform vec4 posL2;
-uniform vec4 dirL2;
-uniform float limit2;
-uniform vec3 ia2;
 
-//light3
-uniform vec4 posL3;
-uniform vec4 dirL3;
-uniform float limit3;
-uniform vec3 ia3;
+uniform Light lights[10];
 
-vec3 calcularAporteSpot(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, vec3 V){
+vec3 calcularAporteSpot(Light l, vec3 N, vec3 V){
+  vec4 posL = l.posL;
+  vec4 dirL = l.dirL;
+  vec3 ia = l.ia;
+  float limit = l.limit;
   //OREN-NAYAR
     //vec3 v = normalize(-L-N*dot(N,L) );
     //vec3 u = normalize(-V-N * dot(N,V));
@@ -59,7 +56,11 @@ vec3 calcularAporteSpot(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, vec3
   return toReturn;
 }
 
-vec3 calcularAportePuntual(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, vec3 V){
+vec3 calcularAportePuntual(Light l, vec3 N, vec3 V){
+  vec4 posL = l.posL;
+  vec4 dirL = l.dirL;
+  vec3 ia = l.ia;
+  float limit = l.limit;
   vec3 light_direction = vec3(posL + vec4(vVE,1.0)); //direccion de la luz al vertice
   vec3 L = normalize(light_direction);
   vec3 H = normalize(V+L);
@@ -81,7 +82,11 @@ vec3 calcularAportePuntual(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, v
   return toReturn;
 }
 
-vec3 calcularAporteDireccional(vec4 posL, vec4 dirL, vec3 ia, float limit, vec3 N, vec3 V){
+vec3 calcularAporteDireccional(Light l, vec3 N, vec3 V){
+  vec4 posL = l.posL;
+  vec4 dirL = l.dirL;
+  vec3 ia = l.ia;
+  float limit = l.limit;
   vec3 light_direction = vec3(posL + vec4(vVE,1.0)); //direccion de la luz al vertice
   vec3 L = normalize(light_direction);
   vec3 S = normalize(vec3(dirL));
@@ -110,7 +115,15 @@ void main(){
     //vec3 L = normalize(vLE);
     vec3 V = normalize(vVE);
     //vec3 H = normalize(L+V);
+    colorFrag = vec4(0.0);
+    int cant = lights.length();
+    for(int i = 0; i<cant; i++){
+      if(lights[i].type==0)
+        colorFrag += vec4(calcularAporteSpot(lights[i],N,V),1.0);
+      if(lights[i].type==1)
+        colorFrag += vec4(calcularAportePuntual(lights[i],N,V),1.0);
+      if(lights[i].type==2)
+        colorFrag += vec4(calcularAporteDireccional(lights[i],N,V),1.0);
+    }
 
-
-    colorFrag = vec4(calcularAporteSpot(posL,dirL,ia,limit,N,V) + calcularAportePuntual(posL2,dirL2,ia2,limit2,N,V) + calcularAporteDireccional(posL3,dirL3,ia3,limit3,N,V),1.0);
 }`

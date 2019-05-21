@@ -49,6 +49,8 @@ var obj_ball2;
 var obj_ball3;
 
 //LUCES
+var lights = [];
+
 var light;
 var light_position = [0.0,2.0,0.0,1.0];
 var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
@@ -109,9 +111,7 @@ function onLoad() {
 	obj_ball3 = new Object(parsedOBJ5);
 	obj_piso = new Object(parsedOBJ4);
 
-	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
-	light2 = new Light(light_position2 , light_intensity2 , light_angle2,light_direction2);//Creo la luz
-	light3 = new Light(light_position3 , light_intensity3 , light_angle3,light_direction3);//Creo la luz
+	createLights();
 	loadLights();
 	createVAO(obj_piso);
 	createVAO(obj_ball);

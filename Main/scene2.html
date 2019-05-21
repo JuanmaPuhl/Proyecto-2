@@ -3,7 +3,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Escena 2</title>
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
 	<script src="../Utils/glmatrix/gl-matrix-min.js"></script>
 	<script src="../Utils/VertexAttributeInfo.js"></script>
 	<script src="../Utils/VAOHelper.js"></script>
@@ -19,23 +18,16 @@
 	<script src="files/shaders/FS-OrenNayar.glsl"></script>
 	<script src="files/shaders/VS-CookTorranceShirley.glsl"></script>
 	<script src="files/shaders/FS-CookTorranceShirley.glsl"></script>
-	<script src="../Modelos/teapot.obj.js"></script>
-	<script src="../Modelos/bmw_m3_gt3_cycles.js"></script>
 	<script src="../Modelos/bmw_ruedas.js"></script>
 	<script src="../Modelos/bmw_chasis.js"></script>
 	<script src="../Modelos/bmw_vidrio.js"></script>
 	<script src="../Modelos/bmw_llantas.js"></script>
 	<script src="../Modelos/bmw_frenos.js"></script>
 	<script src="../Modelos/ball.js"></script>
-	<script src="../Modelos/objeto.js"></script>
 	<script src="../Modelos/lexus_chasis.js"></script>
 	<script src="../Modelos/lexus_llantas.js"></script>
 	<script src="../Modelos/lexus_ruedas.js"></script>
 	<script src="../Modelos/lexus_vidrios.js"></script>
-	<script src="../Modelos/PG.js"></script>
-	<script src="../Modelos/Chasis.js"></script>
-	<script src="../Modelos/ruedas.js"></script>
-	<script src="../Modelos/pontiac.js"></script>
 	<script src="../Modelos/caja.js"></script>
 	<script src="../Modelos/ferrari.js"></script>
 	<script src="../Modelos/ferrari_ruedas.js"></script>
@@ -56,7 +48,6 @@
 </head>
 <body onload='onLoad();onRender();'>
 	<div id='myDiv'>
-		<!-- <button style="float:left; border : none;" onclick="launchFullScreen(document.documentElement);"><img src="../images/Full Screen_50px.png" ></button> -->
 		<h1>Escena</h1>
 		<div id='canvasDiv'>
 			<canvas id='webglCanvas' width = "1000" height = "700">
@@ -70,10 +61,9 @@
 				<tr>
 					<td>Posicion Luz Spot</td>
 					<td>
-						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
-						<input type="text" id="textInputX" value="0" onchange="setNewLightPosition()">
-						<input type="text" id="textInputY" value="2" onchange="setNewLightPosition()">
-						<input type="text" id="textInputZ" value="0" onchange="setNewLightPosition()">
+						<input type="text" id="textInputX1" value="0" onchange="setLightPosition(1)">
+						<input type="text" id="textInputY1" value="2" onchange="setLightPosition(1)">
+						<input type="text" id="textInputZ1" value="0" onchange="setLightPosition(1)">
 					</td>
 				</tr>
 				<tr>
@@ -84,24 +74,15 @@
 						<input type="color" onchange = "changeColor(this.value,1)">
 					</td>
 				</tr>
-				<!-- <tr>
-					<td>Color</td>
-					<td>
-						<input id="sliderColor1" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzSpot(this);">
-						<input type="text" id="textInput10" value="20" onchange="">
-					</td>
-				</tr> -->
 				<tr>
 					<td colspan="2" ><button id="botonActivar" onclick="activarSpot()">Activar/Desactivar Spot</button></td>
-					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
 				</tr>
 				<tr>
 					<td>Posicion Luz Puntual</td>
 					<td>
-						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
-						<input type="text" id="textInputX2" value="0" onchange="setNewLightPosition2()">
-						<input type="text" id="textInputY2" value="2" onchange="setNewLightPosition2()">
-						<input type="text" id="textInputZ2" value="1" onchange="setNewLightPosition2()">
+						<input type="text" id="textInputX2" value="0" onchange="setLightPosition(2)">
+						<input type="text" id="textInputY2" value="2" onchange="setLightPosition(2)">
+						<input type="text" id="textInputZ2" value="1" onchange="setLightPosition(2)">
 					</td>
 				</tr>
 				<tr>
@@ -112,24 +93,15 @@
 						<input type="color" onchange = "changeColor(this.value,2)">
 					</td>
 				</tr>
-				<!-- <tr>
-					<td>Color</td>
-					<td>
-						<input id="sliderColor2" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzPuntual(this);">
-						<input type="text" id="textInput11" value="20" onchange="">
-					</td>
-				</tr> -->
 				<tr>
 					<td colspan="2" ><button id="botonActivar" onclick="activarPuntual()">Activar/Desactivar Puntual</button></td>
-					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
 				</tr>
 				<tr>
 					<td>Direccion Luz Direccional</td>
 					<td>
-						<!-- <input id="slider1" type="range" min="1700" max="10000" value="3200" class="slider" oninput="onSliderLuz(this);"> -->
-						<input type="text" id="textInputX3" value="0" onchange="setNewLightPosition3()">
-						<input type="text" id="textInputY3" value="-1" onchange="setNewLightPosition3()">
-						<input type="text" id="textInputZ3" value="0" onchange="setNewLightPosition3()">
+						<input type="text" id="textInputX3" value="0" onchange="setLightPosition(3)">
+						<input type="text" id="textInputY3" value="-1" onchange="setLightPosition(3)">
+						<input type="text" id="textInputZ3" value="0" onchange="setLightPosition(3)">
 					</td>
 				</tr>
 				<tr>
@@ -141,16 +113,8 @@
 						<input type="color" onchange = "changeColor(this.value,3)">
 					</td>
 				</tr>
-				<!-- <tr>
-					<td>Color</td>
-					<td>
-						<input id="sliderColor3" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzDireccional(this);">
-						<input type="text" id="textInput12" value="20" onchange="">
-					</td>
-				</tr> -->
 				<tr>
 					<td colspan="2" ><button id="botonActivar" onclick="activarDireccional()">Activar/Desactivar Direccional</button></td>
-					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
 				</tr>
 			</table>
 			<table id="myTable">
@@ -176,13 +140,11 @@
 				<tr>
 					<td>"Ferrari"</td>
 					<td>
-
 						  <select id="select3" onchange = "changeMaterial(this.value,3)">
 								<option value="0">Select Material:</option>
 						  </select>
 					</td>
 				</tr>
-
 			</table>
 			<table id='myTable'>
 				<tr id='myTableRow' >
@@ -195,7 +157,6 @@
 						<input type="text" id="textInput2" value="20" onchange="setNewValue(2,this.value)">
 					</td>
 				</tr>
-
 				<tr>
 					<td>Arriba/Abajo</td>
 					<td>
@@ -203,26 +164,19 @@
 						<input type="text" id="textInput3" value="18" onchange="setNewValue(3,this.value)">
 					</td>
 				</tr>
-
 				<tr>
 					<td>Rotación</td>
 					<td>
 						<input id="slider4" type="range" min="0" max="360" value="297" class="slider" oninput="onSliderRotationCamera(this);">
 						<input type="text" id="textInput4" value="297" onchange="setNewValue(4,this.value)">
 					</td>
-
 				</tr>
 				<tr >
 					<td colspan="2"><button onclick="animateObject(6);">Rotación Automática</button></td>
-					<!-- <td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td> -->
 				</tr>
-
-
 			</table>
 			<button style="color:white;" onclick="resetScene();">Reset</button>
-
 		</div>
 	</div>
-
 </body>
 </html>

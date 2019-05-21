@@ -10,6 +10,10 @@ class Light{
         this.angle = angle;
         this.direction = direction;
         this.enabled = true;
+        this.type = 0;
+  }
+  setType(type){
+    this.type = type;
   }
 
   setIntensity(intensity){
@@ -54,6 +58,14 @@ class Light{
     return this.angle;
     else {
       return [0.0,0.0,0.0];
+    }
+  }
+
+  getType(){
+    if(this.enabled)
+      return this.type;
+    else {
+      return 4;
     }
   }
 

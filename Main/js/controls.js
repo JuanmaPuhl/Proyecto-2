@@ -50,24 +50,6 @@ function getMaterialByIndex(index){
 function colorLuz(num){
 	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
 	let temperature;
-	// if(num==1){
-	// 	temperature = angle[10]/100;
-	// 	//console.log(temperature);
-	// }
-	// else {
-	// 	if(num==2){
-	// 		temperature = angle[11]/100;
-	// 		//console.log(temperature);
-	// 	}
-	// 		else {
-	// 			if(num==3){
-	// 				temperature = angle[12]/100;
-	// 				//console.log(temperature);
-	// 			}
-	// 		}
-	//
-	// }
-
 	temperature = num/100;
 	let red;
 	let green;
@@ -84,7 +66,6 @@ function colorLuz(num){
 		if(red > 1)
 			red = 1;
 	}
-
 	//Calculate Green
 	if(temperature <= 66){
 		green = temperature;
@@ -102,8 +83,6 @@ function colorLuz(num){
 		if(green > 1)
 			green = 1;
 	}
-
-
 	//Calculate blue
 	if(temperature >= 66)
 		blue = 1;
@@ -121,7 +100,6 @@ function colorLuz(num){
 	}
 	return [red,green,blue];
 }
-
 
 function loadMaterials(){
 	let selector1 = document.getElementById("select1");
@@ -149,12 +127,15 @@ function cargarSliders(){
 		updateTextInput(i,slider[i].value);//Actualizo el valor del campo de texto asociado al slider
 	}
 	angle[2] = 91-slider[2].defaultValue; //Este es el angulo del slider del zoom
+}
 
-	// angle[10] = parseFloat(document.getElementById("sliderColor1").value);
-	// angle[11] = parseFloat(document.getElementById("sliderColor2").value);
-	// angle[12] = parseFloat(document.getElementById("sliderColor3").value);
-
-	//Debo cargarlo asi para que cuando aumente se acerque, y cuando disminuye se aleje
+function createLights(){
+	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
+	light.setType(0);
+	light2 = new Light(light_position2 , light_intensity2 , light_angle2,light_direction2);//Creo la luz
+	light2.setType(1);
+	light3 = new Light(light_position3 , light_intensity3 , light_angle3,light_direction3);//Creo la luz
+	light3.setType(2);
 }
 
 function loadLights(){
@@ -235,6 +216,18 @@ function setNewValue(num,value){
 			onSliderRotationCamera(slider4);
 		}
 	}
+}
+
+function setLightPosition(index){
+	let valueX = parseFloat(document.getElementById("textInputX"+index).value);
+	let valueY = parseFloat(document.getElementById("textInputY"+index).value);
+	let valueZ = parseFloat(document.getElementById("textInputZ"+index).value);
+	if (index == 1)
+		light.setLightPosition([valueX,valueY,valueZ,1.0]);
+	if (index == 2)
+		light2.setLightPosition([valueX,valueY,valueZ,1.0]);
+	if (index == 3)
+		light3.setDirection([valueX,valueY,valueZ,0.0]);
 }
 
 
