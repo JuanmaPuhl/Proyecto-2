@@ -79,8 +79,9 @@
 				<tr>
 					<td>Color</td>
 					<td>
-						<input id="sliderColor1" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzSpot(this);">
+						<input id="sliderColor1" type="range" min="1700" max="10000" value="5000" class="slider" oninput="changeColorSlider(this.value,1);">
 						<input type="text" id="textInputSpot" value="5000" onchange="setNewValueSpot(this.value)">
+						<input type="color" onchange = "changeColor(this.value,1)">
 					</td>
 				</tr>
 				<!-- <tr>
@@ -106,8 +107,9 @@
 				<tr>
 					<td>Color</td>
 					<td>
-						<input id="sliderColor2" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzPuntual(this);">
+						<input id="sliderColor2" type="range" min="1700" max="10000" value="5000" class="slider" oninput="changeColorSlider(this.value,2);">
 						<input type="text" id="textInputPuntual" value="5000" onchange="setNewValuePuntual(this.value)">
+						<input type="color" onchange = "changeColor(this.value,2)">
 					</td>
 				</tr>
 				<!-- <tr>
@@ -133,8 +135,10 @@
 				<tr>
 					<td>Color</td>
 					<td>
-						<input id="sliderColor3" type="range" min="1700" max="10000" value="5000" class="slider" oninput="onSliderLuzDireccional(this);">
+						<input id="sliderColor3" type="range" min="1700" max="10000" value="5000" class="slider" oninput="changeColorSlider(this.value,3);">
 						<input type="text" id="textInputDireccional" value="5000" onchange="setNewValueDireccional(this.value)">
+
+						<input type="color" onchange = "changeColor(this.value,3)">
 					</td>
 				</tr>
 				<!-- <tr>
@@ -156,38 +160,16 @@
 				<tr>
 					<td>Lexus</td>
 					<td>
-					  <select id="select1" onchange = "cambiarMaterial1(this.value)">
+					  <select id="select1" onchange = "changeMaterial(this.value,1)">
 					    <option value="0">Select Material:</option>
-					    <option value="1">Scarlet</option>
-					    <option value="2">Jade</option>
-					    <option value="3">Silver</option>
-					    <option selected="selected" value="4">Polished Gold</option>
-					    <option value="5">Rock</option>
-					    <option value="6">Polished Bronze</option>
-					    <option value="7">Brass</option>
-					    <option value="8">Bronze</option>
-					    <option value="9">Glass</option>
-					    <option value="10">Caucho</option>
-					    <option value="11">Default</option>
 					  </select>
 					</td>
 				</tr>
 				<tr>
 					<td>BMW</td>
 					<td>
-							  <select id="select2" onchange = "cambiarMaterial2(this.value)">
+							  <select id="select2" onchange = "changeMaterial(this.value,2)">
 									<option value="0">Select Material:</option>
-									 <option value="1">Scarlet</option>
-									 <option value="2">Jade</option>
-									 <option selected="selected" value="3">Silver</option>
-									 <option value="4">Polished Gold</option>
-									 <option value="5">Rock</option>
-									 <option value="6">Polished Bronze</option>
-									 <option value="7">Brass</option>
-									 <option value="8">Bronze</option>
-									 <option value="9">Glass</option>
-									 <option value="10">Caucho</option>
-									 <option value="11">Default</option>
 							  </select>
 					</td>
 				</tr>
@@ -195,19 +177,8 @@
 					<td>"Ferrari"</td>
 					<td>
 
-						  <select id="select3" onchange = "cambiarMaterial3(this.value)">
+						  <select id="select3" onchange = "changeMaterial(this.value,3)">
 								<option value="0">Select Material:</option>
-								<option value="1">Scarlet</option>
-								<option selected="selected" value="2">Jade</option>
-								<option value="3">Silver</option>
-								<option value="4">Polished Gold</option>
-								<option value="5">Rock</option>
-								<option value="6">Polished Bronze</option>
-								<option value="7">Brass</option>
-								<option value="8">Bronze</option>
-								<option value="9">Glass</option>
-								<option value="10">Caucho</option>
-								<option value="11">Default</option>
 						  </select>
 					</td>
 				</tr>

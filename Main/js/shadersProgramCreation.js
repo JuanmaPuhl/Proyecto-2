@@ -1,11 +1,7 @@
-
-
-
 var shaderProgramBLinnPhong  = null; //Shader program to use.
 var shaderProgramCookTorrance = null;
 var shaderProgramOrenNayar = null;
 var shaderProgramCookTorranceShirley = null;
-
 
 function setShaderBlinnPhong(){
   shaderProgram = shaderProgramBLinnPhong;
@@ -49,8 +45,6 @@ function setShaderCookTorrance(){
   u_ks = gl.getUniformLocation(shaderProgram, 'ks');
   u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
   u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
-  //u_id = gl.getUniformLocation(shaderProgram, 'id');
-  //u_is = gl.getUniformLocation(shaderProgram, 'is');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
 
   u_F0 = gl.getUniformLocation(shaderProgram,'F0');
@@ -87,9 +81,6 @@ function setShaderOrenNayar(){
   u_ks = gl.getUniformLocation(shaderProgram, 'ks');
   u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
 
-
-  //u_id = gl.getUniformLocation(shaderProgram, 'id');
-  //u_is = gl.getUniformLocation(shaderProgram, 'is');
   u_ro = gl.getUniformLocation(shaderProgram,'p');
   u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
@@ -122,15 +113,12 @@ function setShaderCookTorranceShirley(){
   u_ks = gl.getUniformLocation(shaderProgram, 'ks');
   u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
   u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
-  //u_id = gl.getUniformLocation(shaderProgram, 'id');
-  //u_is = gl.getUniformLocation(shaderProgram, 'is');
+
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
   u_rugosidad = gl.getUniformLocation(shaderProgram,'rugosidad');
   u_F0 = gl.getUniformLocation(shaderProgram,'F0');
   u_Nu= gl.getUniformLocation(shaderProgram, 'Nu');
   u_Nv = gl.getUniformLocation(shaderProgram, 'Nv');
-  //u_limit = gl.getUniformLocation(shaderProgram, 'limit');
-  //u_dirL = gl.getUniformLocation(shaderProgram,'dirL');
 
   u_posL = gl.getUniformLocation(shaderProgram, 'posL');
   u_dirL = gl.getUniformLocation(shaderProgram,'dirL');

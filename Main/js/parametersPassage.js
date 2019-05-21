@@ -20,17 +20,10 @@ function passCamera(){
 	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
 }
 function passLight1(light){
-	let intensity = colorLuz(1);
-	let intensity2 = [intensity,intensity,intensity];
-	light.setIntensity(intensity2);
-	//gl.uniform1f(u_ax,ax);
-	//gl.uniform1f(u_ay,ay);
 	let spot_position_eye = vec4.create();
 	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
 	gl.uniform4fv(u_posL, spot_position_eye);
 	gl.uniform3fv(u_ia, light.getIntensity()[0]);
-	//gl.uniform3fv(u_id, light.getIntensity()[1]);
-	//gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit, light.getAngle());
 	let spot_direction_eye = vec4.create();
 	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
@@ -38,17 +31,10 @@ function passLight1(light){
 }
 
 function passLight2(light){
-	let intensity = colorLuz(2);
-	let intensity2 = [intensity,intensity,intensity];
-	light.setIntensity(intensity2);
-	//gl.uniform1f(u_ax,ax);
-	//gl.uniform1f(u_ay,ay);
 	let spot_position_eye = vec4.create();
 	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
 	gl.uniform4fv(u_posL2, spot_position_eye);
 	gl.uniform3fv(u_ia2, light.getIntensity()[0]);
-	//gl.uniform3fv(u_id, light.getIntensity()[1]);
-	//gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit2, light.getAngle());
 	let spot_direction_eye = vec4.create();
 	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
@@ -56,17 +42,10 @@ function passLight2(light){
 }
 
 function passLight3(light){
-	let intensity = colorLuz(3);
-	let intensity2 = [intensity,intensity,intensity];
-	light.setIntensity(intensity2);
-	//gl.uniform1f(u_ax,ax);
-	//gl.uniform1f(u_ay,ay);
 	let spot_position_eye = vec4.create();
 	vec4.transformMat4(spot_position_eye,light.getLightPosition(),viewMatrix);
 	gl.uniform4fv(u_posL3, spot_position_eye);
 	gl.uniform3fv(u_ia3, light.getIntensity()[0]);
-	//gl.uniform3fv(u_id, light.getIntensity()[1]);
-	//gl.uniform3fv(u_is, light.getIntensity()[2]);
 	gl.uniform1f(u_limit3, light.getAngle());
 	let spot_direction_eye = vec4.create();
 	vec4.transformMat4(spot_direction_eye,light.getDirection(),viewMatrix);
@@ -89,14 +68,11 @@ function drawBlinnPhong(object){
   mat4.invert(MV,MV);
   mat4.transpose(MV,MV);
   gl.uniformMatrix4fv(u_normalMatrix, false, MV);
-  //gl.uniform1f(u_ro,1.0);
-  //gl.uniform1f(u_sigma,90.0);
   let material = object.getMaterial();
   /*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
   gl.uniform3fv(u_ka,material.getKa());
   gl.uniform3fv(u_kd,material.getKd());
   gl.uniform3fv(u_ks,material.getKs());
-  //console.log(material.getKs());
   gl.uniform1f(u_coefEspec,material.getShininess());
   gl.bindVertexArray(object.getVao());//Asocio el vao del planeta
   gl.drawElements(gl.TRIANGLES, object.getIndexCount(), gl.UNSIGNED_INT, 0);//Dibuja planeta
@@ -119,20 +95,14 @@ function drawCookTorrance(object){
   mat4.invert(MV,MV);
   mat4.transpose(MV,MV);
   gl.uniformMatrix4fv(u_normalMatrix, false, MV);
-  //gl.uniform1f(u_ro,1.0);
-  //gl.uniform1f(u_sigma,90.0);
   let material = object.getMaterial();
   /*-----------------------PASO LOS VALORES DEL MATERIAL--------------------*/
   gl.uniform3fv(u_ka,material.getKa());
   gl.uniform3fv(u_kd,material.getKd());
   gl.uniform3fv(u_ks,material.getKs());
-  //console.log(material.getKs());
   gl.uniform1f(u_coefEspec,material.getShininess());
 	gl.uniform1f(u_F0,material.getF0());
 	gl.uniform1f(u_rugosidad,material.getRugosidad());
-	//console.log(material.getRugosidad());
-	//gl.uniform1f(u_F0,3.81);
-  //gl.uniform1f(u_rugosidad,0.3);
 	gl.uniform1f(u_ro,1.0);
 	gl.uniform1f(u_sigma,90.0);
   gl.bindVertexArray(object.getVao());//Asocio el vao del planeta

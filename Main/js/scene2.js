@@ -8,6 +8,7 @@ var parsedOBJ4 = null;
 var parsedOBJ5 = null;
 var parsedOBJ_Ferrari = [];
 var parsedOBJ_BMW = [];
+var parsedOBJ_Lexus = [];
 
 //Uniform values.
 var viewMatrix = mat4.create();
@@ -35,6 +36,7 @@ var rotationSpeed = 30;
 var materials = [];
 
 //OBJETOS
+var obj_cars = [];
 var obj_bmw;
 var obj_ford;
 var obj_ferrari;
@@ -65,8 +67,6 @@ var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
 var light_direction3 = [0.0,-1.0,0.0,0.0];
 var light_angle3 = Math.cos(glMatrix.toRadian(30));
 
-var ax = 0.4;
-var ay = 0.41;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -76,72 +76,44 @@ function onLoad() {
 	//Cargo los objetos a la escena
 	onModelLoad();
 	cargarSliders();//Cargo los sliders
-	//Creacion de MATERIALES
-	crearMateriales();
-
-	//Creo las variables que voy a pasar a los shaders
-
-
+	crearMateriales();//Creacion de MATERIALES
 	createShaderPrograms();
 	setShaderBlinnPhong();
-
-	//Creo objetos
+	loadMaterials();
+	//Creo autos
 	ferrari = new Car();
 	let ferrari_colors = ["Jade","Polished Bronze","Glass"];
-	for(let i = 0 ; i<parsedOBJ_Ferrari.length; i++){
-		let objeto = new Object(parsedOBJ_Ferrari[i]);
-		createVAO(objeto);
-		if(i<ferrari_colors.length)
-			objeto.setMaterial(getMaterialByName(ferrari_colors[i]));
-		else
-			objeto.setMaterial(getMaterialByName("Default"));
-		ferrari.addObject(objeto);
-	}
+	ferrari.setColors(ferrari_colors);
+	ferrari.setOBJ(parsedOBJ_Ferrari);
 
 	bmw = new Car();
-	let bmw_colors = ["Silver","Caucho","Glass","Bronze","Scarlet"];
-	for(let i = 0 ; i<parsedOBJ_BMW.length; i++){
-		let objeto = new Object(parsedOBJ_BMW[i]);
-		createVAO(objeto);
-		if(i<bmw_colors.length)
-			objeto.setMaterial(getMaterialByName(bmw_colors[i]));
-		else
-			objeto.setMaterial(getMaterialByName("Default"));
-		bmw.addObject(objeto);
-	}
+	let bmw_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet"];
+	bmw.setColors(bmw_colors);
+	bmw.setOBJ(parsedOBJ_BMW);
 
 	lexus = new Car();
 	let lexus_colors = ["Polished Gold","Bronze","Caucho","Glass"];
-	for(let i = 0 ; i<parsedOBJ_Lexus.length; i++){
-		let objeto = new Object(parsedOBJ_Lexus[i]);
-		createVAO(objeto);
-		if(i<lexus_colors.length)
-			objeto.setMaterial(getMaterialByName(lexus_colors[i]));
-		else
-			objeto.setMaterial(getMaterialByName("Default"));
-		lexus.addObject(objeto);
+	lexus.setColors(lexus_colors);
+	lexus.setOBJ(parsedOBJ_Lexus);
+
+	obj_cars.push(lexus);
+	obj_cars.push(bmw);
+	obj_cars.push(ferrari);
+
+	for(let i = 0; i<obj_cars.length; i++){
+		createCar(obj_cars[i],obj_cars[i].getOBJ());
 	}
 
-	//console.log(lexus.getObjects());
 	obj_ball = new Object(parsedOBJ2);
 	obj_ball2 = new Object(parsedOBJ3);
 	obj_ball3 = new Object(parsedOBJ5);
-	//obj_ford = new Object(parsedOBJ3);
 	obj_piso = new Object(parsedOBJ4);
 
 	light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
 	light2 = new Light(light_position2 , light_intensity2 , light_angle2,light_direction2);//Creo la luz
 	light3 = new Light(light_position3 , light_intensity3 , light_angle3,light_direction3);//Creo la luz
-
-
-	// obj_ford.setVao(VAOHelper.create(obj_ford.getIndices(),[
-	// 	new VertexAttributeInfo(obj_ford.getPositions(), posLocation, 3),
-	// 	new VertexAttributeInfo(obj_ford.getNormals(), vertexNormal_location, 3)
-	// ]));
-	obj_piso.setVao(VAOHelper.create(obj_piso.getIndices(),[
-		new VertexAttributeInfo(obj_piso.getPositions(), posLocation, 3),
-		new VertexAttributeInfo(obj_piso.getNormals(), vertexNormal_location, 3)
-	]));
+	loadLights();
+	createVAO(obj_piso);
 	createVAO(obj_ball);
 	createVAO(obj_ball2);
 	createVAO(obj_ball3);
@@ -154,11 +126,6 @@ function onLoad() {
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	//console.log(obj_ferrari.getCenter());
-	//console.log(obj_bmw.getCenter());
-	//console.log(obj_ford.getCenter());
-
-
 	/*Creacion de camara*/
 	camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
 	viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
@@ -167,10 +134,8 @@ function onLoad() {
 	let near = 0.1;//Establezco la distancia minima que renderizare
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
-	console.log(angle[10]);
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	setObjects();
-	//console.log(ferrari.getObjects()[1].getVao());
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
@@ -183,8 +148,6 @@ function onRender(now){
 	var deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
 	then = now; //Actualizo el valor
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
-	/*Reinicio Matrices*/
-	//revisarMenus();
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(shaderProgram);
@@ -192,9 +155,6 @@ function onRender(now){
 	refreshCamera();
 	obj_ball.resetObjectMatrix();
 
-	//passLight(light);
-
-	//drawObject(obj_ferrari);
 	let arr = ferrari.getObjects();
 	for(let i = 0; i<arr.length; i++){
 		drawObject(arr[i]);
@@ -235,6 +195,18 @@ function createVAO(object){
 	]));
 }
 
+function createCar(car,parsedOBJ_arr){
+	let colors = car.getColors();
+	for(let i = 0 ; i<parsedOBJ_arr.length; i++){
+		let objeto = new Object(parsedOBJ_arr[i]);
+		createVAO(objeto);
+		if(i<colors.length)
+			objeto.setMaterial(getMaterialByName(colors[i]));
+		else
+			objeto.setMaterial(getMaterialByName("Default"));
+		car.addObject(objeto);
+	}
+}
 
 function refreshCamera(){
 	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
@@ -318,7 +290,6 @@ function rotateObject(object,angle){
 	mat4.multiply(matrix,rotationMatrix,matrix);
 }
 
-
 function rotateObjectZ(object,angle){
 	let matrix = object.getObjectMatrix();
 	let rotationMatrix = mat4.create();
@@ -330,17 +301,16 @@ function rotateObjectZ(object,angle){
 function transformFerrari(){
 	let arr = ferrari.getObjects();
 	for(let i = 0; i<arr.length; i++){
-		//translateToOrigin(arr[i]);
 		scaleObject(arr[i],[0.008,0.008,0.008]);
 		rotateObject(arr[i],180);
 		translateObject(arr[i],[0.4,0.05,-1]);
 	}
-	//translateObject(arr[1],[0,-0.08,0]);
-	//translateObject(arr[2],[-0.1,0.1,0]);
 }
 
 function transformBMW(){
+
 	let arr = bmw.getObjects();
+	console.log(arr);
 	rotateObject(arr[1],270);
 	for(let i = 0; i<arr.length; i++){
 		//translateToOrigin(arr[i]);
@@ -361,16 +331,10 @@ function transformBMW(){
 function transformLexus(){
 	let arr = lexus.getObjects();
 	for(let i = 0; i<arr.length; i++){
-		//translateToOrigin(arr[i]);
-		//console.log(arr);
 		scaleObject(arr[i],[0.06,0.06,0.06]);
 		rotateObject(arr[i],90);
 		translateObject(arr[i],[0,-0.282,1])
 	}
-	// translateToOrigin(obj_ford);
-	// scaleObject(obj_ford,[0.06,0.06,0.06]);
-	// rotateObject(obj_ford,90);
-	// translateObject(obj_ford,[0,-0.05,1]);
 }
 
 function transformPiso(){
@@ -381,65 +345,59 @@ function transformPiso(){
 }
 
 
-	function transformBall(){
-		obj_ball.resetObjectMatrix();
-		translateToOrigin(obj_ball);
-		scaleObject(obj_ball,[0.1,0.1,0.1]);
-		if(light.isEnabled()){
-			translateObject(obj_ball,light.getLightPosition());
-		}
-		else {
-			translateObject(obj_ball,0.0,100.0,0.0);
-		}
+function transformBall(){
+	obj_ball.resetObjectMatrix();
+	translateToOrigin(obj_ball);
+	scaleObject(obj_ball,[0.1,0.1,0.1]);
+	if(light.isEnabled()){
+		translateObject(obj_ball,light.getLightPosition());
+	}
+	else {
+		translateObject(obj_ball,0.0,100.0,0.0);
+	}
 
-		obj_ball2.resetObjectMatrix();
-		translateToOrigin(obj_ball2);
-		scaleObject(obj_ball2,[0.1,0.1,0.1]);
-		if(light2.isEnabled())
-			translateObject(obj_ball2,light2.getLightPosition());
-		else {
-			translateObject(obj_ball2,0.0,100.0,0.0);
+	obj_ball2.resetObjectMatrix();
+	translateToOrigin(obj_ball2);
+	scaleObject(obj_ball2,[0.1,0.1,0.1]);
+	if(light2.isEnabled())
+		translateObject(obj_ball2,light2.getLightPosition());
+	else {
+		translateObject(obj_ball2,0.0,100.0,0.0);
+	}
+
+	obj_ball3.resetObjectMatrix();
+	translateToOrigin(obj_ball3);
+	scaleObject(obj_ball3,[0.03,0.03,0.03]);
+	let matrix = mat4.create();
+
+	let matrizObjeto = obj_ball3.getObjectMatrix();
+	let direccion = light3.getDirection();
+	if(direccion[0]==0 && direccion[2]==0){
+		if(direccion[1]>0){
+			rotateObjectZ(obj_ball3,-90);
 		}
-
-		obj_ball3.resetObjectMatrix();
-		translateToOrigin(obj_ball3);
-		scaleObject(obj_ball3,[0.03,0.03,0.03]);
-		let matrix = mat4.create();
-
-		let matrizObjeto = obj_ball3.getObjectMatrix();
-		//mat4.targetTo(matrix,camaraEsferica.getPosition(),[light3.getDirection()[0],light3.getDirection()[1],light3.getDirection()[2]],[0,1,0]);
-		let direccion = light3.getDirection();
-		if(direccion[0]==0 && direccion[2]==0){
-			if(direccion[1]>0){
-				rotateObjectZ(obj_ball3,-90);
-			}
-			if(direccion[1]<0){
-				rotateObjectZ(obj_ball3,90);
-			}
-		}else{
-		mat4.targetTo(matrix, [0,0,0], [-direccion[2],light3.getDirection()[1],-direccion[0]],[0,1,0]);
+		if(direccion[1]<0){
+			rotateObjectZ(obj_ball3,90);
+		}
+	}
+	else{
+		mat4.targetTo(matrix, [0,0,0], [direccion[2],light3.getDirection()[1],direccion[0]],[0,1,0]);
 		mat4.multiply(matrizObjeto,matrix,matrizObjeto);
 	}
-		if(light3.isEnabled())
-			translateObject(obj_ball3,light3.getLightPosition());
-		else {
-			translateObject(obj_ball3,0.0,100.0,0.0);
-		}
-
+	if(light3.isEnabled())
+		translateObject(obj_ball3,light3.getLightPosition());
+	else {
+		translateObject(obj_ball3,0.0,100.0,0.0);
 	}
-
+}
 
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
 	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
-	//parsedOBJ = OBJParser.parseFile(ferrari); //Cargo el planeta
 	parsedOBJ2 = OBJParser.parseFile(cone); //Cargo el satelite
 	parsedOBJ3 = OBJParser.parseFile(ball);
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos)];
-	//parsedOBJ3 = OBJParser.parseFile(lexus);
 	parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
-	//parsedOBJ3 = OBJParser.parseFile(pg);
 	parsedOBJ4 = OBJParser.parseFile(caja);
 	parsedOBJ5 = OBJParser.parseFile(arrow);
-
 }

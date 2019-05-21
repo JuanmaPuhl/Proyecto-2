@@ -1,16 +1,26 @@
 function crearMateriales(){
-	materials.push(new Material("Metal","Scarlet",[0.15,0.0,0.0],[0.7,0.0,0.0],[1.0,1.0,1.0],89.5,0.09,0.1));
-	materials.push(new Material("Plastic","Jade",[0.135,0.2225,0.1575],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8,0.09,0.1));
+	materials.push(new Material("Metal","Scarlet",[0.0,0.0,0.0],[0.7,0.0,0.0],[1.0,1.0,1.0],89.5,0.09,0.1));
+	materials.push(new Material("Plastic","Jade",[0.0,0.0,0.0],[0.54,0.89,0.63],[0.316228,0.316228,0.316228],12.8,0.09,0.1));
 	materials.push(new Material("Satin","Silver",[0.0,0.0,0.0],[0.5,0.6,0.5],[0.6,0.5,0.2],89.5,0.09,0.1));
 	materials.push(new Material("Metal","Polished Gold",[0.0,0.0,0.0],[0.34615,0.3143,0.0903],[0.797357,0.723991,0.208006],83.2,0.1,0.1));
 	materials.push(new Material("Plastic","Rock",[0.0,0.0,0.0],[0.95466,0.078,0.0],[0.00,0.0,0.0],0.0,2.81,0.05));
-	materials.push(new Material("Metal","Polished Bronze",[0.25,0.148,0.06475],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8,0.2,0.3));
-	materials.push(new Material("Metal","Brass",[0.329412,.223529,0.027451],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974,0.2,0.05));
-	materials.push(new Material("Metal","Bronze",[0.2125,0.1275,0.054],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6,0.09,0.1));
+	materials.push(new Material("Metal","Polished Bronze",[0.0,0.0,0.0],[0.4,0.2368,0.1036],[0.774597,0.458561,0.200621],76.8,0.2,0.3));
+	materials.push(new Material("Metal","Brass",[0.0,0.0,0.0],[0.780392,0.568627,0.113725],[0.992157,0.941176,0.807843],27.8974,0.2,0.05));
+	materials.push(new Material("Metal","Bronze",[0.0,0.0,0.0],[0.714,0.4284,0.18144],[0.393548,0.271906,0.166721],25.6,0.09,0.1));
 	//materials.push(new Material("Plastic","CACA",[0.0,0.0,0.0],[1.0,0.5,0.0],[0.0,0.0,0.0],0.0,0.09,0.1));
-	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2,0.2,0.05));
+	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2,0.08,0.05));
 	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
 	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0,0.2,0.05));
+	materials.push(new Material("Metal","Polished Silver",[0.23125,0.23125,0.23125],[0.2775,0.2775,0.2775],[0.773911,0.773911,0.773911],89.6,0.09,0.1));
+	materials.push(new Material("Metal","Silver2",[0.19225,0.19225,0.19225],[0.50754,0.50754,0.50754],[0.508273,0.508273,0.508273],51.2,0.09,0.1));
+	materials.push(new Material("Plastic","Ruby",[0.1745,0.01175,0.01175],[0.61424,0.04136,0.04136],[0.727811,0.626959,0.626959],12.8,0.09,0.1));
+	materials.push(new Material("Satin","Pearl",[0.25,0.20725,0.20725],[1.0,0.829,0.829],[0.296648,0.296648,0.296648],11.264,0.09,0.1));
+	materials.push(new Material("Satin","Obsidian",[0.05375,0.05,0.06625],[0.18275,0.17,0.22525],[0.332741,0.328634,0.346435],38.4,0.09,0.1));
+	materials.push(new Material("Satin","Emerald",[0.0215,0.1745,0.0215],[0.07568,0.61424,0.07568],[0.633,0.727811,0.633],76.8,0.09,0.1));
+	materials.push(new Material("Plastic","Turoquoise",[0.1,0.18725,0.1745],[0.396,0.74151,0.69102],[0.297254,0.30829,0.306678],12.8,0.09,0.1));
+	materials.push(new Material("Metal","Chrome",[0.25,0.25,0.25],[0.4,0.4,0.4],[0.774597,0.774597,0.774597],76.8,0.09,0.1));
+
+
 }
 
 function getMaterialByName(name){
@@ -40,24 +50,25 @@ function getMaterialByIndex(index){
 function colorLuz(num){
 	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
 	let temperature;
-	if(num==1){
-		temperature = angle[10]/100;
-		//console.log(temperature);
-	}
-	else {
-		if(num==2){
-			temperature = angle[11]/100;
-			//console.log(temperature);
-		}
-			else {
-				if(num==3){
-					temperature = angle[12]/100;
-					//console.log(temperature);
-				}
-			}
+	// if(num==1){
+	// 	temperature = angle[10]/100;
+	// 	//console.log(temperature);
+	// }
+	// else {
+	// 	if(num==2){
+	// 		temperature = angle[11]/100;
+	// 		//console.log(temperature);
+	// 	}
+	// 		else {
+	// 			if(num==3){
+	// 				temperature = angle[12]/100;
+	// 				//console.log(temperature);
+	// 			}
+	// 		}
+	//
+	// }
 
-	}
-
+	temperature = num/100;
 	let red;
 	let green;
 	let blue;
@@ -112,6 +123,23 @@ function colorLuz(num){
 }
 
 
+function loadMaterials(){
+	let selector1 = document.getElementById("select1");
+	let selector2 = document.getElementById("select2");
+	let selector3 = document.getElementById("select3");
+	let option;
+	for(let i = 0; i<materials.length; i++){
+		option = document.createElement("option");
+		option.text = materials[i].getName();
+		selector1.add(option);
+		option = document.createElement("option");
+		option.text = materials[i].getName();
+		selector2.add(option);
+		option = document.createElement("option");
+		option.text = materials[i].getName();
+		selector3.add(option);
+	}
+}
 
 /*Funcion para cargar los sliders de la pagina*/
 function cargarSliders(){
@@ -121,40 +149,31 @@ function cargarSliders(){
 		updateTextInput(i,slider[i].value);//Actualizo el valor del campo de texto asociado al slider
 	}
 	angle[2] = 91-slider[2].defaultValue; //Este es el angulo del slider del zoom
-	angle[10] = parseFloat(document.getElementById("sliderColor1").value);
-	angle[11] = parseFloat(document.getElementById("sliderColor2").value);
-	angle[12] = parseFloat(document.getElementById("sliderColor3").value);
+
+	// angle[10] = parseFloat(document.getElementById("sliderColor1").value);
+	// angle[11] = parseFloat(document.getElementById("sliderColor2").value);
+	// angle[12] = parseFloat(document.getElementById("sliderColor3").value);
 
 	//Debo cargarlo asi para que cuando aumente se acerque, y cuando disminuye se aleje
 }
 
-function onSliderLuzSpot(slider){
-	angle[10] = parseFloat(slider.value);
-	changed=true;
-	document.getElementById("textInputSpot").value=slider.value;
+function loadLights(){
+	changeColorSlider(parseFloat(document.getElementById("sliderColor1").value),1);
+	changeColorSlider(parseFloat(document.getElementById("sliderColor2").value),2);
+	changeColorSlider(parseFloat(document.getElementById("sliderColor3").value),3);
 }
+
 function setNewValueSpot(value){
 	document.getElementById("sliderColor1").value=parseFloat(value);
 }
 
-function onSliderLuzPuntual(slider){
-	angle[11] = parseFloat(slider.value);
-	changed=true;
-	document.getElementById("textInputPuntual").value=slider.value;
-}
 function setNewValuePuntual(value){
 	document.getElementById("sliderColor2").value=parseFloat(value);
 }
 
-function onSliderLuzDireccional(slider){
-	angle[12] = parseFloat(slider.value);
-	changed=true;
-	document.getElementById("textInputDireccional").value=slider.value;
-}
 function setNewValuePuntual(value){
 	document.getElementById("sliderColor3").value=parseFloat(value);
 }
-
 
 function onSliderLuz(slider){
 	angle[1] = parseFloat(slider.value);
@@ -345,41 +364,93 @@ function resetScene(){
 	console.log("RESET");//Escribo un RESET para avisar que hizo algo
 }
 
-/*Funcion usada para poner en pantalla completa*/
-function launchFullScreen(element) {
-	if(!fullScreen){ //Si no esta en pantalla completa...
-		if(element.requestFullScreen) //Opcion estandar
-			element.requestFullScreen();
-		else
-			if(element.mozRequestFullScreen) //Opcion para Gecko (Firefox)
-				element.mozRequestFullScreen();
-			else
-				if(element.webkitRequestFullScreen) //Opcion para Blink (Chrome,Opera,Edge)
-					element.webkitRequestFullScreen();
-		fullScreen=true; //Esta en pantalla completa
+// /*Funcion usada para poner en pantalla completa*/
+// function launchFullScreen(element) {
+// 	if(!fullScreen){ //Si no esta en pantalla completa...
+// 		if(element.requestFullScreen) //Opcion estandar
+// 			element.requestFullScreen();
+// 		else
+// 			if(element.mozRequestFullScreen) //Opcion para Gecko (Firefox)
+// 				element.mozRequestFullScreen();
+// 			else
+// 				if(element.webkitRequestFullScreen) //Opcion para Blink (Chrome,Opera,Edge)
+// 					element.webkitRequestFullScreen();
+// 		fullScreen=true; //Esta en pantalla completa
+// 	}
+// 	else{ //Si estaba en pantalla completa
+// 		if(document.cancelFullScreen)
+// 			document.cancelFullScreen();
+// 		else
+// 			if(document.mozCancelFullScreen)
+// 				document.mozCancelFullScreen();
+// 			else
+// 				if(document.webkitCancelFullScreen)
+// 					document.webkitCancelFullScreen();
+// 	 fullScreen=false; //Ya no lo esta
+// 	}
+// }
+
+function changeMaterial(value,index){
+	let car;
+	if(index == 1){
+		car = lexus;
 	}
-	else{ //Si estaba en pantalla completa
-		if(document.cancelFullScreen)
-			document.cancelFullScreen();
-		else
-			if(document.mozCancelFullScreen)
-				document.mozCancelFullScreen();
-			else
-				if(document.webkitCancelFullScreen)
-					document.webkitCancelFullScreen();
-	 fullScreen=false; //Ya no lo esta
+	if(index == 2){
+		car = bmw;
 	}
+	if(index == 3){
+		car =ferrari;
+	}
+	let material = getMaterialByName(value);
+	car.getObjects()[0].setMaterial(material);
 }
 
-function cambiarMaterial1(value){
-	let material= getMaterialByIndex(parseFloat(value)-1);
-	lexus.getObjects()[0].setMaterial(material);
+function changeColor(value,index){
+	let color = convertHexToRgb(value);
+	if(index == 1){
+		light.setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
+		console.log(light.getIntensity());
+	}
+	if(index == 2){
+		light2.setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
+	}
+	if(index == 3){
+		light3.setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
+	}
+	console.log(value);
 }
-function cambiarMaterial2(value){
-	let material= getMaterialByIndex(parseFloat(value)-1);
-	bmw.getObjects()[0].setMaterial(material);
+
+
+function changeColorSlider(value,index){
+
+	let color = colorLuz(parseFloat(value));
+	if(index == 1){
+		light.setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
+		document.getElementById("textInputSpot").value=value;
+	}
+	if(index == 2){
+		light2.setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
+		document.getElementById("textInputPuntual").value=value;
+	}
+	if(index == 3){
+		light3.setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
+		document.getElementById("textInputDireccional").value=value;
+	}
+
+
 }
-function cambiarMaterial3(value){
-	let material= getMaterialByIndex(parseFloat(value)-1);
-	ferrari.getObjects()[0].setMaterial(material);
+function convertHexToRgb(value){
+	//2 digitos a la izquierda = red
+	let red = value.substr(1,2);
+	//2 digitos en el medio = green
+	let green = value.substr(3,2);
+	//2 digitos a la derecha = blue
+	let blue = value.substr(5,2);
+	//console.log(red + " " + green + " " + blue);
+	//Ahora debo convertir cada uno a Decimal
+	red = parseInt(red,16)/255;
+	green = parseInt(green,16)/255;
+	blue = parseInt(blue,16)/255;
+	//console.log(red + " " + green + " " + blue );
+	return [red,green,blue];
 }
