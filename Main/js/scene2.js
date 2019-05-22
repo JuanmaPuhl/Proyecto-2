@@ -129,9 +129,21 @@ function onLoad() {
 /*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
 se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
 los objetos como corresponda.*/
+var last = 0;
+var count = 0;
+var deltaTime;
 function onRender(now){
 	now *= 0.001; //Tiempo actual
-	var deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
+	deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
+	count++;
+
+	//console.log(parseFloat(now - last));
+	if(now - last> 1){
+		console.log("FPS: "+count);
+		time = 0;
+		count = 0;
+		last = now;
+	}
 	then = now; //Actualizo el valor
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Comienzo a preparar para dibujar*/
