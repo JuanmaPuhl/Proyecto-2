@@ -12,8 +12,16 @@ class Object{
     this.vao = null;
     this.center = Utils.boundingBoxCenter(this.positions);
     this.material = null;
+    this.textures = this.parsedOBJ.textures;
+    this.texture = null;
+  }
+  setTexture(texture){
+    this.texture = texture;
   }
 
+  getTexture(){
+    return this.texture;
+  }
   /*-------------------SETTERS-------------------*/
   setCenter(center){
     this.center = center;
@@ -36,6 +44,10 @@ class Object{
   }
 
   /*--------------------GETTERS-------------------*/
+
+  getTextures(){
+    return this.textures;
+  }
 
   getIndices(){
     return this.indices;

@@ -11,6 +11,9 @@ uniform vec4 dirL; //coordenadas del ojo
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec2 vertexTextureCoordinates;
+
+out vec2 fTexCoor;
 
 out vec3 vNE; //Normal del vertice en coordenadas del ojo
 //out vec3 vLE; //Direccion de la luz al vertice en coordenadas del ojo
@@ -28,5 +31,6 @@ void main(){
     //vec3 light_direction = posL.xyz - vertex_pos_eye; //direccion de la luz al vertice
     //vLE = light_direction;
     //vSD = dirL.xyz;
+    fTexCoor = vertexTextureCoordinates;
 }
 `

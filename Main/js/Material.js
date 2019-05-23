@@ -9,7 +9,9 @@ class Material{
     this.shininess = shininess;
     this.F0=F0;
     this.rugosidad=rugosidad;
+  
   }
+
 
   getName(){
     return this.name;

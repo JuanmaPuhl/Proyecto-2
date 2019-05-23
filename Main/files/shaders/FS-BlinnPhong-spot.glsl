@@ -15,7 +15,8 @@ in vec3 vNE; //Normal del vertice en coordenadas del ojo
 //in vec3 vLE; //Direccion de la luz al vertice en coordenadas del ojo
 in vec3 vVE; //Direccion del ojo al vertice en coordenadas del ojo
 //in vec3 vSD; //Direccion del spot
-
+in vec2 fTexCoor;
+uniform sampler2D imagen;
 
 struct Light{
   vec4 posL;
@@ -50,7 +51,7 @@ vec3 calcularAporteSpot(Light l, vec3 N , vec3 V){
           specular = 0.0;
       }
   }
-  return ka+kd*diffuse+ks*specular;
+  return ka+mix(kd,texture(imagen,fTexCoor).rgb,0.5)*diffuse+ks*specular;
 }
 
 vec3 calcularAportePuntual(Light l, vec3 N , vec3 V){
@@ -72,7 +73,7 @@ vec3 calcularAportePuntual(Light l, vec3 N , vec3 V){
       specular = 0.0;
   }
 
-  return ka+kd*diffuse+ks*specular;
+  return ka+mix(kd,texture(imagen,fTexCoor).rgb,0.5)*diffuse+ks*specular;
 }
 
 vec3 calcularAporteDireccional(Light l, vec3 N , vec3 V){
@@ -95,7 +96,7 @@ vec3 calcularAporteDireccional(Light l, vec3 N , vec3 V){
       specular = 0.0;
   }
 
-  return ka+kd*diffuse+ks*specular;
+  return ka+ mix(kd,texture(imagen,fTexCoor).rgb,0.5)*diffuse+ks*specular;
 }
 
 void main()
@@ -113,6 +114,7 @@ void main()
       if(lights[i].type==2)
         colorFrag += vec4(calcularAporteDireccional(lights[i],N,V),1.0);
     }
+    colorFrag = colorFrag ;
 
 }
 `

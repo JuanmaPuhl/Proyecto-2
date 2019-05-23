@@ -2,7 +2,7 @@
 /*Funcion que dicta que materiales se dibujan con cada modelo*/
 function drawObject(object){
 	if(object.getMaterial().getType()=="Metal"){
-    drawCookTorrance(object);
+    drawBlinnPhong(object);
 	}
 	if(object.getMaterial().getType()=="Plastic"){
 		drawOrenNayar(object);
@@ -68,6 +68,9 @@ function drawBlinnPhong(object){
 	passLight(2,light2);
 	passLight(3,light3);
   passCamera();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D,object.getTexture());
+	gl.uniform1i(shaderProgram.samplerUniform,0);
   let matrix = object.getObjectMatrix();
   gl.uniformMatrix4fv(u_modelMatrix, false, matrix);
   let MV = mat4.create();

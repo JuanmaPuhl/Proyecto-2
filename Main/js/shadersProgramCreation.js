@@ -8,6 +8,7 @@ function setShaderBlinnPhong(){
   shaderProgram = shaderProgramBLinnPhong;
   posLocation = gl.getAttribLocation(shaderProgram, 'vertexPosition');
   vertexNormal_location = gl.getAttribLocation(shaderProgram, 'vertexNormal');
+  texLocation = gl.getAttribLocation(shaderProgram, 'vertexTextureCoordinates');
   u_modelMatrix = gl.getUniformLocation(shaderProgram, 'modelMatrix');
   u_viewMatrix = gl.getUniformLocation(shaderProgram, 'viewMatrix');
   u_projMatrix = gl.getUniformLocation(shaderProgram, 'projectionMatrix');
@@ -17,6 +18,7 @@ function setShaderBlinnPhong(){
   u_normalMatrix = gl.getUniformLocation(shaderProgram, 'normalMatrix');
   u_coefEspec = gl.getUniformLocation(shaderProgram, 'coefEspec');
   u_MV = gl.getUniformLocation(shaderProgram, 'MV');
+  u_sampler = gl.getUniformLocation(shaderProgram, 'imagen');
 }
 
 /*Funcion para setear uniforms de CookTorrance*/

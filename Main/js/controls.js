@@ -24,7 +24,7 @@ function crearMateriales(){
 	materials.push(new Material("Satin","Emerald",[0.0,0.0,0.0],[0.07568,0.61424,0.07568],[0.633,0.727811,0.633],76.8,0.09,0.1));
 	materials.push(new Material("Satin","Silver",[0.0,0.0,0.0],[0.5,0.6,0.5],[0.6,0.5,0.2],89.5,0.09,0.1));
 
-	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
+	materials.push(new Material("Metal","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
 	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0,0.2,0.05));
 	materials.push(new Material("Plastic","Ruby",[0.0,0.0,0.0],[0.61424,0.04136,0.04136],[0.727811,0.626959,0.626959],12.8,0.09,0.1));
 	materials.push(new Material("Plastic","Turquoise",[0.0,0.0,0.0],[0.396,0.74151,0.69102],[0.297254,0.30829,0.306678],12.8,0.09,0.1));
