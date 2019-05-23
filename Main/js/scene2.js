@@ -135,6 +135,7 @@ function onLoad() {
 	setObjects();
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
+
 }
 
 
@@ -180,6 +181,7 @@ function onRender(now){
 	now *= 0.001; //Tiempo actual
 	deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
 	count++;
+	//console.log(count);
 	//console.log(parseFloat(now - last));
 	if(now - last> 1){
 		console.log("FPS: "+count);
