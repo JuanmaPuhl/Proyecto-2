@@ -1,7 +1,7 @@
 {
-  "vertexSource": "#version 300 es \n\nuniform mat4 modelMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\n\n\n\nin vec3 vertexPosition;\nin vec3 vertexNormal;\n\nout vec3 vNE; //Vector normal en espacio ojo\n//out vec3 vLE; //Vector de direccion de luz\nout vec3 vVE; //Vector de vista (al ojo)\n\n\nvoid main(void){\n    mat4 MV =  viewMatrix * modelMatrix;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);\n    //vec3 lightPosition_Eyespace = vec3(viewMatrix*posL);\n    vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));\n    //vLE = normalize(vec3(lightPosition_Eyespace-posVE));\n    \n    mat4 MN = normalMatrix;\n    //Transformar normal del espacio objeto al ojo\n    vNE = normalize(vec3(MN * vec4(vertexNormal,0.0)));\n    \n    //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.\n    vVE= normalize(-posVE);\n    \n}",
-  "fragmentSource": "#version 300 es\nprecision highp float;\nuniform mat4 viewMatrix;\nin vec3 vNE; \n//in vec3 vLE;\nin vec3 vVE;\nout vec4 colorFrag;\nuniform vec3 ka;\nuniform float coefEspec;\nuniform vec3 kd;\nuniform vec3 ks;\n\n\n\nstruct Light{\n    vec4 posL;\n    vec3 dirL;\n    float angulo;\n};\n//Luz 1\nuniform vec4 posL1; //Posicion luz\nuniform vec3 ldir1;\nuniform float angulo1;\n\n\n//Luz 2 \nuniform vec4 posL2;\nuniform vec3 ldir2;\nuniform float angulo2;\n\n//Luz 3\nuniform vec4 posL3;\nuniform vec3 ldir3;\nuniform float angulo3;\n\n\n\nuniform Light l1,l2;\n\nvec3 calcularAporte1(Light l ,vec3 N, vec3 V){\n    // vec4 posL = l.posL;\n    // vec3 ldir = l.dirL;\n    // float angulo = l.angulo;\n    \n    vec4 lightPosition_EyeSpace = viewMatrix * posL1;\n    \n    vec3 L = normalize(vec3(lightPosition_EyeSpace + vec4(V,0.0)));\n    vec3 H = normalize(L+V);\n    \n    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(ldir1,0.0));\n    vec3 D = normalize(lightDirection_EyeSpace);\n    \n    float LdotN = max(dot(L,N),0.0);\n    float HdotV = max(dot(H,N),0.0);\n    float LdotD = max(dot(-L,D),0.0);\n    float angle = acos(LdotD);\n    bool insideSpot = angle<angulo1;\n    \n    vec3 ambient = ka;\n    vec3 diffuse = vec3(0.0,0.0,0.0);\n    vec3 specular = vec3(0.0,0.0,0.0);\n    //if(insideSpot){\n        diffuse = kd * LdotN;\n        specular = ks * pow(HdotV,coefEspec);\n    //}\n    return ambient+diffuse + specular;\n}\n\nvec3 calcularAporte2(Light l ,vec3 N, vec3 V){\n    // vec4 posL = l.posL;\n    // vec3 ldir = l.dirL;\n    // float angulo = l.angulo;\n    vec4 lightPosition_EyeSpace = viewMatrix * posL2;\n    \n    vec3 L = normalize(vec3(lightPosition_EyeSpace + vec4(V,0.0)));\n    vec3 H = normalize(L+V);\n    \n    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(ldir2,0.0));\n    vec3 D = normalize(lightDirection_EyeSpace);\n    \n    float LdotN = max(dot(L,N),0.0);\n    float HdotV = max(dot(H,N),0.0);\n    float LdotD = max(dot(-L,D),0.0);\n    float angle = acos(LdotD);\n    bool insideSpot = angle<angulo2;\n    \n    vec3 ambient = ka;\n    vec3 diffuse = vec3(0.0,0.0,0.0);\n    vec3 specular = vec3(0.0,0.0,0.0);\n    //if(insideSpot){\n        diffuse = kd * LdotN;\n        specular = ks * pow(HdotV,coefEspec);\n    //}\n    return ambient+diffuse + specular;\n}\n\nvec3 calcularAporte3(Light l ,vec3 N, vec3 V){\n    // vec4 posL = l.posL;\n    // vec3 ldir = l.dirL;\n    // float angulo = l.angulo;\n    vec4 lightPosition_EyeSpace = viewMatrix * posL3;\n    \n    vec3 L = normalize(vec3(lightPosition_EyeSpace + vec4(V,0.0)));\n    vec3 H = normalize(L+V);\n    \n    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(ldir3,0.0));\n    vec3 D = normalize(lightDirection_EyeSpace);\n    \n    float LdotN = max(dot(L,N),0.0);\n    float HdotV = max(dot(H,N),0.0);\n    float LdotD = max(dot(-L,D),0.0);\n    float angle = acos(LdotD);\n    bool insideSpot = angle<angulo3;\n    \n    vec3 ambient = ka;\n    vec3 diffuse = vec3(0.0,0.0,0.0);\n    vec3 specular = vec3(0.0,0.0,0.0);\n    //if(insideSpot){\n        diffuse = kd * LdotN;\n        specular = ks * pow(HdotV,coefEspec);\n    //}\n    return ambient+diffuse + specular;\n}\n\nvoid main(){\n    vec3 N = normalize(vNE);\n    //vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    //vec3 H = normalize(L+V);\n    \n    \n    \n    \n    \n    colorFrag =vec4(calcularAporte1(l1,N,V) + calcularAporte2(l2,N,V)+ calcularAporte3(l2,N,V),1.0);\n    //Calculo termino difuso + espec de Blinn-Phong\n    //float difuso = max(dot(L,N),0.0) ;\n    //float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);\n    //if(dot(L,N)< 0.0){\n    //    specBlinnPhong = 0.0;\n    //}\n  \t//colorFrag = ka + kd*difuso + ks*specBlinnPhong;\n   \n}",
-  "model": "teapot",
+  "vertexSource": "#version 300 es \n\nuniform mat4 modelMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\n\n\nin vec2 vertexTextureCoordinates;\nin vec3 vertexPosition;\nin vec3 vertexNormal;\nout vec2 fTexCoor;\nout vec3 vNE; //Vector normal en espacio ojo\n//out vec3 vLE; //Vector de direccion de luz\nout vec3 vVE; //Vector de vista (al ojo)\n\n\nvoid main(void){\n    mat4 MV =  viewMatrix * modelMatrix;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);\n    //vec3 lightPosition_Eyespace = vec3(viewMatrix*posL);\n    vec3 posVE = vec3(MV*vec4(vertexPosition,1.0));\n    //vLE = normalize(vec3(lightPosition_Eyespace-posVE));\n    \n    mat4 MN = normalMatrix;\n    //Transformar normal del espacio objeto al ojo\n    vNE = normalize(vec3(MN * vec4(vertexNormal,0.0)));\n    \n    //Calcular el vector del ojo en espacio del ojo; el ojo, por def esta en el origen.\n    vVE= normalize(-posVE);\n    fTexCoor = vertexTextureCoordinates;\n}",
+  "fragmentSource": "#version 300 es\nprecision highp float;\nuniform mat4 viewMatrix;\nin vec3 vNE; \n//in vec3 vLE;\nin vec3 vVE;\nout vec4 colorFrag;\nuniform vec3 ka;\nuniform float coefEspec;\nuniform vec3 kd;\nuniform vec3 ks;\nin vec2 fTexCoor;\nuniform sampler2D imagen;\nuniform sampler2D imagen2;\nuniform sampler2D imagen3;\n\n\nstruct Light{\n    vec4 posL;\n    vec3 dirL;\n    float angulo;\n};\n//Luz 1\nuniform vec4 posL1; //Posicion luz\nuniform vec3 ldir1;\nuniform float angulo1;\n\n\n//Luz 2 \nuniform vec4 posL2;\nuniform vec3 ldir2;\nuniform float angulo2;\n\n//Luz 3\nuniform vec4 posL3;\nuniform vec3 ldir3;\nuniform float angulo3;\n\n\n\nuniform Light l1,l2;\n\nvec3 calcularAporte1(Light l ,vec3 N, vec3 V){\n    // vec4 posL = l.posL;\n    // vec3 ldir = l.dirL;\n    // float angulo = l.angulo;\n    \n    vec4 lightPosition_EyeSpace = viewMatrix * posL1;\n    \n    vec3 L = normalize(vec3(lightPosition_EyeSpace + vec4(V,0.0)));\n    vec3 H = normalize(L+V);\n    \n    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(ldir1,0.0));\n    vec3 D = normalize(lightDirection_EyeSpace);\n    \n    float LdotN = max(dot(L,N),0.0);\n    float HdotV = max(dot(H,N),0.0);\n    float LdotD = max(dot(-L,D),0.0);\n    float angle = acos(LdotD);\n    bool insideSpot = angle<angulo1;\n    \n    vec3 ambient = ka;\n    vec3 diffuse = vec3(0.0,0.0,0.0);\n    vec3 specular = vec3(0.0,0.0,0.0);\n    //if(insideSpot){\n        diffuse = kd * LdotN;\n        specular = ks * pow(HdotV,coefEspec);\n    //}\n    return ambient+diffuse + specular;\n}\n\nvec3 calcularAporte2(Light l ,vec3 N, vec3 V){\n    // vec4 posL = l.posL;\n    // vec3 ldir = l.dirL;\n    // float angulo = l.angulo;\n    vec4 lightPosition_EyeSpace = viewMatrix * posL2;\n    \n    vec3 L = normalize(vec3(lightPosition_EyeSpace + vec4(V,0.0)));\n    vec3 H = normalize(L+V);\n    \n    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(ldir2,0.0));\n    vec3 D = normalize(lightDirection_EyeSpace);\n    \n    float LdotN = max(dot(L,N),0.0);\n    float HdotV = max(dot(H,N),0.0);\n    float LdotD = max(dot(-L,D),0.0);\n    float angle = acos(LdotD);\n    bool insideSpot = angle<angulo2;\n    \n    vec3 ambient = ka;\n    vec3 diffuse = vec3(0.0,0.0,0.0);\n    vec3 specular = vec3(0.0,0.0,0.0);\n    //if(insideSpot){\n        diffuse = kd * LdotN;\n        specular = ks * pow(HdotV,coefEspec);\n    //}\n    return ambient+diffuse + specular;\n}\n\nvec3 calcularAporte3(Light l ,vec3 N, vec3 V){\n    // vec4 posL = l.posL;\n    // vec3 ldir = l.dirL;\n    // float angulo = l.angulo;\n    vec4 lightPosition_EyeSpace = viewMatrix * posL3;\n    \n    vec3 L = normalize(vec3(lightPosition_EyeSpace + vec4(V,0.0)));\n    vec3 H = normalize(L+V);\n    \n    vec3 lightDirection_EyeSpace = vec3(viewMatrix* vec4(ldir3,0.0));\n    vec3 D = normalize(lightDirection_EyeSpace);\n    \n    float LdotN = max(dot(L,N),0.0);\n    float HdotV = max(dot(H,N),0.0);\n    float LdotD = max(dot(-L,D),0.0);\n    float angle = acos(LdotD);\n    bool insideSpot = angle<angulo3;\n    \n    vec3 ambient = ka;\n    vec3 diffuse = vec3(0.0,0.0,0.0);\n    vec3 specular = vec3(0.0,0.0,0.0);\n    //if(insideSpot){\n        diffuse = kd * LdotN;\n        specular = ks * pow(HdotV,coefEspec);\n    //}\n    return ambient+diffuse + specular;\n}\n\nvoid main(){\n    vec3 N = normalize(vNE);\n    //vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    //vec3 H = normalize(L+V);\n    \n    \n    \n    \n    \n    //colorFrag =vec4(calcularAporte1(l1,N,V) + calcularAporte2(l2,N,V)+ calcularAporte3(l2,N,V),1.0);\n    colorFrag = texture(imagen,fTexCoor)* texture(imagen2,fTexCoor) * texture(imagen3,fTexCoor);\n    //Calculo termino difuso + espec de Blinn-Phong\n    //float difuso = max(dot(L,N),0.0) ;\n    //float specBlinnPhong = pow(max(dot(N,H),0.0),coefEspec);\n    //if(dot(L,N)< 0.0){\n    //    specBlinnPhong = 0.0;\n    //}\n  \t//colorFrag = ka + kd*difuso + ks*specBlinnPhong;\n   \n}",
+  "model": "sphere",
   "uniforms": [
     {
       "name": "ka",
@@ -34,6 +34,21 @@
         1,
         1
       ]
+    },
+    {
+      "name": "imagen",
+      "type": "sampler2D",
+      "value": 0
+    },
+    {
+      "name": "imagen2",
+      "type": "sampler2D",
+      "value": 1
+    },
+    {
+      "name": "imagen3",
+      "type": "sampler2D",
+      "value": 0
     },
     {
       "name": "posL1",
@@ -106,59 +121,11 @@
       "name": "angulo3",
       "type": "float",
       "value": 0
-    },
-    {
-      "name": "l1.posL",
-      "type": "vec4",
-      "value": [
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "name": "l1.dirL",
-      "type": "vec3",
-      "value": [
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "name": "l1.angulo",
-      "type": "float",
-      "value": 0
-    },
-    {
-      "name": "l2.posL",
-      "type": "vec4",
-      "value": [
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "name": "l2.dirL",
-      "type": "vec3",
-      "value": [
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "name": "l2.angulo",
-      "type": "float",
-      "value": 0
     }
   ],
   "textureUnits": [
-    "blank",
-    "blank",
+    "earth day",
+    "rust",
     "blank",
     "blank",
     "blank",

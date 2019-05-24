@@ -472,3 +472,26 @@ function convertHexToRgb(value){
 	//console.log(red + " " + green + " " + blue );
 	return [red,green,blue];
 }
+
+
+function setNewAngle(index,value){
+	lights[parseInt(index)-1].setAngle(Math.cos(glMatrix.toRadian(parseFloat(value))));
+	light = lights[0];
+	light2 = lights[1];
+	light3 = lights[2];
+	console.log(index);
+	console.log(parseFloat(value));
+	console.log("Cambio angulo" + lights[index].getAngle());
+}
+
+function setLightDirection(index){
+	let valueX = parseFloat(document.getElementById("textInputXD"+index).value);
+	let valueY = parseFloat(document.getElementById("textInputYD"+index).value);
+	let valueZ = parseFloat(document.getElementById("textInputZD"+index).value);
+	if (index == 1)
+		light.setDirection([valueX,valueY,valueZ,0.0]);
+	if (index == 2)
+		light2.setDirection([valueX,valueY,valueZ,0.0]);
+	if (index == 3)
+		light3.setDirection([valueX,valueY,valueZ,0.0]);
+}

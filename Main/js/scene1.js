@@ -52,24 +52,18 @@ var obj_ball3;
 // var light2_angle = Math.cos(glMatrix.toRadian(50));
 // var light2_direction = [0.0,-1.0,0.0];
 
+var lights = [];
 var light;
-var light_position = [0.0,2.0,0.0,1.0];
-var light_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle = Math.cos(glMatrix.toRadian(30));
-var light_direction = [0.0,-1.0,0.0,0.0];
+
 
 var light2;
-var light_position2 = [0.0,2.0,1.0,1.0];
-var light_intensity2 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle2 = Math.cos(glMatrix.toRadian(30));
-var light_direction2 = [0.0,-1.0,0.0,0.0];
+
 
 var light3;
-var light_position3 = [0.0,2.0,-1.0,1.0];
-var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-var light_angle3 = Math.cos(glMatrix.toRadian(30));
-var light_direction3 = [0.0,-1.0,0.0,0.0];
 
+var enrejado ;
+var fuego;
+var texture;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -84,7 +78,7 @@ function onLoad() {
 
 	createShaderPrograms();
 	setShaderBlinnPhong();
-
+	initTexture();
 	obj_ball = new Object(parsedOBJ10);
 	obj_ball.setVao(VAOHelper.create(obj_ball.getIndices(),[
 		new VertexAttributeInfo(obj_ball.getPositions(), posLocation, 3),
@@ -128,18 +122,21 @@ function onLoad() {
   			arr[j].setMaterial(getMaterialByIndex(i));
   			arr[j].setVao(VAOHelper.create(arr[j].getIndices(), [
   				new VertexAttributeInfo(arr[j].getPositions(), posLocation, 3),
-  				new VertexAttributeInfo(arr[j].getNormals(), vertexNormal_location, 3)
+  				new VertexAttributeInfo(arr[j].getNormals(), vertexNormal_location, 3),
+					new VertexAttributeInfo(arr[j].getTextures(), texLocation,2)
   			]));
+				arr[j].setTexture(texture);
+
       }
     balls.push(arr);
     arr = [];
 	}
 
-	// light = new Light(light_position , light_intensity , light_angle,light_direction);//Creo la luz
-	// light2 = new Light(light_position2 , light_intensity2 , light_angle,light_direction2);//Creo la luz
-	// light3 = new Light(light_position3 , light_intensity3 , light_angle,light_direction3);//Creo la luz
 	createLights();
 	loadLights();
+	light = lights[0];
+	light2 = lights[1];
+	light3 = lights[2];
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
@@ -162,16 +159,23 @@ function onLoad() {
 /*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
 se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
 los objetos como corresponda.*/
+var last = 0;
+var count = 0;
 function onRender(now){
 	now *= 0.001; //Tiempo actual
 	var deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
 	then = now; //Actualizo el valor
+	count++;
+	if(now - last> 1){
+		console.log("FPS: "+count);
+		count = 0;
+		last = now;
+	}
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Reinicio Matrices*/
 
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gl.useProgram(shaderProgram);
 
 	refreshCamera();
 	for(let i = 0; i<balls.length; i++){
@@ -186,9 +190,43 @@ function onRender(now){
 	drawObject(obj_ball3);
 	drawObject(obj_piso);
   //drawObject(obj_axis);
-	gl.useProgram(null);
+
 	requestAnimationFrame(onRender); //Continua el bucle
 }
+
+function initTexture(){
+	texture = gl.createTexture();
+	enrejado = gl.createTexture();
+	fuego = gl.createTexture();
+	texture.image = new Image();
+	enrejado.image = new Image();
+	fuego.image = new Image();
+	texture.image.onload = function(){
+		handleLoadedTexture(texture);
+	}
+	enrejado.image.onload = function(){
+		handleLoadedTexture(enrejado);
+	}
+	fuego.image.onload = function(){
+		handleLoadedTexture(fuego);
+	}
+	fuego.image.src = "textures/fuego.png";
+	texture.image.src = "textures/textura2 (2).jpg";
+	enrejado.image.src = "textures/carbon-fiber.jpg";
+	console.log(texture.image);
+}
+
+function handleLoadedTexture(texture){
+	gl.bindTexture(gl.TEXTURE_2D,texture);
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,texture.image);
+	gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+	gl.bindTexture(gl.TEXTURE_2D,null);
+}
+
 
 function refreshCamera(){
 	if(animated[5]) //Si esta rotando automaticamente a la izquierda...

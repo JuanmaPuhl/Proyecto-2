@@ -52,6 +52,10 @@ class Light{
       }
   }
 
+
+  setAngle(angle){
+    this.angle = angle;
+  }
   //Retorno el Angulo de la luz
   getAngle(){
     if(this.enabled)

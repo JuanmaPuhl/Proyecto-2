@@ -266,16 +266,16 @@ function transformObjects(){
 	transformCamaro();
 }
 
-function createCarShell(name,textures,colors,rotation,scale,traslation,obj){
-	let car = new Car(name);
-	bugatti.setColors(colors);
-	bugatti.setTextures(textures);
-	bugatti.setOBJ(obj);
-	bugatti.setRotation(rotation);
-	bugatti.setTraslation(traslation);
-	bugatti.setScale(scale);
-	createCar(car,car.getOBJ())
-}
+// function createCarShell(name,textures,colors,rotation,scale,traslation,obj){
+// 	let car = new Car(name);
+// 	bugatti.setColors(colors);
+// 	bugatti.setTextures(textures);
+// 	bugatti.setOBJ(obj);
+// 	bugatti.setRotation(rotation);
+// 	bugatti.setTraslation(traslation);
+// 	bugatti.setScale(scale);
+// 	createCar(car,car.getOBJ())
+// }
 
 function drawCars(carsArr){
 	for(let k = 0; k<carsArr.length;k++){
