@@ -42,6 +42,9 @@ var obj_ford;
 var obj_ferrari;
 var obj_piso;
 var ferrari;
+var lamborghini;
+var bugatti;
+var camaro;
 var bmw;
 var lexus;
 var obj_ball;
@@ -67,33 +70,59 @@ function onLoad() {
 	cargarSliders();//Cargo los sliders
 	crearMateriales();//Creacion de MATERIALES
 	createShaderPrograms();
-	setShaderBlinnPhong();
+	setShaderCookTorrance();
 	loadMaterials();
 	initTexture();
 	//Creo autos
-	let bmw_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	ferrari = new Car();
+
+	ferrari = new Car("Ferrari");
+	let ferrari_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let ferrari_colors = ["Pearl","Caucho","Bronze","Glass","Scarlet"];
+	//createCarShell("Ferrari",ferrari_textures,ferrari_colors,180,[0.008,0.008,0.008],[0.4,0.05,-1],parsedBOJ_Ferrari);
 	ferrari.setColors(ferrari_colors);
 	ferrari.setOBJ(parsedOBJ_Ferrari);
-	ferrari.setTextures(bmw_textures);
+	ferrari.setTextures(ferrari_textures);
+	ferrari.setRotation(180);
+	ferrari.setTraslation([0.4,0.05,-1]);
+	ferrari.setScale([0.008,0.008,0.008]);
 
-	bmw = new Car();
-
+	bmw = new Car("BMW");
+	let bmw_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let bmw_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
 	bmw.setColors(bmw_colors);
 	bmw.setOBJ(parsedOBJ_BMW);
 	bmw.setTextures(bmw_textures);
+	//createCarShell("BMW",bmw_textures,bmw_);
 
-	lexus = new Car();
+	lexus = new Car("Lexus");
+	let lexus_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let lexus_colors = ["Polished Gold","Bronze","Caucho","Glass"];
 	lexus.setColors(lexus_colors);
 	lexus.setOBJ(parsedOBJ_Lexus);
-	lexus.setTextures(bmw_textures);
+	lexus.setTextures(lexus_textures);
+
+	camaro = new Car("Camaro");
+	let camaro_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let camaro_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	camaro.setColors(camaro_colors);
+	camaro.setOBJ(parsedOBJ_Camaro);
+	camaro.setTextures(camaro_textures);
+
+	bugatti = new Car("Bugatti");
+	let bugatti_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let bugatti_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	bugatti.setColors(bugatti_colors);
+	bugatti.setTextures(camaro_textures);
+	bugatti.setOBJ(parsedOBJ_Bugatti);
+	bugatti.setRotation(180);
+	bugatti.setTraslation([0.04,0.0,-0.8]);
+	bugatti.setScale([0.002,0.002,0.002]);
 
 	obj_cars.push(lexus);
 	obj_cars.push(bmw);
 	obj_cars.push(ferrari);
+	obj_cars.push(camaro);
+	obj_cars.push(bugatti);
 
 	for(let i = 0; i<obj_cars.length; i++){
 		createCar(obj_cars[i],obj_cars[i].getOBJ());
@@ -132,12 +161,41 @@ function onLoad() {
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
-	setObjects();
+	transformObjects();
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
-
 }
 
+/*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
+se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
+los objetos como corresponda.*/
+var last = 0;
+var count = 0;
+var deltaTime;
+function onRender(now){
+	now *= 0.001; //Tiempo actual
+	deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
+	count++;
+	if(now - last> 1){
+		console.log("FPS: "+count);
+		count = 0;
+		last = now;
+	}
+	then = now; //Actualizo el valor
+	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
+	/*Comienzo a preparar para dibujar*/
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	refreshCamera();
+	obj_ball.resetObjectMatrix();
+
+	drawCars(["Ferrari","BMW","Camaro"]);
+	transformBall();
+	drawObject(obj_ball);
+	drawObject(obj_ball2);
+	drawObject(obj_ball3);
+	drawObject(obj_piso);
+	requestAnimationFrame(onRender); //Continua el bucle
+}
 
 function initTexture(){
 	texture = gl.createTexture();
@@ -171,57 +229,6 @@ function handleLoadedTexture(texture){
 	gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
 	gl.bindTexture(gl.TEXTURE_2D,null);
 }
-/*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
-se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
-los objetos como corresponda.*/
-var last = 0;
-var count = 0;
-var deltaTime;
-function onRender(now){
-	now *= 0.001; //Tiempo actual
-	deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
-	count++;
-	//console.log(count);
-	//console.log(parseFloat(now - last));
-	if(now - last> 1){
-		console.log("FPS: "+count);
-		count = 0;
-		last = now;
-	}
-	then = now; //Actualizo el valor
-	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
-	/*Comienzo a preparar para dibujar*/
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	refreshCamera();
-	obj_ball.resetObjectMatrix();
-	let arr = ferrari.getObjects();
-	for(let i = 0; i<arr.length; i++){
-		drawObject(arr[i]);
-	}
-	let arr2 = bmw.getObjects();
-	for(let i = 0; i<arr2.length; i++){
-		drawObject(arr2[i]);
-	}
-	let arr3 = lexus.getObjects();
-	for(let i = 0; i<arr3.length; i++){
-		drawObject(arr3[i]);
-	}
-	transformBall();
-	drawObject(obj_ball);
-	drawObject(obj_ball2);
-	drawObject(obj_ball3);
-	drawObject(obj_piso);
-	requestAnimationFrame(onRender); //Continua el bucle
-}
-
-function setObjects(){
-	/*Actualizo las transformaciones para cada uno de los objetos*/
-	transformFerrari();
-	transformBMW();
-	transformLexus();
-	transformPiso();
-	transformBall();
-}
 
 function createVAO(object){
 	object.setVao(VAOHelper.create(object.getIndices(), [
@@ -248,16 +255,39 @@ function createCar(car,parsedOBJ_arr){
 	}
 }
 
-function refreshCamera(){
-	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
-		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
-	else
-		if(animated[6]) //Si esta rotando automaticamente a la derecha...
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
-		else {// Si no esta siendo animada
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
+function transformObjects(){
+	/*Actualizo las transformaciones para cada uno de los objetos*/
+	transformFerrari();
+	transformBMW();
+	transformLexus();
+	transformPiso();
+	transformBall();
+	transformBugatti();
+	transformCamaro();
+}
+
+function createCarShell(name,textures,colors,rotation,scale,traslation,obj){
+	let car = new Car(name);
+	bugatti.setColors(colors);
+	bugatti.setTextures(textures);
+	bugatti.setOBJ(obj);
+	bugatti.setRotation(rotation);
+	bugatti.setTraslation(traslation);
+	bugatti.setScale(scale);
+	createCar(car,car.getOBJ())
+}
+
+function drawCars(carsArr){
+	for(let k = 0; k<carsArr.length;k++){
+		for(let i = 0; i<obj_cars.length; i++){
+			if(obj_cars[i].getName()==carsArr[k]){
+				let objetos = obj_cars[i].getObjects();
+				for(let j = 0; j<objetos.length; j++){
+					drawObject(objetos[j]);
+				}
+			}
 		}
-	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
+	}
 }
 
 /*Funcion para refrescar los angulos de rotacion automatica*/
@@ -301,155 +331,22 @@ function refreshAngles(deltaTime){
 	}
 }
 
-function translateToOrigin(object){
-	let matrix = object.getObjectMatrix();
-	let translationVector = [-object.getCenter()[0],-object.getCenter()[1],-object.getCenter()[2]];
-	let translationMatrix = mat4.create();
-	mat4.fromTranslation(translationMatrix,translationVector);
-	mat4.multiply(matrix,translationMatrix,matrix);
-}
-
-function scaleObject(object,scale){
-	let matrix = object.getObjectMatrix();
-	let scaleMatrix = mat4.create();//Creo una matriz de 4 dimensiones. Esta sera la matriz de escalado
-	mat4.fromScaling(scaleMatrix,scale);//Creo la matriz de escalado
-	mat4.multiply(matrix, scaleMatrix, matrix);//Aplico el escalado
-}
-
-function translateObject(object,translationVector){
-	let matrix = object.getObjectMatrix();
-	let translationMatrix = mat4.create();
-	mat4.fromTranslation(translationMatrix,translationVector);
-	mat4.multiply(matrix,translationMatrix,matrix);
-}
-
-function rotateObject(object,angle){
-	let matrix = object.getObjectMatrix();
-	let rotationMatrix = mat4.create();
-	mat4.fromYRotation(rotationMatrix,glMatrix.toRadian(angle));
-	mat4.multiply(matrix,rotationMatrix,matrix);
-}
-
-function rotateObjectZ(object,angle){
-	let matrix = object.getObjectMatrix();
-	let rotationMatrix = mat4.create();
-	mat4.fromZRotation(rotationMatrix,glMatrix.toRadian(angle));
-	mat4.multiply(matrix,rotationMatrix,matrix);
-}
-
-/*Funcion para escalar el planeta*/
-function transformFerrari(){
-	let arr = ferrari.getObjects();
-	// for(let i = 0; i<arr.length; i++){
-	// 	scaleObject(arr[i],[0.008,0.008,0.008]);
-	// 	rotateObject(arr[i],180);
-	// 	translateObject(arr[i],[0.4,0.05,-1]);
-	// }
-	for(let i = 0; i<arr.length; i++){
-		//translateToOrigin(arr[0]);
-		scaleObject(arr[i],[0.002,0.002,0.002]);
-		rotateObject(arr[i],180);
-		translateObject(arr[i],[0.04,0.0,0.2]);
-		translateObject(arr[i],[0,0.0,-1]);
-	}
-
-}
-
-function transformBMW(){
-
-	let arr = bmw.getObjects();
-	console.log(arr);
-	rotateObject(arr[1],270);
-	for(let i = 0; i<arr.length; i++){
-		//translateToOrigin(arr[i]);
-		scaleObject(arr[i],[0.11,0.11,0.11]);
-		rotateObject(arr[i],90);
-		translateObject(arr[i],[0.3,-0.15,0])
-	}
-	scaleObject(arr[1],[0.3,0.3,0.3]);
-	translateObject(arr[1],[-(0.225),-0.03,0]);
-	rotateObject(arr[3],-90);
-	scaleObject(arr[3],[0.3,0.3,0.3]);
-	translateObject(arr[3],[-(0.137),-0.03,-0.0898]);
-	rotateObject(arr[4],-90);
-	scaleObject(arr[4],[0.3,0.3,0.3]);
-	translateObject(arr[4],[-(0.137),-0.03,-0.0898]);
-}
-
-function transformLexus(){
-	let arr = lexus.getObjects();
-	for(let i = 0; i<arr.length; i++){
-		// scaleObject(arr[i],[0.06,0.06,0.06]);
-		// rotateObject(arr[i],90);
-		// translateObject(arr[i],[0,-0.282,1])
-		translateToOrigin(arr[i]);
-		scaleObject(arr[i],[0.2,0.2,0.2]);
-		rotateObject(arr[i],180);
-		translateObject(arr[i],[0,0,1])
-	}
-}
-
-function transformPiso(){
-	translateToOrigin(obj_piso);
-	scaleObject(obj_piso,[1,1,1]);
-	scaleObject(obj_piso,[5,1,5]);
-	translateObject(obj_piso,[0,-	1.15,0]);
-}
-
-
-function transformBall(){
-	obj_ball.resetObjectMatrix();
-	translateToOrigin(obj_ball);
-	scaleObject(obj_ball,[0.1,0.1,0.1]);
-	if(light.isEnabled()){
-		translateObject(obj_ball,light.getLightPosition());
-	}
-	else {
-		translateObject(obj_ball,0.0,100.0,0.0);
-	}
-
-	obj_ball2.resetObjectMatrix();
-	translateToOrigin(obj_ball2);
-	scaleObject(obj_ball2,[0.1,0.1,0.1]);
-	if(light2.isEnabled())
-		translateObject(obj_ball2,light2.getLightPosition());
-	else {
-		translateObject(obj_ball2,0.0,100.0,0.0);
-	}
-
-	obj_ball3.resetObjectMatrix();
-	translateToOrigin(obj_ball3);
-	scaleObject(obj_ball3,[0.03,0.03,0.03]);
-	let matrix = mat4.create();
-
-	let matrizObjeto = obj_ball3.getObjectMatrix();
-	let direccion = light3.getDirection();
-	if(direccion[0]==0 && direccion[2]==0){
-		if(direccion[1]>0){
-			rotateObjectZ(obj_ball3,-90);
+function refreshCamera(){
+	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
+		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
+	else
+		if(animated[6]) //Si esta rotando automaticamente a la derecha...
+			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
+		else {// Si no esta siendo animada
+			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
 		}
-		if(direccion[1]<0){
-			rotateObjectZ(obj_ball3,90);
-		}
-	}
-	else{
-		mat4.targetTo(matrix, [0,0,0], [direccion[2],light3.getDirection()[1],direccion[0]],[0,1,0]);
-		mat4.multiply(matrizObjeto,matrix,matrizObjeto);
-	}
-	if(light3.isEnabled())
-		translateObject(obj_ball3,light3.getLightPosition());
-	else {
-		translateObject(obj_ball3,0.0,100.0,0.0);
-	}
+	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
 }
-
-
-
 
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
-	//parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
-	parsedOBJ_Ferrari = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
+	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
+	//parsedOBJ_Ferrari = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
 	parsedOBJ2 = OBJParser.parseFile(cone); //Cargo el satelite
 	parsedOBJ3 = OBJParser.parseFile(ball);
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos),OBJParser.parseFile(bmw_luces_freno),OBJParser.parseFile(bmw_capo),OBJParser.parseFile(bmw_puertas),OBJParser.parseFile(bmw_techo),OBJParser.parseFile(bmw_manijas),OBJParser.parseFile(bmw_baul)];
@@ -457,4 +354,6 @@ function onModelLoad() {
 	parsedOBJ_Lexus = [OBJParser.parseFile(lambo)];
 	parsedOBJ4 = OBJParser.parseFile(caja);
 	parsedOBJ5 = OBJParser.parseFile(arrow);
+	parsedOBJ_Camaro = [OBJParser.parseFile(camaro)];
+	parsedOBJ_Bugatti = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
 }

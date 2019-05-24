@@ -1,10 +1,26 @@
 class Car {
 
-  constructor(){
+  constructor(name){
+    this.name = name;
     this.objects = [];
     this.colors = [];
     this.parsedOBJ = [];
     this.textures = [];
+    this.scale = [1,1,1];
+    this.traslation = [0,0,0];
+    this.rotation = 0;
+  }
+
+  setScale(scale){
+    this.scale = scale;
+  }
+
+  setTraslation(traslation){
+    this.traslation = traslation;
+  }
+
+  setRotation(rotation){
+    this.rotation = rotation;
   }
 
   setTextures(textures){
@@ -36,5 +52,21 @@ class Car {
 
   getOBJ(){
     return this.obj;
+  }
+
+  getTraslation(){
+    return this.traslation;
+  }
+
+  getRotation(){
+    return this.rotation;
+  }
+
+  getScale(){
+    return this.scale;
+  }
+
+  getName(){
+    return this.name;
   }
 }

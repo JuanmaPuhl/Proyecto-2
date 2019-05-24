@@ -5,6 +5,9 @@ precision highp float;
 in vec3 vNE;
 //in vec3 vLE;
 in vec3 vVE;
+in vec2 fTexCoor;
+
+
 out vec4 colorFrag;
 uniform vec3 ka;
 uniform float coefEspec;
@@ -13,10 +16,7 @@ uniform vec3 ks;
 uniform float F0;
 uniform mat4 viewMatrix;
 uniform float rugosidad;
-//uniform vec4 pd;
-//uniform vec4 ps;
-//uniform float ax;
-//uniform float ay;
+uniform sampler2D imagen;
 uniform float p;
 uniform float sigma;
 
@@ -30,9 +30,6 @@ struct Light{
 
 
 uniform Light lights[10];
-// uniform Light l1;
-// uniform Light l2;
-// uniform Light l3;
 
 float orenNayar(vec3 N, vec3 V, vec3 L, vec3 H){
   float f0N = 0.0;
@@ -90,9 +87,9 @@ vec3 calcularAportePuntual(Light l, vec3 N , vec3 V){
 
   float value = orenNayar(N,V,L,H);
   if(componente1*componente2!=0.0)
-    return ka+ia*(kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
+    return ka+ia*((kd+texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
   else
-     return ka+ia*kd * value;
+     return ka+ia*(kd+texture(imagen,fTexCoor).rgb) * value;
 }
 
 vec3 calcularAporteSpot(Light l, vec3 N, vec3 V){
@@ -137,9 +134,9 @@ vec3 calcularAporteSpot(Light l, vec3 N, vec3 V){
 
     float value = orenNayar(N,V,L,H);
     if(componente1*componente2!=0.0)
-      toReturn = ka+ia*(kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
+      toReturn = ka+ia*((kd+texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
     else
-       toReturn = ka+ia*kd * value;
+       toReturn = ka+ia*(kd+texture(imagen,fTexCoor).rgb) * value;
   }
 
     return toReturn;
@@ -186,7 +183,7 @@ vec3 calcularAporteDireccional(Light l, vec3 N , vec3 V){
 
   float value = orenNayar(N,V,S,H);
   if(componente1*componente2!=0.0)
-    return ka+ia*(kd*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
+    return ka+ia*((kd+texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
   else
      return ka+ia*kd * value;
 }
@@ -206,5 +203,5 @@ void main(){
         colorFrag += vec4(calcularAporteDireccional(lights[i],N,V),1.0);
     }
     //colorFrag = vec4(calcularAporteSpot(l1,N,V) + calcularAportePuntual(l2,N,V) + calcularAporteDireccional(l3,N,V),1.0);
-    //colorFrag = ka+kd*difuso+ks*specBlinnPhong;
+    //colorFrag = texture(imagen,fTexCoor);
 }`

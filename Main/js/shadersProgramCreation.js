@@ -39,6 +39,8 @@ function setShaderCookTorrance(){
   u_rugosidad = gl.getUniformLocation(shaderProgram,'rugosidad');
   u_ro = gl.getUniformLocation(shaderProgram,'p');
   u_sigma = gl.getUniformLocation(shaderProgram, 'sigma');
+  texLocation = gl.getAttribLocation(shaderProgram, 'vertexTextureCoordinates');
+  u_sampler = gl.getUniformLocation(shaderProgram, 'imagen');
 }
 
 /*Funcion para setear uniforms de OrenNayar*/
