@@ -47,6 +47,14 @@ var bugatti;
 var camaro;
 var bmw;
 var lexus;
+var specter;
+var nissan;
+var ardita;
+var rx;
+var lancer;
+var porsche;
+
+
 var obj_ball;
 var obj_ball2;
 var obj_ball3;
@@ -72,9 +80,9 @@ function onLoad() {
 	createShaderPrograms();
 	setShaderCookTorrance();
 	loadMaterials();
+
 	initTexture();
 	//Creo autos
-
 	ferrari = new Car("Ferrari");
 	let ferrari_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let ferrari_colors = ["Pearl","Caucho","Bronze","Glass","Scarlet"];
@@ -120,16 +128,73 @@ function onLoad() {
 	bugatti.setTraslation([0.04,0.0,-0.8]);
 	bugatti.setScale([0.002,0.002,0.002]);
 
+	lamborghini = new Car("Lamborghini");
+	let lamborghini_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let lamborghini_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	lamborghini.setColors(lamborghini_colors);
+	lamborghini.setTextures(lamborghini_textures);
+	lamborghini.setOBJ(parsedOBJ_Lamborghini);
+
+	specter = new Car("Specter");
+	let specter_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let specter_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	specter.setColors(specter_colors);
+	specter.setTextures(specter_textures);
+	specter.setOBJ(parsedOBJ_Specter);
+
+	// nissan = new Car("Nissan");
+	// let nissan_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	// let nissan_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	// nissan.setColors(nissan_colors);
+	// nissan.setTextures(nissan_textures);
+	// nissan.setOBJ(parsedOBJ_Nissan);
+
+	// ardita = new Car("Ardita");
+	// let ardita_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	// let ardita_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	// ardita.setColors(ardita_colors);
+	// ardita.setTextures(ardita_textures);
+	// ardita.setOBJ(parsedOBJ_Ardita);
+
+	rx = new Car("RX");
+	let rx_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let rx_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	rx.setColors(rx_colors);
+	rx.setTextures(rx_textures);
+	rx.setOBJ(parsedOBJ_RX);
+
+	lancer = new Car("Lancer");
+	let lancer_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let lancer_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	lancer.setColors(lancer_colors);
+	lancer.setTextures(lancer_textures);
+	lancer.setOBJ(parsedOBJ_Lancer);
+
+	porsche = new Car("Porsche");
+	let porsche_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let porsche_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	porsche.setColors(porsche_colors);
+	porsche.setTextures(porsche_textures);
+	porsche.setOBJ(parsedOBJ_Porsche);
+
 	obj_cars.push(lexus);
 	obj_cars.push(bmw);
 	obj_cars.push(ferrari);
 	obj_cars.push(camaro);
 	obj_cars.push(bugatti);
+	obj_cars.push(lamborghini);
+	obj_cars.push(specter);
+	// obj_cars.push(nissan);
+	//obj_cars.push(ardita);
+	obj_cars.push(rx);
+	obj_cars.push(lancer);
+	obj_cars.push(porsche);
 
 	for(let i = 0; i<obj_cars.length; i++){
+		console.log(obj_cars[i].getName());
 		createCar(obj_cars[i],obj_cars[i].getOBJ());
 	}
-
+	loadCars();
 	obj_ball = new Object(parsedOBJ2);
 	obj_ball2 = new Object(parsedOBJ3);
 	obj_ball3 = new Object(parsedOBJ5);
@@ -171,6 +236,7 @@ function onLoad() {
 /*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
 se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
 los objetos como corresponda.*/
+var toDraw=["Lexus","BMW","Camaro"];
 var last = 0;
 var count = 0;
 var deltaTime;
@@ -189,8 +255,11 @@ function onRender(now){
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	refreshCamera();
 	obj_ball.resetObjectMatrix();
+	transformCars(toDraw[0],1);
+	transformCars(toDraw[1],0);
+	transformCars(toDraw[2],-1);
+	drawCars(toDraw);
 
-	drawCars(["Ferrari","BMW","Camaro"]);
 	transformBall();
 	drawObject(obj_ball);
 	drawObject(obj_ball2);
@@ -198,7 +267,34 @@ function onRender(now){
 	drawObject(obj_piso);
 	requestAnimationFrame(onRender); //Continua el bucle
 }
-
+function transformCars(name,traslate){
+	let auto = getCarByName(name);
+	let nombre = auto.getName();
+	if(nombre=="Lexus")
+		transformLexus(traslate);
+	if(nombre=="Bugatti")
+		transformBugatti(traslate);
+	if(nombre=="BMW")
+		transformBMW(traslate);
+	if(nombre=="Ferrari")
+		transformFerrari(traslate);
+	if(nombre=="Camaro")
+		transformCamaro(traslate);
+	if(nombre=="Lamborghini")
+		transformLamborghini(traslate);
+	if(nombre=="Specter")
+		transformSpecter(traslate);
+	if(nombre=="Nissan")
+		transformNissan(traslate);
+	if(nombre=="Ardita")
+		transformArdita(traslate);
+	if(nombre=="RX")
+		transformRX(traslate);
+	if(nombre=="Lancer")
+		transformLancer(traslate);
+	if(nombre=="Porsche")
+		transformPorsche(traslate);
+}
 function initTexture(){
 	texture = gl.createTexture();
 	enrejado = gl.createTexture();
@@ -259,13 +355,13 @@ function createCar(car,parsedOBJ_arr){
 
 function transformObjects(){
 	/*Actualizo las transformaciones para cada uno de los objetos*/
-	transformFerrari();
-	transformBMW();
-	transformLexus();
-	transformPiso();
-	transformBall();
-	transformBugatti();
-	transformCamaro();
+	transformFerrari(0);
+	transformBMW(0);
+	transformLexus(0);
+	transformPiso(0);
+	transformBall(0);
+	transformBugatti(0);
+	transformCamaro(0);
 }
 
 // function createCarShell(name,textures,colors,rotation,scale,traslation,obj){
@@ -281,15 +377,22 @@ function transformObjects(){
 
 function drawCars(carsArr){
 	for(let k = 0; k<carsArr.length;k++){
-		for(let i = 0; i<obj_cars.length; i++){
-			if(obj_cars[i].getName()==carsArr[k]){
-				let objetos = obj_cars[i].getObjects();
-				for(let j = 0; j<objetos.length; j++){
-					drawObject(objetos[j]);
-				}
-			}
+		let auto = getCarByName(carsArr[k]);
+		let objetos = auto.getObjects();
+		for(let j = 0; j<objetos.length; j++){
+			drawObject(objetos[j]);
 		}
 	}
+}
+
+
+function getCarByName(name){
+	for(let i=0; i<obj_cars.length; i++){
+		if(obj_cars[i].getName() == name){
+			return obj_cars[i];
+		}
+	}
+	return obj_cars[0];
 }
 
 /*Funcion para refrescar los angulos de rotacion automatica*/
@@ -352,10 +455,17 @@ function onModelLoad() {
 	parsedOBJ2 = OBJParser.parseFile(cone); //Cargo el satelite
 	parsedOBJ3 = OBJParser.parseFile(ball);
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos),OBJParser.parseFile(bmw_luces_freno),OBJParser.parseFile(bmw_capo),OBJParser.parseFile(bmw_puertas),OBJParser.parseFile(bmw_techo),OBJParser.parseFile(bmw_manijas),OBJParser.parseFile(bmw_baul)];
-	//parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
-	parsedOBJ_Lexus = [OBJParser.parseFile(lambo)];
+	parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
+	parsedOBJ_Lamborghini = [OBJParser.parseFile(lambo)];
+
 	parsedOBJ4 = OBJParser.parseFile(caja);
 	parsedOBJ5 = OBJParser.parseFile(arrow);
 	parsedOBJ_Camaro = [OBJParser.parseFile(camaro)];
 	parsedOBJ_Bugatti = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
+	parsedOBJ_Specter = [OBJParser.parseFile(specter)];
+	//parsedOBJ_Nissan = [OBJParser.parseFile(nissan)];
+	//parsedOBJ_Ardita = [OBJParser.parseFile(ardita)];
+	parsedOBJ_RX = [OBJParser.parseFile(rx)];
+	parsedOBJ_Lancer = [OBJParser.parseFile(lancer)];
+	parsedOBJ_Porsche = [OBJParser.parseFile(porsche)];
 }

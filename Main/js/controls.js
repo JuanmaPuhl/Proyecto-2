@@ -409,16 +409,16 @@ function resetScene(){
 // }
 
 function changeMaterial(value,index){
-	let car;
-	if(index == 1){
-		car = lexus;
-	}
-	if(index == 2){
-		car = bmw;
-	}
-	if(index == 3){
-		car =ferrari;
-	}
+	let car = getCarByName(toDraw[index-1]);
+	// if(index == 1){
+	// 	car = lexus;
+	// }
+	// if(index == 2){
+	// 	car = bmw;
+	// }
+	// if(index == 3){
+	// 	car =ferrari;
+	// }
 	let material = getMaterialByName(value);
 	car.getObjects()[0].setMaterial(material);
 }
@@ -494,4 +494,37 @@ function setLightDirection(index){
 		light2.setDirection([valueX,valueY,valueZ,0.0]);
 	if (index == 3)
 		light3.setDirection([valueX,valueY,valueZ,0.0]);
+}
+
+
+
+function loadCars(){
+	console.log("ENtre");
+	let selector1 = document.getElementById("selectCar1");
+	let selector2 = document.getElementById("selectCar2");
+	let selector3 = document.getElementById("selectCar3");
+	let option;
+	let optGroup;
+	let tipoActual = "";
+	for(let i = 0; i<obj_cars.length; i++){
+		console.log(obj_cars[i].getName());
+		option = document.createElement("option");
+		option.text = obj_cars[i].getName();
+		selector1.add(option);
+		option = document.createElement("option");
+		option.text = obj_cars[i].getName();
+		selector2.add(option);
+		option = document.createElement("option");
+		option.text = obj_cars[i].getName();
+		selector3.add(option);
+	}
+}
+
+function changeCar(value,index){
+	if(toDraw[0]!=value && toDraw[1]!=value && toDraw[2]!=value ){
+		toDraw[index-1]=value;
+		console.log("Cambio auto" + value);
+		changeMaterial(document.getElementById("select"+index).value,index);
+	}
+
 }

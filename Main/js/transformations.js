@@ -36,40 +36,60 @@ function rotateObjectZ(object,angle){
 }
 
 /*Funcion para escalar el planeta*/
-function transformFerrari(){
+function transformFerrari(index){
 	let arr = ferrari.getObjects();
 	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
 		scaleObject(arr[i],[0.008,0.008,0.008]);
 		rotateObject(arr[i],180);
-		translateObject(arr[i],[0.4,0.05,-1]);
+		translateObject(arr[i],[0.4,0.05,index]);
 	}
 }
 
-function transformBugatti(){
+function transformBugatti(index){
+
 	let arr = bugatti.getObjects();
 	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
 		//translateToOrigin(arr[0]);
 		scaleObject(arr[i],[0.002,0.002,0.002]);
 		rotateObject(arr[i],180);
 		translateObject(arr[i],[0.04,0.0,0.2]);
-		translateObject(arr[i],[0,0.0,-1]);
+		translateObject(arr[i],[0,0.0,index]);
 	}
 }
 
-function transformCamaro(){
+function transformCamaro(index){
 	let arr = camaro.getObjects();
 	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
 		translateToOrigin(arr[0]);
 		scaleObject(arr[i],[0.065,0.065,0.065]);
 		rotateObject(arr[i],90);
-		translateObject(arr[i],[0.04,-0.012,1.0]);
+		translateObject(arr[i],[0.04,-0.012,index]);
 		//translateObject(arr[i],[0,0.0,1]);
 	}
 }
 
-function transformBMW(){
+function transformLamborghini(index){
+	let arr = lamborghini.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		// scaleObject(arr[i],[0.06,0.06,0.06]);
+		// rotateObject(arr[i],90);
+		// translateObject(arr[i],[0,-0.282,1])
+		translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.2,0.2,0.2]);
+		rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformBMW(index){
 	let arr = bmw.getObjects();
-	console.log(arr);
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+	}
 	rotateObject(arr[1],270);
 	for(let i = 0; i<arr.length; i++){
 		//translateToOrigin(arr[i]);
@@ -85,18 +105,113 @@ function transformBMW(){
 	rotateObject(arr[4],-90);
 	scaleObject(arr[4],[0.3,0.3,0.3]);
 	translateObject(arr[4],[-(0.137),-0.03,-0.0898]);
+	for(let i = 0; i<arr.length; i++){
+		translateObject(arr[i],[0,0,index])
+	}
 }
 
-function transformLexus(){
+function transformLexus(index){
 	let arr = lexus.getObjects();
 	for(let i = 0; i<arr.length; i++){
-		// scaleObject(arr[i],[0.06,0.06,0.06]);
-		// rotateObject(arr[i],90);
+		arr[i].resetObjectMatrix();
+		scaleObject(arr[i],[0.06,0.06,0.06]);
+		rotateObject(arr[i],90);
+		translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		// translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformSpecter(index){
+	let arr = specter.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		translateToOrigin(arr[i]);
+		 scaleObject(arr[i],[0.5,0.5,0.5]);
+		rotateObject(arr[i],180);
 		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformNissan(index){
+	let arr = nissan.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.4,0.4,0.4]);
+		rotateObject(arr[i],90);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformArdita(index){
+	let arr = ardita.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.065,0.065,0.065]);
+		rotateObject(arr[i],180);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformRX(index){
+	let arr = rx.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.0085,0.0085,0.0085]);
+		rotateObject(arr[i],90);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformLancer(index){
+	let arr = lancer.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.0002,0.0002,0.0002]);
+		rotateObject(arr[i],0);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
+	}
+}
+
+
+function transformPorsche(index){
+	let arr = porsche.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
 		translateToOrigin(arr[i]);
 		scaleObject(arr[i],[0.2,0.2,0.2]);
-		rotateObject(arr[i],180);
-		translateObject(arr[i],[0,0,1])
+		rotateObject(arr[i],-90);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,0,index])
 	}
 }
 
