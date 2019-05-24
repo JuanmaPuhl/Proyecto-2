@@ -319,7 +319,7 @@ function transformBall(){
 
 	obj_ball2.resetObjectMatrix();
 	translateToOrigin(obj_ball2);
-	scaleObject(obj_ball2,[0.1,0.1,0.1]);
+	scaleObject(obj_ball2,[0.03,0.03,0.03]);
 	if(light2.isEnabled())
 		translateObject(obj_ball2,light2.getLightPosition());
 	else {

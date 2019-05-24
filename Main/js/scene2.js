@@ -108,6 +108,8 @@ function onLoad() {
 	camaro.setOBJ(parsedOBJ_Camaro);
 	camaro.setTextures(camaro_textures);
 
+
+
 	bugatti = new Car("Bugatti");
 	let bugatti_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let bugatti_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
@@ -214,7 +216,7 @@ function initTexture(){
 		handleLoadedTexture(fuego);
 	}
 	fuego.image.src = "textures/fuego.png";
-	texture.image.src = "textures/fuego.png";
+	texture.image.src = "textures/mosaico.png";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
 	console.log(texture.image);
 }
