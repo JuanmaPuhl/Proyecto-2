@@ -211,7 +211,7 @@ function initTexture(){
 		handleLoadedTexture(fuego);
 	}
 	fuego.image.src = "textures/fuego.png";
-	texture.image.src = "textures/textura2 (2).jpg";
+	texture.image.src = "textures/texture1_256.jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
 	console.log(texture.image);
 }
@@ -359,9 +359,9 @@ function transformBalls(){
     let arr = balls[i];
     for(let j = 0; j<arr.length; j++){
       arr[j].resetObjectMatrix();
-			translateObject(arr[j],[-3 ,1.5,-7.5]);
-			translateObject(arr[j],[2*j,0,3*i]);
-			scaleObject(arr[j],[0.2,0.2,0.2])
+			translateObject(arr[j],[-11 ,7.5,-19]);
+			translateObject(arr[j],[7.5*j,0,7.5*i]);
+			scaleObject(arr[j],[0.03,0.03,0.03])
     }
 	}
 }
