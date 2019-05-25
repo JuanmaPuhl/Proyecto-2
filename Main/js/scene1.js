@@ -39,19 +39,6 @@ var obj_ball;
 var obj_ball2;
 var obj_ball3;
 //LUCES
-// var light3;
-// var light3_position = [0.0,2.0,-1.0,1.0];
-// var light3_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-// var light3_angle = Math.cos(glMatrix.toRadian(10));
-// console.log(light3_angle);
-// var light3_direction = [0.0,-1.0,0.0];
-//
-// var light2;
-// var light2_position = [0.0,2.0,1.0,1.0];
-// var light2_intensity = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-// var light2_angle = Math.cos(glMatrix.toRadian(50));
-// var light2_direction = [0.0,-1.0,0.0];
-
 var lights = [];
 var light;
 
@@ -64,6 +51,9 @@ var light3;
 var enrejado ;
 var fuego;
 var texture;
+
+var cameraMouseControls;
+var cameraAnimated = false;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -72,7 +62,7 @@ function onLoad() {
 
 	//Cargo los objetos a la escena
 	onModelLoad();
-	cargarSliders();//Cargo los sliders
+	//cargarSliders();//Cargo los sliders
 	//Creacion de MATERIALES
 	crearMateriales();
 
@@ -140,13 +130,16 @@ function onLoad() {
 	gl.clearColor(0.05, 0.05, 0.05, 1.0); //Cambio el color de fondo
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	/*Creacion de camara*/
-	camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
-	viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
-	let fov = glMatrix.toRadian(angle[3]); //Establezco el campo de vision inicial
-	let aspect = canvas.width / canvas.height;//Establezco la relacion de aspecto
-	let near = 0.1;//Establezco la distancia minima que renderizare
-	let far = 10.0;//Establezco la distancia maxima que renderizare
-	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
+	//camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
+	camaraEsferica = new sphericalCamera();
+	// viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
+	// let fov = glMatrix.toRadian(angle[3]); //Establezco el campo de vision inicial
+	// let aspect = canvas.width / canvas.height;//Establezco la relacion de aspecto
+	// let near = 0.1;//Establezco la distancia minima que renderizare
+	// let far = 10.0;//Establezco la distancia maxima que renderizare
+	// projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
+	projMatrix = camaraEsferica.projectionMatrix;
+cameraMouseControls = new CameraMouseControls(camaraEsferica, canvas);
 
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	//Dibujara los que esten mas cerca de la pantalla.
@@ -171,13 +164,13 @@ function onRender(now){
 		count = 0;
 		last = now;
 	}
-	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
+
 	/*Reinicio Matrices*/
 
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	refreshCamera();
+	refreshCamera(deltaTime * rotationSpeed); //Refresco la camara
 	for(let i = 0; i<balls.length; i++){
     let arr = balls[i];
     for(let j = 0; j<arr.length; j++){
@@ -228,43 +221,13 @@ function handleLoadedTexture(texture){
 }
 
 
-function refreshCamera(){
-	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
-		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
-	else
-		if(animated[6]) //Si esta rotando automaticamente a la derecha...
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
-		else {// Si no esta siendo animada
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
-		}
-	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
-}
-
-/*Funcion para refrescar los angulos de rotacion automatica*/
-function refreshAngles(deltaTime){
-	 // A partir del tiempo que pasó desde el ultimo frame (timeDelta), calculamos los cambios que tenemos que aplicar al cubo
-	for(let x = 0; x<10 ; x++){
-		if(animated[x]){
-			if(x==6){ //Si lo que se esta animando es la camara rotando automaticamente de forma horaria
-				rotationAngle[x] = deltaTime * (-rotationSpeed)+rotationAngle[x];
-				if(rotationAngle[x]<=0)
-					rotationAngle[x]=360;
-			}
-			else
-			 if(x==5){//Si lo que estoy animando es la camara rotando automaticamente de forma antihoraria
-				rotationAngle[x] = deltaTime * rotationSpeed + rotationAngle[x];
-				if(rotationAngle[x]>360)
-					rotationAngle[x]=0;
-			}
-			else{//Si no es ninguno de los casos anteriores establezco un angulo de rotacion estandar
-				rotationAngle[x] = deltaTime * rotationSpeed + rotationAngle[x];
-				if(rotationAngle[x]>360)
-					rotationAngle[x]=-360;
-			}
-		}
+function refreshCamera(value){
+	if(cameraAnimated){
+		camaraEsferica.arcHorizontally(glMatrix.toRadian(value));
 	}
+	viewMatrix = camaraEsferica.viewMatrix;
+	projectionMatrix = camaraEsferica.projectionMatrix;
 }
-
 
 function setObjects(){
 	transformBalls();

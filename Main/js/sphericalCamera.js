@@ -26,7 +26,7 @@ class sphericalCamera {
     // Setters & Getters
 
     set radius(value) {
-        this.sphericalPosition.radius = limitToRange(value, this.near, this.far) // radius: [near, far]
+        this.sphericalPosition.radius = limitToRange(value, 0.5, this.far) // radius: [near, far]
         this.updateViewMatrix()
         this.onPositionChange(this.sphericalPosition)
     }

@@ -336,33 +336,6 @@ y que accion debe llevar a cabo...
 */
 function animateObject(index){
 	changed=true; //Activo que hubo un cambio
-	// if(!animated[index]){ //Si no estaba siendo animado...
-	// 	animated[index]=true; //Lo animo
-	// 	rotationAngle[index] = parseFloat(angle[index]); //Tomo el valor del angulo correspondiente y lo asigno al angulo de rotacion automatica
-	// 	if(index==5){//Si se trata de la rotacion automatica de la camara antihorario
-	// 		if(animated[6])//Si estaba rotando automaticamente horario
-	// 			animateObject(6);//Termino la animacion anterior
-	// 		rotationAngle[5]=parseFloat(angle[4]); //Tomo el angulo del slider 5
-	// 	}
-	// 	if(index==6){ //Si se trata de la rotacion automatica de la camara horario
-	// 		if(animated[5])//Si estaba rotando automaticamente antihorario
-	// 			animateObject(5);//Termino la animacion anterior
-	// 		rotationAngle[6]=parseFloat(angle[4]); //Tomo el angulo del slider 5
-	// 	}
-	// }
-	// else { //Si ya se encontraba animandose, deseo pararlo
-	// 	animated[index]=false; //Termino la animacion
-	// //Tengo que hacer un caso especial en el 6 porque comparte el slider 5 y no existe slider 6, por lo tanto el caso general falla.
-	// 	if(index==6){ //Si se trata de la rotacion automatica de la camara a la derecha
-	// 		slider[4].value=rotationAngle[6]; //Seteo el valor del slider 5 como el angulo de rotacion 6
-	// 		angle[4] = rotationAngle[6]; //Hago lo mismo con el angulo
-	// 		updateTextInput(4,rotationAngle[6]); //Y con el campo de texto
-	// 	}else{
-	// 			slider[index].value=rotationAngle[index]; //Asigno al slider asociado con el valor de rotacion asociado
-	// 			angle[index]=rotationAngle[index]; //Lo mismo con el angulo
-	// 			updateTextInput(index,rotationAngle[index]); //Lo mismo con el campo de texto
-	// 		}
-	// 	}
 		if(!cameraAnimated)
 			cameraAnimated = true;
 			else
@@ -377,35 +350,19 @@ function animateObject(index){
 
 /*Funcion para resetear la escena.*/
 function resetScene(){
-	if(changed){ //Si ha habido algun cambio...
-		//El 6 esta afuera porque es un caso especial.Corresponde a la rotacion de la camara automatica a la derecha
-		//animated[6]=false; //Seteo todas las animaciones en falso
-		//rotationAngle[6]=slider[5].defaultValue; //Seteo los valores de los angulos a los iniciales de cada slider
-		for(let x=2; x<5; x++){
-			animated[x]=false;
-			rotationAngle[x]=slider[x].defaultValue;
-			angle[x]=slider[x].defaultValue;
-			updateTextInput(x,slider[x].defaultValue);
-			if(slider[x]!=null)
-				slider[x].value=slider[x].defaultValue;
-		}
-		//El 3 tambien. Corresponde al zoom
-		angle[2]= 91-slider[2].defaultValue;
-		changed=false;//Marco que no hay ningun cambio
-		updateTextInput(2,slider[2].defaultValue);
 
-		angle[10] = document.getElementById("sliderColor1").defaultValue;
-		angle[11] = document.getElementById("sliderColor2").defaultValue;
-		angle[12] = document.getElementById("sliderColor3").defaultValue;
+		camaraEsferica.reset();
+		lights[0].setLightPosition([0,2,0,1]);
+		lights[0].setIntensity([[1,1,1],[0.1,0.1,0.1],[0.1,0.1,0.1]]);
+		lights[1].setLightPosition([0,2,1,1]);
+		lights[1].setDirection([0.0,-1.0,0.0,0.0]);
+		lights[1].setAngle(Math.cos(glMatrix.toRadian(30)));
+		lights[1].setIntensity([[1,1,1],[0.1,0.1,0.1],[0.1,0.1,0.1]]);
+		lights[2].setLightPosition([0,2,-1,1]);
+		lights[2].setIntensity([[1,1,1],[0.1,0.1,0.1],[0.1,0.1,0.1]]);
+		lights[2].setDirection([1,0,0,0]);
 
-		document.getElementById("sliderColor1").value=angle[10];
-		document.getElementById("sliderColor2").value=angle[11];
-		document.getElementById("sliderColor3").value=angle[12];
 
-		document.getElementById("textInputSpot").value=angle[10];
-		document.getElementById("textInputPuntual").value=angle[11];
-		document.getElementById("textInputDireccional").value=angle[12];
-	}
 	console.log("RESET");//Escribo un RESET para avisar que hizo algo
 }
 
