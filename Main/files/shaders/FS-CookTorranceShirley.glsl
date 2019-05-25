@@ -5,9 +5,11 @@ precision highp float;
 in vec3 vNE;
 //in vec3 vLE;
 in vec3 vVE;
+in vec2 fTexCoor;
+
 
 out vec4 colorFrag;
-
+uniform sampler2D imagen;
 uniform vec3 ka;
 uniform vec3 kd;
 uniform vec3 ks;
@@ -228,4 +230,6 @@ void main(){
       if(lights[i].type==2)
         colorFrag += vec4(calcularAporteDireccional(lights[i],N,V),1.0);
     }
+
+    colorFrag += texture(imagen,fTexCoor);
 }`

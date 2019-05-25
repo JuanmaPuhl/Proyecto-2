@@ -73,21 +73,22 @@ function onLoad() {
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	//Cargo los objetos a la escena
-	onModelLoad();
+
+	onModelLoad();//Cargo los objetos a la escena
 	cargarSliders();//Cargo los sliders
 	crearMateriales();//Creacion de MATERIALES
-	createShaderPrograms();
-	setShaderCookTorrance();
-	loadMaterials();
+	createShaderPrograms();//Creacion de los shaderPrograms
+	setShaderCookTorrance();//Seteo un shaderProgram
+	loadMaterials(); //Cargo los materiales a los dropdown menu
 
-	initTexture();
+	initTexture(); //Creo las texturas
+
 	//Creo autos
-	ferrari = new Car("Ferrari");
-	let ferrari_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	let ferrari_colors = ["Pearl","Caucho","Bronze","Glass","Scarlet"];
+	ferrari = new Car("Ferrari"); //Creo el auto
+	let ferrari_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado]; //Creo un arreglo con las texturas a utilizar HARDCODE
+	let ferrari_colors = ["Pearl","Caucho","Bronze","Glass","Scarlet"]; //Creo un arreglo con los colores a utilizar
 	//createCarShell("Ferrari",ferrari_textures,ferrari_colors,180,[0.008,0.008,0.008],[0.4,0.05,-1],parsedBOJ_Ferrari);
-	ferrari.setColors(ferrari_colors);
+	ferrari.setColors(ferrari_colors); //Seteo Valores
 	ferrari.setOBJ(parsedOBJ_Ferrari);
 	ferrari.setTextures(ferrari_textures);
 	ferrari.setRotation(180);
@@ -110,8 +111,8 @@ function onLoad() {
 	lexus.setTextures(lexus_textures);
 
 	camaro = new Car("Camaro");
-	let camaro_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	let camaro_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	let camaro_textures = [null,null,null,null,null,texture,texture,fuego,texture,enrejado,enrejado];
+	let camaro_colors = ["Caucho","Polished Bronze","Bronze","Chrome","Glass","Scarlet","Chrome","Silver2","Chrome","Silver2","Brass","Silver2","Caucho","Pearl"];
 	camaro.setColors(camaro_colors);
 	camaro.setOBJ(parsedOBJ_Camaro);
 	camaro.setTextures(camaro_textures);
@@ -119,10 +120,10 @@ function onLoad() {
 
 
 	bugatti = new Car("Bugatti");
-	let bugatti_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	let bugatti_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	let bugatti_textures = [enrejado,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let bugatti_colors = ["Pearl","Polished Bronze","Silver","Silver2","Chrome","Caucho","Chrome","Glass","Scarlet","Pearl","Caucho"];
 	bugatti.setColors(bugatti_colors);
-	bugatti.setTextures(camaro_textures);
+	bugatti.setTextures(bugatti_textures);
 	bugatti.setOBJ(parsedOBJ_Bugatti);
 	bugatti.setRotation(180);
 	bugatti.setTraslation([0.04,0.0,-0.8]);
@@ -177,6 +178,7 @@ function onLoad() {
 	porsche.setTextures(porsche_textures);
 	porsche.setOBJ(parsedOBJ_Porsche);
 
+	//Una vez que termine de crearlos los meto en el arreglo para mejor manejo
 	obj_cars.push(lexus);
 	obj_cars.push(bmw);
 	obj_cars.push(ferrari);
@@ -190,26 +192,30 @@ function onLoad() {
 	obj_cars.push(lancer);
 	obj_cars.push(porsche);
 
+	//Creo para cada auto todos los objetos asociados. Chasis, ruedas etc. Se obtienen del arreglo de parsedOBJ
 	for(let i = 0; i<obj_cars.length; i++){
 		console.log(obj_cars[i].getName());
 		createCar(obj_cars[i],obj_cars[i].getOBJ());
 	}
+	//Cargo todos los autos en los dropdown
 	loadCars();
+	//Creo Objetos auxiliares
 	obj_ball = new Object(parsedOBJ2);
 	obj_ball2 = new Object(parsedOBJ3);
 	obj_ball3 = new Object(parsedOBJ5);
 	obj_piso = new Object(parsedOBJ4);
 
-	createLights();
-	loadLights();
+	createLights();//Creo las luces
+	loadLights();//Las cargo
 	light = lights[0];
 	light2 = lights[1];
 	light3 = lights[2];
+	//Creo VAOS
 	createVAO(obj_piso);
 	createVAO(obj_ball);
 	createVAO(obj_ball2);
 	createVAO(obj_ball3);
-	//obj_ford.setMaterial(getMaterialByName("Polished Gold"));
+	//Seteo materiales
 	obj_piso.setMaterial(getMaterialByName("Rock"));
 	obj_ball.setMaterial(getMaterialByName("Default"));
 	obj_ball2.setMaterial(getMaterialByName("Default"));
@@ -219,7 +225,6 @@ function onLoad() {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	/*Creacion de camara*/
-
 	camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
 	viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
 	let fov = glMatrix.toRadian(angle[3]); //Establezco el campo de vision inicial
@@ -228,7 +233,7 @@ function onLoad() {
 	let far = 10.0;//Establezco la distancia maxima que renderizare
 	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
-	transformObjects();
+	transformObjects();//Aplico transformaciones iniciales a cada objeto
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
@@ -236,14 +241,14 @@ function onLoad() {
 /*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
 se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
 los objetos como corresponda.*/
-var toDraw=["Lexus","BMW","Camaro"];
-var last = 0;
+var toDraw=["Lexus","BMW","Camaro"];//Arreglo con los nombres de los autos a dibujar
+var last = 0; //Variables para contar fps
 var count = 0;
 var deltaTime;
 function onRender(now){
 	now *= 0.001; //Tiempo actual
 	deltaTime = now - then; //El tiempo que paso desde la ultima llamada al onRender y la actual
-	count++;
+	count++;//Aumento fps
 	if(now - last> 1){
 		console.log("FPS: "+count);
 		count = 0;
@@ -253,20 +258,22 @@ function onRender(now){
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	refreshCamera();
+	refreshCamera(); //Refresco la camara
 	obj_ball.resetObjectMatrix();
-	transformCars(toDraw[0],1);
+	transformCars(toDraw[0],1); //acomodo los autos de manera que se dibujen correctamente en el orden dado en el arreglo
 	transformCars(toDraw[1],0);
 	transformCars(toDraw[2],-1);
-	drawCars(toDraw);
+	drawCars(toDraw); //dibujo los autos en el arreglo
 
-	transformBall();
-	drawObject(obj_ball);
+	transformBall();//Transformo indicadores de luces
+	drawObject(obj_ball); //dibujo indicadores de luces
 	drawObject(obj_ball2);
 	drawObject(obj_ball3);
-	drawObject(obj_piso);
+	drawObject(obj_piso); //Dibujo piso
 	requestAnimationFrame(onRender); //Continua el bucle
 }
+
+/*metodo auxiliar para elegir el metodo correcto de transformacion*/
 function transformCars(name,traslate){
 	let auto = getCarByName(name);
 	let nombre = auto.getName();
@@ -295,6 +302,8 @@ function transformCars(name,traslate){
 	if(nombre=="Porsche")
 		transformPorsche(traslate);
 }
+
+/*Metodo auxiliar para inciar texturas*/
 function initTexture(){
 	texture = gl.createTexture();
 	enrejado = gl.createTexture();
@@ -312,11 +321,12 @@ function initTexture(){
 		handleLoadedTexture(fuego);
 	}
 	fuego.image.src = "textures/fuego.png";
-	texture.image.src = "textures/mosaico.png";
+	texture.image.src = "textures/textura2 (2).jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
 	console.log(texture.image);
 }
 
+/*Metodo auxiliar para iniciar texturas*/
 function handleLoadedTexture(texture){
 	gl.bindTexture(gl.TEXTURE_2D,texture);
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
@@ -328,6 +338,7 @@ function handleLoadedTexture(texture){
 	gl.bindTexture(gl.TEXTURE_2D,null);
 }
 
+/*Metodo auxiliar para crear VAOS*/
 function createVAO(object){
 	object.setVao(VAOHelper.create(object.getIndices(), [
 		new VertexAttributeInfo(object.getPositions(), posLocation, 3),
@@ -336,6 +347,7 @@ function createVAO(object){
 	]));
 }
 
+/*Dado un auto y un arreglo de OBJ creo todos los objetos asociados a cada auto*/
 function createCar(car,parsedOBJ_arr){
 	let colors = car.getColors();
 	let textures = car.getTextures();
@@ -343,6 +355,7 @@ function createCar(car,parsedOBJ_arr){
 		let objeto = new Object(parsedOBJ_arr[i]);
 		createVAO(objeto);
 		objeto.setTexture(textures[i]);
+		console.log("Auto : "+car.getName() + " Textura: "+textures[i]);
 		//objeto.setTexture(texture);
 		//console.log(texture.image);
 		if(i<colors.length)
@@ -353,6 +366,8 @@ function createCar(car,parsedOBJ_arr){
 	}
 }
 
+
+//Transformaciones iniciales a cada objeto
 function transformObjects(){
 	/*Actualizo las transformaciones para cada uno de los objetos*/
 	transformFerrari(0);
@@ -364,28 +379,18 @@ function transformObjects(){
 	transformCamaro(0);
 }
 
-// function createCarShell(name,textures,colors,rotation,scale,traslation,obj){
-// 	let car = new Car(name);
-// 	bugatti.setColors(colors);
-// 	bugatti.setTextures(textures);
-// 	bugatti.setOBJ(obj);
-// 	bugatti.setRotation(rotation);
-// 	bugatti.setTraslation(traslation);
-// 	bugatti.setScale(scale);
-// 	createCar(car,car.getOBJ())
-// }
-
+/*Funcion auxiliar para dibujar los autos*/
 function drawCars(carsArr){
-	for(let k = 0; k<carsArr.length;k++){
-		let auto = getCarByName(carsArr[k]);
-		let objetos = auto.getObjects();
+	for(let k = 0; k<carsArr.length;k++){ //Para cada nombre en el arreglo a dibujar
+		let auto = getCarByName(carsArr[k]); //Obtengo el auto con ese nombre
+		let objetos = auto.getObjects(); //Obtengo todos los objetos asociados a ese auto
 		for(let j = 0; j<objetos.length; j++){
-			drawObject(objetos[j]);
+			drawObject(objetos[j]); //Dibujo todos los objetos
 		}
 	}
 }
 
-
+/*Metodo auxiliar para obtener un auto a partir de su nombre*/
 function getCarByName(name){
 	for(let i=0; i<obj_cars.length; i++){
 		if(obj_cars[i].getName() == name){
@@ -451,17 +456,17 @@ function refreshCamera(){
 /*Funcion para cargar los objetos*/
 function onModelLoad() {
 	parsedOBJ_Ferrari = [OBJParser.parseFile(ferrari_chasis),OBJParser.parseFile(ferrari_ruedas),OBJParser.parseFile(ferrari_vidrio)];
-	//parsedOBJ_Ferrari = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
 	parsedOBJ2 = OBJParser.parseFile(cone); //Cargo el satelite
 	parsedOBJ3 = OBJParser.parseFile(ball);
 	parsedOBJ_BMW = [OBJParser.parseFile(bmw_chasis),OBJParser.parseFile(bmw_ruedas),OBJParser.parseFile(bmw_vidrio),OBJParser.parseFile(bmw_llantas),OBJParser.parseFile(bmw_frenos),OBJParser.parseFile(bmw_luces_freno),OBJParser.parseFile(bmw_capo),OBJParser.parseFile(bmw_puertas),OBJParser.parseFile(bmw_techo),OBJParser.parseFile(bmw_manijas),OBJParser.parseFile(bmw_baul)];
 	parsedOBJ_Lexus = [OBJParser.parseFile(lexus_chasis),OBJParser.parseFile(lexus_llantas),OBJParser.parseFile(lexus_ruedas),OBJParser.parseFile(lexus_vidrios)];
 	parsedOBJ_Lamborghini = [OBJParser.parseFile(lambo)];
-
 	parsedOBJ4 = OBJParser.parseFile(caja);
 	parsedOBJ5 = OBJParser.parseFile(arrow);
-	parsedOBJ_Camaro = [OBJParser.parseFile(camaro)];
-	parsedOBJ_Bugatti = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
+	parsedOBJ_Camaro = [OBJParser.parseFile(camaro_ruedas),OBJParser.parseFile(camaro_llantas),OBJParser.parseFile(camaro_tuerquitas),OBJParser.parseFile(camaro_chasis),OBJParser.parseFile(camaro_vidrios),OBJParser.parseFile(camaro_lucesTraseras),OBJParser.parseFile(camaro_capo),OBJParser.parseFile(camaro_tuboEscape),OBJParser.parseFile(camaro_puertas),OBJParser.parseFile(camaro_logos),OBJParser.parseFile(camaro_chevrolet),OBJParser.parseFile(camaro_portaFaros),OBJParser.parseFile(camaro_plasticos),
+		OBJParser.parseFile(camaro_patentes)];
+	//parsedOBJ_Bugatti = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_luces_freno)];
+	parsedOBJ_Bugatti = [OBJParser.parseFile(bugatti_chasis),OBJParser.parseFile(bugatti_llantas),OBJParser.parseFile(bugatti_logo),OBJParser.parseFile(bugatti_mallas),OBJParser.parseFile(bugatti_masChasis),OBJParser.parseFile(bugatti_ruedas),OBJParser.parseFile(bugatti_tuboEscape),OBJParser.parseFile(bugatti_vidrios),OBJParser.parseFile(bugatti_brakeLights),OBJParser.parseFile(bugatti_aleron)];
 	parsedOBJ_Specter = [OBJParser.parseFile(specter)];
 	//parsedOBJ_Nissan = [OBJParser.parseFile(nissan)];
 	//parsedOBJ_Ardita = [OBJParser.parseFile(ardita)];

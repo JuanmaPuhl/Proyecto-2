@@ -52,7 +52,7 @@ function transformBugatti(index){
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
 		//translateToOrigin(arr[0]);
-		scaleObject(arr[i],[0.002,0.002,0.002]);
+		scaleObject(arr[i],[0.001,0.001,0.001]);
 		rotateObject(arr[i],180);
 		translateObject(arr[i],[0.04,0.0,0.2]);
 		translateObject(arr[i],[0,0.0,index]);
@@ -63,10 +63,10 @@ function transformCamaro(index){
 	let arr = camaro.getObjects();
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
-		translateToOrigin(arr[0]);
+		//translateToOrigin(arr[0]);
 		scaleObject(arr[i],[0.065,0.065,0.065]);
 		rotateObject(arr[i],90);
-		translateObject(arr[i],[0.04,-0.012,index]);
+		translateObject(arr[i],[0.04,0.05,index]);
 		//translateObject(arr[i],[0,0.0,1]);
 	}
 }

@@ -78,6 +78,8 @@ function setShaderCookTorranceShirley(){
   u_F0 = gl.getUniformLocation(shaderProgram,'F0');
   u_Nu= gl.getUniformLocation(shaderProgram, 'Nu');
   u_Nv = gl.getUniformLocation(shaderProgram, 'Nv');
+  texLocation = gl.getAttribLocation(shaderProgram, 'vertexTextureCoordinates');
+  u_sampler = gl.getUniformLocation(shaderProgram, 'imagen');
 }
 
 /*Funcion para crear cada shaderProgram*/

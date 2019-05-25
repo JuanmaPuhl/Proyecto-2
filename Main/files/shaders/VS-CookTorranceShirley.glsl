@@ -9,7 +9,9 @@ uniform mat4 MV;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec2 vertexTextureCoordinates;
 
+out vec2 fTexCoor;
 out vec3 vNE; //Vector normal en espacio ojo
 //out vec3 vLE; //Vector de direccion de luz
 out vec3 vVE; //Vector de vista (al ojo)
@@ -37,5 +39,5 @@ void main(void){
     vNE = vertex_normal_eye;
     // vec3 light_direction = vec3( posL - vec4(vertex_pos_eye,1.0)); //direccion de la luz al vertice
     // vLE = light_direction;
-
+    fTexCoor = vertexTextureCoordinates;
 }`

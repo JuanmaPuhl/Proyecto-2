@@ -1,3 +1,6 @@
+//Funcion auxiliar que crea todos los materiales.
+/*Se organiza de la siguiente manera.
+Para crear un material es necesario darle el tipo, nombre, ka,kd,ks,coeficiente especular,F0 y sigma creo que era de cook torrance*/
 function crearMateriales(){
 	materials.push(new Material("Metal","Scarlet",[0.0,0.0,0.0],[0.7,0.0,0.0],[1.0,1.0,1.0],89.5,0.09,0.1));
 	materials.push(new Material("Metal","Polished Gold",[0.0,0.0,0.0],[0.34615,0.3143,0.0903],[0.797357,0.723991,0.208006],83.2,0.1,0.1));
@@ -34,6 +37,7 @@ function crearMateriales(){
 	materials.push(new Material("Glass","Glass",[0.0,0.0,0.0],[0.0,0.0,0.0],[1.0,1.0,1.0],500.2,0.08,0.05));
 }
 
+/*Funcion auxiliar para obtener un material segun su nombre. Este es el que se usa mas a lo largo del proyecto*/
 function getMaterialByName(name){
 	let i=0;
 	let encontre = false;
@@ -50,6 +54,7 @@ function getMaterialByName(name){
 		return materials[0];
 }
 
+/*Funcion auxiliar para obtener un material segun su indice. Se usa mas que nada en la primera escena*/
 function getMaterialByIndex(index){
 	if(index >= materials.length)
 		index = materials.length - 1;
@@ -58,6 +63,7 @@ function getMaterialByIndex(index){
 	return materials[index];
 }
 
+/*Metodo auxiliar que convierte luz en color kelvin a rgb*/
 function colorLuz(num){
 	//Algoritmo http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
 	let temperature;
@@ -112,6 +118,8 @@ function colorLuz(num){
 	return [red,green,blue];
 }
 
+/*Metodo auxiliar para cargar los materiales existentes en los dropdown.Debe reescribirse codigo de manera
+forzada, sino guardara los valores unicamente en el ultimo dropdown existente.*/
 function loadMaterials(){
 	let selector1 = document.getElementById("select1");
 	let selector2 = document.getElementById("select2");
@@ -120,7 +128,7 @@ function loadMaterials(){
 	let optGroup;
 	let tipoActual = "";
 	for(let i = 0; i<materials.length; i++){
-		if(materials[i].getType()!=tipoActual){
+		if(materials[i].getType()!=tipoActual){//En esta parte creo las subdivisiones para cada tipo de material
 			optGroup = document.createElement("optgroup");
 			tipoActual = materials[i].getType();
 			optGroup.label = tipoActual;
@@ -132,7 +140,7 @@ function loadMaterials(){
 			optGroup.label = tipoActual;
 			selector3.add(optGroup);
 		}
-
+		//Aca cargo las propias opciones de materiales
 		option = document.createElement("option");
 		option.text = materials[i].getName();
 		selector1.add(option);
@@ -155,6 +163,8 @@ function cargarSliders(){
 	angle[2] = 91-slider[2].defaultValue; //Este es el angulo del slider del zoom
 }
 
+
+/*Metodo auxiliar para crear las luces. Puede hacerse mas simplificado*/
 function createLights(){
 	//LUCES
 
@@ -189,12 +199,15 @@ function createLights(){
 	lights.push(light3);
 }
 
+/*Metodo para cambiar las luces segun los valores preestablecidos en los sliders*/
 function loadLights(){
 	changeColorSlider(parseFloat(document.getElementById("sliderColor1").value),1);
 	changeColorSlider(parseFloat(document.getElementById("sliderColor2").value),2);
 	changeColorSlider(parseFloat(document.getElementById("sliderColor3").value),3);
 }
 
+/*Metodos auxiliares para cambiar el valor del slider mediante el textInput.
+TODO: Hacer esto en una sola funcion.*/
 function setNewValueSpot(value){
 	document.getElementById("sliderColor1").value=parseFloat(value);
 }
@@ -207,11 +220,11 @@ function setNewValuePuntual(value){
 	document.getElementById("sliderColor3").value=parseFloat(value);
 }
 
-function onSliderLuz(slider){
-	angle[1] = parseFloat(slider.value);
-	changed = true;
-	updateTextInput(1,slider.value);
-}
+// function onSliderLuz(slider){
+// 	angle[1] = parseFloat(slider.value);
+// 	changed = true;
+// 	updateTextInput(1,slider.value);
+// }
 
 /*Funcion para el slider de zoom de la camara*/
 function onSliderZoomCamera(slider) {
@@ -269,6 +282,8 @@ function setNewValue(num,value){
 	}
 }
 
+/*Metodo auxiliar para cambiar la posicion de la luz en el caso de la spot y la puntual.
+En el caso de la direccional se cambia la direccion.*/
 function setLightPosition(index){
 	let valueX = parseFloat(document.getElementById("textInputX"+index).value);
 	let valueY = parseFloat(document.getElementById("textInputY"+index).value);
@@ -281,6 +296,12 @@ function setLightPosition(index){
 		light3.setDirection([valueX,valueY,valueZ,0.0]);
 }
 
+
+/*Metodo auxiliar para activar y desactivar luces de cualquier tipo
+Me manejo con un boolean en cada luz que dice si esta encendido o no.
+Si esta encendido devuelve todos los valores normalmente. Sino siempre va a devolver 0
+Mas que nada que el color o intensidad sea 0 hace que se apague.
+En los casos de la luz spot y la luz direccional con direccion 0 tambien se apaga */
 function activarLuz(index){
 	if(index == 1){
 		if(light.isEnabled()){
@@ -375,53 +396,18 @@ function resetScene(){
 		document.getElementById("textInputSpot").value=angle[10];
 		document.getElementById("textInputPuntual").value=angle[11];
 		document.getElementById("textInputDireccional").value=angle[12];
-
-
-
 	}
 	console.log("RESET");//Escribo un RESET para avisar que hizo algo
 }
 
-// /*Funcion usada para poner en pantalla completa*/
-// function launchFullScreen(element) {
-// 	if(!fullScreen){ //Si no esta en pantalla completa...
-// 		if(element.requestFullScreen) //Opcion estandar
-// 			element.requestFullScreen();
-// 		else
-// 			if(element.mozRequestFullScreen) //Opcion para Gecko (Firefox)
-// 				element.mozRequestFullScreen();
-// 			else
-// 				if(element.webkitRequestFullScreen) //Opcion para Blink (Chrome,Opera,Edge)
-// 					element.webkitRequestFullScreen();
-// 		fullScreen=true; //Esta en pantalla completa
-// 	}
-// 	else{ //Si estaba en pantalla completa
-// 		if(document.cancelFullScreen)
-// 			document.cancelFullScreen();
-// 		else
-// 			if(document.mozCancelFullScreen)
-// 				document.mozCancelFullScreen();
-// 			else
-// 				if(document.webkitCancelFullScreen)
-// 					document.webkitCancelFullScreen();
-// 	 fullScreen=false; //Ya no lo esta
-// 	}
-// }
-
+/*Metodo auxiliar para cambiar el material a varios autos*/
 function changeMaterial(value,index){
 	let car = getCarByName(toDraw[index-1]);
-	// if(index == 1){
-	// 	car = lexus;
-	// }
-	// if(index == 2){
-	// 	car = bmw;
-	// }
-	// if(index == 3){
-	// 	car =ferrari;
-	// }
 	let material = getMaterialByName(value);
 	car.getObjects()[0].setMaterial(material);
 }
+
+
 
 function changeColor(value,index){
 	let color = convertHexToRgb(value);
@@ -438,10 +424,9 @@ function changeColor(value,index){
 	console.log(value);
 }
 
-
+/*Metodo auxiliar para cambiar el color de la luz en funcion del slider*/
 function changeColorSlider(value,index){
-
-	let color = colorLuz(parseFloat(value));
+	let color = colorLuz(parseFloat(value));//Obtengo el color mediante el mapeo de kelvin a rgb
 	if(index == 1){
 		lights[0].setIntensity([color,[0.0,0.0,0.0],[0.0,0.0,0.0]]);
 		document.getElementById("textInputSpot").value=value;
@@ -457,6 +442,8 @@ function changeColorSlider(value,index){
 
 
 }
+
+/*Metodo auxiliar para convertir un color en hexa a rgb. Se llama desde el colorPicker*/
 function convertHexToRgb(value){
 	//2 digitos a la izquierda = red
 	let red = value.substr(1,2);
@@ -473,7 +460,8 @@ function convertHexToRgb(value){
 	return [red,green,blue];
 }
 
-
+/*Metodo auxiliar para setear el angulo de la luz. Actualmente solo hay una luz spot en la
+posicion 1 */
 function setNewAngle(index,value){
 	lights[parseInt(index)-1].setAngle(Math.cos(glMatrix.toRadian(parseFloat(value))));
 	light = lights[0];
@@ -484,6 +472,11 @@ function setNewAngle(index,value){
 	console.log("Cambio angulo" + lights[index].getAngle());
 }
 
+
+/*Metodo auxiliar para setear las direcciones de la luz. Actualmente
+solo hay dos luces que necesiten la direccion pero la direccional esta cubierta en el
+metodo anterior de las posiciones TODO: Cambiar esto
+*/
 function setLightDirection(index){
 	let valueX = parseFloat(document.getElementById("textInputXD"+index).value);
 	let valueY = parseFloat(document.getElementById("textInputYD"+index).value);
@@ -497,9 +490,8 @@ function setLightDirection(index){
 }
 
 
-
+/*Metodo auxiliar para cargar los autos en los dropdown*/
 function loadCars(){
-	console.log("ENtre");
 	let selector1 = document.getElementById("selectCar1");
 	let selector2 = document.getElementById("selectCar2");
 	let selector3 = document.getElementById("selectCar3");
@@ -507,7 +499,6 @@ function loadCars(){
 	let optGroup;
 	let tipoActual = "";
 	for(let i = 0; i<obj_cars.length; i++){
-		console.log(obj_cars[i].getName());
 		option = document.createElement("option");
 		option.text = obj_cars[i].getName();
 		selector1.add(option);
@@ -520,11 +511,12 @@ function loadCars(){
 	}
 }
 
-function changeCar(value,index){
-	if(toDraw[0]!=value && toDraw[1]!=value && toDraw[2]!=value ){
-		toDraw[index-1]=value;
+/*Metodo auxiliar para cambiar el auto mostrado en pantalla*/
+function changeCar(value,index){ //Obtengo tanto el valor como el numero del auto a cambiar
+	if(toDraw[0]!=value && toDraw[1]!=value && toDraw[2]!=value ){ //Si ese auto no esta siendo dibujado en otra posicion...
+		toDraw[index-1]=value;//Seteo en la posicion elegida el auto nuevo (Arreglo de autos a dibujar)
 		console.log("Cambio auto" + value);
-		changeMaterial(document.getElementById("select"+index).value,index);
+		changeMaterial(document.getElementById("select"+index).value,index);//Cambio el material del auto segun el valor actual del material
 	}
 
 }
