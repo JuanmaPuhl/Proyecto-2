@@ -27,7 +27,7 @@ function crearMateriales(){
 	materials.push(new Material("Satin","Emerald",[0.0,0.0,0.0],[0.07568,0.61424,0.07568],[0.633,0.727811,0.633],76.8,0.09,0.1));
 	materials.push(new Material("Satin","Silver",[0.0,0.0,0.0],[0.5,0.6,0.5],[0.6,0.5,0.2],89.5,0.09,0.1));
 
-	materials.push(new Material("Metal","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
+	materials.push(new Material("Plastic","Caucho",[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],0,0.2,0.05));
 	materials.push(new Material("Plastic","Default",[1.0,1.0,1.0],[1.0,1.0,1.0],[1.0,1.0,1.0],100.0,0.2,0.05));
 	materials.push(new Material("Plastic","Ruby",[0.0,0.0,0.0],[0.61424,0.04136,0.04136],[0.727811,0.626959,0.626959],12.8,0.09,0.1));
 	materials.push(new Material("Plastic","Turquoise",[0.0,0.0,0.0],[0.396,0.74151,0.69102],[0.297254,0.30829,0.306678],12.8,0.09,0.1));
@@ -336,32 +336,41 @@ y que accion debe llevar a cabo...
 */
 function animateObject(index){
 	changed=true; //Activo que hubo un cambio
-	if(!animated[index]){ //Si no estaba siendo animado...
-		animated[index]=true; //Lo animo
-		rotationAngle[index] = parseFloat(angle[index]); //Tomo el valor del angulo correspondiente y lo asigno al angulo de rotacion automatica
-		if(index==5){//Si se trata de la rotacion automatica de la camara antihorario
-			if(animated[6])//Si estaba rotando automaticamente horario
-				animateObject(6);//Termino la animacion anterior
-			rotationAngle[5]=parseFloat(angle[4]); //Tomo el angulo del slider 5
-		}
-		if(index==6){ //Si se trata de la rotacion automatica de la camara horario
-			if(animated[5])//Si estaba rotando automaticamente antihorario
-				animateObject(5);//Termino la animacion anterior
-			rotationAngle[6]=parseFloat(angle[4]); //Tomo el angulo del slider 5
-		}
-	}
-	else { //Si ya se encontraba animandose, deseo pararlo
-		animated[index]=false; //Termino la animacion
-	//Tengo que hacer un caso especial en el 6 porque comparte el slider 5 y no existe slider 6, por lo tanto el caso general falla.
-		if(index==6){ //Si se trata de la rotacion automatica de la camara a la derecha
-			slider[4].value=rotationAngle[6]; //Seteo el valor del slider 5 como el angulo de rotacion 6
-			angle[4] = rotationAngle[6]; //Hago lo mismo con el angulo
-			updateTextInput(4,rotationAngle[6]); //Y con el campo de texto
-		}else{
-				slider[index].value=rotationAngle[index]; //Asigno al slider asociado con el valor de rotacion asociado
-				angle[index]=rotationAngle[index]; //Lo mismo con el angulo
-				updateTextInput(index,rotationAngle[index]); //Lo mismo con el campo de texto
-			}
+	// if(!animated[index]){ //Si no estaba siendo animado...
+	// 	animated[index]=true; //Lo animo
+	// 	rotationAngle[index] = parseFloat(angle[index]); //Tomo el valor del angulo correspondiente y lo asigno al angulo de rotacion automatica
+	// 	if(index==5){//Si se trata de la rotacion automatica de la camara antihorario
+	// 		if(animated[6])//Si estaba rotando automaticamente horario
+	// 			animateObject(6);//Termino la animacion anterior
+	// 		rotationAngle[5]=parseFloat(angle[4]); //Tomo el angulo del slider 5
+	// 	}
+	// 	if(index==6){ //Si se trata de la rotacion automatica de la camara horario
+	// 		if(animated[5])//Si estaba rotando automaticamente antihorario
+	// 			animateObject(5);//Termino la animacion anterior
+	// 		rotationAngle[6]=parseFloat(angle[4]); //Tomo el angulo del slider 5
+	// 	}
+	// }
+	// else { //Si ya se encontraba animandose, deseo pararlo
+	// 	animated[index]=false; //Termino la animacion
+	// //Tengo que hacer un caso especial en el 6 porque comparte el slider 5 y no existe slider 6, por lo tanto el caso general falla.
+	// 	if(index==6){ //Si se trata de la rotacion automatica de la camara a la derecha
+	// 		slider[4].value=rotationAngle[6]; //Seteo el valor del slider 5 como el angulo de rotacion 6
+	// 		angle[4] = rotationAngle[6]; //Hago lo mismo con el angulo
+	// 		updateTextInput(4,rotationAngle[6]); //Y con el campo de texto
+	// 	}else{
+	// 			slider[index].value=rotationAngle[index]; //Asigno al slider asociado con el valor de rotacion asociado
+	// 			angle[index]=rotationAngle[index]; //Lo mismo con el angulo
+	// 			updateTextInput(index,rotationAngle[index]); //Lo mismo con el campo de texto
+	// 		}
+	// 	}
+		if(!cameraAnimated)
+			cameraAnimated = true;
+			else
+				cameraAnimated = false;
+		if(cameraMouseControls.isEnabled())
+			cameraMouseControls.disable();
+		else {
+			cameraMouseControls.enable();
 		}
 	}
 

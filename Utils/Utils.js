@@ -91,3 +91,31 @@ class Utils {
 		return [rgbFloat.r, rgbFloat.g, rgbFloat.b];
 	}
 }
+
+function toSpherical({ x, y, z }) {
+    const radius = Math.sqrt(x * x + y * y + z * z) // distancia al origen
+    const theta  = Math.atan(x / z)                 // angulo horizontal alrededor del eje y (partiendo del eje z positivo, en sentido anti-horario)
+    const phi    = Math.acos(y / radius)            // angulo vertical desde el eje y positivo
+
+    return { radius, theta, phi }
+}
+
+function toCartesian({ radius, theta, phi }) {
+    const x = radius * Math.sin(phi) * Math.sin(theta);
+    const y = radius * Math.cos(phi);
+    const z = radius * Math.sin(phi) * Math.cos(theta);
+
+    return { x, y, z };
+}
+
+function toDegrees(radians) {
+    return radians * 180 / Math.PI;
+}
+
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+function limitToRange(value, min, max) {
+    return Math.max(Math.min(value, max), min);
+}

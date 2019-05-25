@@ -31,7 +31,7 @@ var rotationAngle=[];
 var animated = [];
 var then = 0;
 var rotationSpeed = 30;
-
+var cameraAnimated = false;
 //MATERIALES
 var materials = [];
 
@@ -67,6 +67,8 @@ var light3;
 var texture;
 var enrejado;
 var fuego;
+
+var cameraMouseControls;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
 function onLoad() {
@@ -97,7 +99,7 @@ function onLoad() {
 
 	bmw = new Car("BMW");
 	let bmw_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	let bmw_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	let bmw_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Chrome","Scarlet","Chrome","Chrome","Chrome"];
 	bmw.setColors(bmw_colors);
 	bmw.setOBJ(parsedOBJ_BMW);
 	bmw.setTextures(bmw_textures);
@@ -111,7 +113,7 @@ function onLoad() {
 	lexus.setTextures(lexus_textures);
 
 	camaro = new Car("Camaro");
-	let camaro_textures = [null,null,null,null,null,texture,texture,fuego,texture,enrejado,enrejado];
+	let camaro_textures = [null,null,null,null,null,null,null,fuego,null,enrejado,enrejado];
 	let camaro_colors = ["Caucho","Polished Bronze","Bronze","Chrome","Glass","Scarlet","Chrome","Silver2","Chrome","Silver2","Brass","Silver2","Caucho","Pearl"];
 	camaro.setColors(camaro_colors);
 	camaro.setOBJ(parsedOBJ_Camaro);
@@ -225,15 +227,19 @@ function onLoad() {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	/*Creacion de camara*/
-	camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
-	viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
+	//camaraEsferica= new sphericalCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[5]),3,target,up);
+	camaraEsferica = new sphericalCamera();
+	//viewMatrix=camaraEsferica.createViewMatrix();//Calculo la matriz de vista
+
 	let fov = glMatrix.toRadian(angle[3]); //Establezco el campo de vision inicial
 	let aspect = canvas.width / canvas.height;//Establezco la relacion de aspecto
 	let near = 0.1;//Establezco la distancia minima que renderizare
 	let far = 10.0;//Establezco la distancia maxima que renderizare
-	projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
+	//projMatrix=camaraEsferica.createPerspectiveMatrix(fov,near,far,aspect);//Calculo la matriz de proyeccion
+	projMatrix = camaraEsferica.projectionMatrix;
 	gl.enable(gl.DEPTH_TEST);//Activo esta opcion para que dibuje segun la posicion en Z. Si hay dos fragmentos con las mismas x,y pero distinta zIndex
 	transformObjects();//Aplico transformaciones iniciales a cada objeto
+	cameraMouseControls = new CameraMouseControls(camaraEsferica, canvas);
 	//Dibujara los que esten mas cerca de la pantalla.
 	requestAnimationFrame(onRender)//Pido que inicie la animacion ejecutando onRender
 }
@@ -258,7 +264,9 @@ function onRender(now){
 	refreshAngles(deltaTime); //Actualizo los angulos teniendo en cuenta el desfasaje de tiempo
 	/*Comienzo a preparar para dibujar*/
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	refreshCamera(); //Refresco la camara
+	refreshCamera(deltaTime * rotationSpeed); //Refresco la camara
+	viewMatrix = camaraEsferica.viewMatrix;
+	projectionMatrix = camaraEsferica.projectionMatrix;
 	obj_ball.resetObjectMatrix();
 	transformCars(toDraw[0],1); //acomodo los autos de manera que se dibujen correctamente en el orden dado en el arreglo
 	transformCars(toDraw[1],0);
@@ -323,7 +331,7 @@ function initTexture(){
 	fuego.image.src = "textures/fuego.png";
 	texture.image.src = "textures/textura2 (2).jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
-	console.log(texture.image);
+	console.log(enrejado.image);
 }
 
 /*Metodo auxiliar para iniciar texturas*/
@@ -441,16 +449,19 @@ function refreshAngles(deltaTime){
 	}
 }
 
-function refreshCamera(){
-	if(animated[5]) //Si esta rotando automaticamente a la izquierda...
-		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
-	else
-		if(animated[6]) //Si esta rotando automaticamente a la derecha...
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
-		else {// Si no esta siendo animada
-			viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
-		}
-	projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
+function refreshCamera(value){
+	// if(animated[5]) //Si esta rotando automaticamente a la izquierda...
+	// 	viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[5]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 5
+	// else
+	// 	if(animated[6]) //Si esta rotando automaticamente a la derecha...
+	// 		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(rotationAngle[6]),glMatrix.toRadian(angle[3])); //Roto segun el angulo de rotacion 6
+	// 	else {// Si no esta siendo animada
+	// 		viewMatrix = camaraEsferica.quaternionCamera(glMatrix.toRadian(angle[4]),glMatrix.toRadian(angle[3])); //Roto segun el angulo del slider
+	// 	}
+	// projMatrix=camaraEsferica.zoom(angle[2]);//Vuelvo a calcular la matriz de proyeccion (Perspectiva)
+	if(cameraAnimated){
+		camaraEsferica.arcHorizontally(glMatrix.toRadian(value));
+	}
 }
 
 /*Funcion para cargar los objetos*/
