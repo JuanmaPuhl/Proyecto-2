@@ -56,6 +56,7 @@ var texture;
 var enrejado;
 var fuego;
 var mitsubishi;
+var porsche1;
 var cameraMouseControls;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
@@ -158,7 +159,7 @@ function onLoad() {
 	lancer.setOBJ(parsedOBJ_Lancer);
 
 	porsche = new Car("Porsche");
-	let porsche_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let porsche_textures = [porsche1,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let porsche_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
 	porsche.setColors(porsche_colors);
 	porsche.setTextures(porsche_textures);
@@ -293,10 +294,12 @@ function initTexture(){
 	enrejado = gl.createTexture();
 	fuego = gl.createTexture();
 	mitsubishi = gl.createTexture();
+	porsche1 = gl.createTexture();
 	texture.image = new Image();
 	enrejado.image = new Image();
 	fuego.image = new Image();
 	mitsubishi.image = new Image();
+	porsche1.image = new Image();
 	texture.image.onload = function(){
 		handleLoadedTexture(texture);
 	}
@@ -309,11 +312,15 @@ function initTexture(){
 	mitsubishi.image.onload = function(){
 		handleLoadedTexture(mitsubishi)
 	}
+	porsche1.image.onload = function(){
+		handleLoadedTexture(porsche1);
+	}
 	fuego.image.src = "textures/fuego.png";
 	texture.image.src = "textures/textura2 (2).jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
-	mitsubishi.image.src = "textures/MLE-texture.jpg"
-	console.log(enrejado.image);
+	mitsubishi.image.src = "textures/MLE-texture.jpg";
+	porsche1.image.src = "textures/Porsche/skin06/0000.bmp";
+	console.log(porsche1.image);
 }
 
 /*Metodo auxiliar para iniciar texturas*/
