@@ -486,3 +486,7 @@ function changeCar(value,index){ //Obtengo tanto el valor como el numero del aut
 	}
 
 }
+
+function showFPS(){
+	
+}

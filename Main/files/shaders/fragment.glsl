@@ -87,9 +87,9 @@ vec3 calcularAportePuntual(Light l, vec3 N , vec3 V){
 
   float value = orenNayar(N,V,L,H);
   if(componente1*componente2!=0.0)
-    return ka+ia*((kd+texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
+    return ka+ia*((texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
   else
-     return ka+ia*(kd+texture(imagen,fTexCoor).rgb) * value;
+     return ka+ia*(texture(imagen,fTexCoor).rgb) * value;
 }
 
 vec3 calcularAporteSpot(Light l, vec3 N, vec3 V){
@@ -134,9 +134,9 @@ vec3 calcularAporteSpot(Light l, vec3 N, vec3 V){
 
     float value = orenNayar(N,V,L,H);
     if(componente1*componente2!=0.0)
-      toReturn = ka+ia*((kd+texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
+      toReturn = ka+ia*((texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
     else
-       toReturn = ka+ia*(kd+texture(imagen,fTexCoor).rgb) * value;
+       toReturn = ka+ia*(texture(imagen,fTexCoor).rgb) * value;
   }
 
     return toReturn;
@@ -183,7 +183,7 @@ vec3 calcularAporteDireccional(Light l, vec3 N , vec3 V){
 
   float value = orenNayar(N,V,S,H);
   if(componente1*componente2!=0.0)
-    return ka+ia*((kd+texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
+    return ka+ia*((texture(imagen,fTexCoor).rgb)*value + ks*(Fres/3.141516)* (Beckmann*GCT)/(componente1*componente2));
   else
      return ka+ia*kd * value;
 }

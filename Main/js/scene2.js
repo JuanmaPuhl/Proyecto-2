@@ -55,7 +55,7 @@ var light3;
 var texture;
 var enrejado;
 var fuego;
-
+var mitsubishi;
 var cameraMouseControls;
 /*Esta funcion se ejecuta al cargar la pagina. Carga todos los objetos para que luego sean dibujados, asi como los valores iniciales
 de las variables a utilizar*/
@@ -151,7 +151,7 @@ function onLoad() {
 	rx.setOBJ(parsedOBJ_RX);
 
 	lancer = new Car("Lancer");
-	let lancer_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let lancer_textures = [mitsubishi,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	let lancer_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
 	lancer.setColors(lancer_colors);
 	lancer.setTextures(lancer_textures);
@@ -235,6 +235,7 @@ function onRender(now){
 	count++;//Aumento fps
 	if(now - last> 1){
 		console.log("FPS: "+count);
+		document.getElementById("fps").innerText = count;
 		count = 0;
 		last = now;
 	}
@@ -291,9 +292,11 @@ function initTexture(){
 	texture = gl.createTexture();
 	enrejado = gl.createTexture();
 	fuego = gl.createTexture();
+	mitsubishi = gl.createTexture();
 	texture.image = new Image();
 	enrejado.image = new Image();
 	fuego.image = new Image();
+	mitsubishi.image = new Image();
 	texture.image.onload = function(){
 		handleLoadedTexture(texture);
 	}
@@ -303,9 +306,13 @@ function initTexture(){
 	fuego.image.onload = function(){
 		handleLoadedTexture(fuego);
 	}
+	mitsubishi.image.onload = function(){
+		handleLoadedTexture(mitsubishi)
+	}
 	fuego.image.src = "textures/fuego.png";
 	texture.image.src = "textures/textura2 (2).jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
+	mitsubishi.image.src = "textures/MLE-texture.jpg"
 	console.log(enrejado.image);
 }
 
