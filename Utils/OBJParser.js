@@ -1,14 +1,7 @@
-/**
- * Helper class to parse OBJ files.
- * Based on: https://dannywoodz.wordpress.com/2014/12/16/webgl-from-scratch-loading-a-mesh/
- */
-class OBJParser {
-	/**
-	 * Parse an OBJ file
-	 * @param  {string} fileContent Full content of OBJ file
-	 * @return {object}             Plain object containing arrays of indices, positions, normals, textures.
-	 */
-	static parseFile(fileContent) {
+
+	async function parseFile(objFileUrl) {
+    const response = await fetch(objFileUrl)
+    const fileContent  = await response.text()
 		let lines = fileContent.split('\n');
 		let srcPositions = []; //[[x,y,z], [x,y,z], ...]
 		let srcNormals = [];    //[[x,y,z], [x,y,z], ...]
@@ -19,8 +12,8 @@ class OBJParser {
 		let dstIndices = [];
 		let map = {}; // 1/2/3 => 4
 		let nextIndex = 0;
-		
-		
+
+
 		for (let i = 0; i < lines.length; i++) {
 
 			let parts = lines[i].trim().split(' ');
@@ -64,6 +57,7 @@ class OBJParser {
 				}//switch
 			}
 		}
+
 		return {
 			indices: dstIndices,
 			positions: dstPositions,
@@ -71,4 +65,3 @@ class OBJParser {
 			textures: dstTextures
 		};
 	}
-}

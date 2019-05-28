@@ -116,7 +116,7 @@ function transformLexus(index){
 		arr[i].resetObjectMatrix();
 		scaleObject(arr[i],[0.06,0.06,0.06]);
 		rotateObject(arr[i],90);
-		translateObject(arr[i],[0,-0.282,1])
+		translateObject(arr[i],[0,-0.282,index])
 		// translateToOrigin(arr[i]);
 		// scaleObject(arr[i],[0.2,0.2,0.2]);
 		// rotateObject(arr[i],180);
@@ -188,10 +188,11 @@ function transformLancer(index){
 	let arr = lancer.getObjects();
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
-		translateToOrigin(arr[i]);
-		scaleObject(arr[i],[0.0002,0.0002,0.0002]);
+		//translateToOrigin(arr[i]);
+		//scaleObject(arr[i],[0.0002,0.0002,0.0002]);
+		scaleObject(arr[i],[0.002,0.002,0.002]);
 		rotateObject(arr[i],0);
-		// translateObject(arr[i],[0,-0.282,1])
+		 translateObject(arr[i],[-0.5,-0.15,1])
 		// translateToOrigin(arr[i]);
 		// scaleObject(arr[i],[0.2,0.2,0.2]);
 		// rotateObject(arr[i],180);
