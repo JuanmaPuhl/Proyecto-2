@@ -184,7 +184,7 @@ function createLights(){
 	var light3;
 	var light_position3 = [0.0,2.0,-1.0,1.0];
 	var light_intensity3 = [[0.01,0.01,0.01],[1.0,1.0,1.0],[1.0,1.0,1.0]];
-	var light_direction3 = [1.0,0.0,0.0,0.0];
+	var light_direction3 = [1.0,0.1,0.0,0.0];
 	var light_angle3 = Math.cos(glMatrix.toRadian(30));
 
 
@@ -488,5 +488,5 @@ function changeCar(value,index){ //Obtengo tanto el valor como el numero del aut
 }
 
 function showFPS(){
-	
+
 }
