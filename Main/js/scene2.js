@@ -178,6 +178,13 @@ async function onLoad() {
 	porsche.setTextures(porsche_textures);
 	porsche.setOBJ(parsedOBJ_Porsche);
 
+	audiCarrera = new Car("AudiCarrera");
+	let audi_textures = [audiTexture,null,null,corvetteTexture,corvetteTexture,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let audi_colors = ["Chrome","Glass","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	audiCarrera.setColors(audi_colors);
+	audiCarrera.setTextures(audi_textures);
+	audiCarrera.setOBJ(parsedOBJ_AudiCarrera);
+
 	//Una vez que termine de crearlos los meto en el arreglo para mejor manejo
 	//obj_cars.push(lexus);
 	//obj_cars.push(bmw);
@@ -192,6 +199,7 @@ async function onLoad() {
 	obj_cars.push(lancer);
 	obj_cars.push(porsche);
 	obj_cars.push(corvette);
+	obj_cars.push(audiCarrera);
 
 	//Creo para cada auto todos los objetos asociados. Chasis, ruedas etc. Se obtienen del arreglo de parsedOBJ
 	for(let i = 0; i<obj_cars.length; i++){
@@ -302,6 +310,8 @@ function transformCars(name,traslate){
 		transformPorsche(traslate);
 	if(nombre == "Corvette")
 		transformCorvette(traslate);
+	if(nombre == "AudiCarrera")
+		transformAudi(traslate);
 }
 
 /*Metodo auxiliar para inciar texturas*/
@@ -319,6 +329,7 @@ function initTexture(){
 	camaroLlantas = gl.createTexture();
 	corvetteTexture = gl.createTexture();
 	corvetteWheel = gl.createTexture();
+	audiTexture = gl.createTexture();
 	texture.image = new Image();
 	enrejado.image = new Image();
 	fuego.image = new Image();
@@ -332,6 +343,7 @@ function initTexture(){
 	camaroLlantas.image = new Image();
 	corvetteTexture.image = new Image();
 	corvetteWheel.image = new Image();
+	audiTexture.image = new Image();
 	texture.image.onload = function(){
 		handleLoadedTexture(texture);
 	}
@@ -371,6 +383,9 @@ function initTexture(){
 	corvetteWheel.image.onload = function(){
 		handleLoadedTexture(corvetteWheel);
 	}
+	audiTexture.image.onload = function(){
+		handleLoadedTexture(audiTexture);
+	}
 	fuego.image.src = "textures/fuego.png";
 	texture.image.src = "textures/fondo-textura-marmol-textura-marmoles-tailandia-marmol-natural-abstracto-blanco-negro-gris-diseno_1253-914.jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
@@ -383,6 +398,8 @@ function initTexture(){
 	camaroPlaca.image.src = "textures/Camaro/plaque2.jpg"
 	camaroLlantas.image.src = "textures/Camaro/CAMARO RIM.png"
 	corvetteTexture.image.src = "textures/Corvette/albedo_esterno.jpg"
+	audiTexture.image.src = "textures/WEILL_Thomas_DIFF.png"
+
 	corvetteWheel.image.src = "textures/Corvette/wheels.png"
 }
 
@@ -529,5 +546,8 @@ async function onModelLoad() {
 
 	parsedOBJ_Corvette = [corvetteA,corvetteB,corvetteC,corvetteD,corvetteE];
 
+
+	const audiA = await parseFile("../Modelos/audiCarrera.obj");
+	parsedOBJ_AudiCarrera = [audiA];
 
 }

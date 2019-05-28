@@ -231,6 +231,21 @@ function transformCorvette(index){
 	}
 }
 
+function transformAudi(index){
+	let arr = audiCarrera.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		//translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.222,0.222,0.222]);
+		rotateObject(arr[i],90);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,-0.15,index])
+	}
+}
+
 function transformPiso(){
 	translateToOrigin(obj_piso);
 	scaleObject(obj_piso,[1,1,1]);
