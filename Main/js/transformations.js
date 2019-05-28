@@ -144,9 +144,9 @@ function transformNissan(index){
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
 		//translateToOrigin(arr[i]);
-		scaleObject(arr[i],[0.4,0.4,0.4]);
+		scaleObject(arr[i],[0.42,0.42,0.42]);
 		rotateObject(arr[i],90);
-		// translateObject(arr[i],[0,-0.282,1])
+		translateObject(arr[i],[0,-0.137,0])
 		// translateToOrigin(arr[i]);
 		// scaleObject(arr[i],[0.2,0.2,0.2]);
 		// rotateObject(arr[i],180);
