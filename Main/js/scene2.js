@@ -136,13 +136,20 @@ async function onLoad() {
 	// specter.setTextures(specter_textures);
 	// specter.setOBJ(parsedOBJ_Specter);
 
-	// nissan = new Car("Nissan");
-	// let nissan_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	// let nissan_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
-	// nissan.setColors(nissan_colors);
-	// nissan.setTextures(nissan_textures);
-	// nissan.setOBJ(parsedOBJ_Nissan);
+	nissan = new Car("Nissan");
+	let nissan_textures = [corvetteTexture,null,null,corvetteTexture,corvetteTexture,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let nissan_colors = ["Chrome","Glass","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	nissan.setColors(nissan_colors);
+	nissan.setTextures(nissan_textures);
+	nissan.setOBJ(parsedOBJ_Nissan);
 
+
+	corvette = new Car("Corvette");
+	let corvette_textures = [corvetteTexture,null,null,corvetteWheel,corvetteTexture,null,null,null];
+	let corvette_colors = ["Chrome","Glass","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	corvette.setColors(corvette_colors);
+	corvette.setTextures(corvette_textures);
+	corvette.setOBJ(parsedOBJ_Corvette);
 	// ardita = new Car("Ardita");
 	// let ardita_textures = [null,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
 	// let ardita_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
@@ -179,11 +186,12 @@ async function onLoad() {
 	//obj_cars.push(bugatti);
 	obj_cars.push(lamborghini);
 	//obj_cars.push(specter);
-	//obj_cars.push(nissan);
+	obj_cars.push(nissan);
 	//obj_cars.push(ardita);
 	//obj_cars.push(rx);
 	obj_cars.push(lancer);
 	obj_cars.push(porsche);
+	obj_cars.push(corvette);
 
 	//Creo para cada auto todos los objetos asociados. Chasis, ruedas etc. Se obtienen del arreglo de parsedOBJ
 	for(let i = 0; i<obj_cars.length; i++){
@@ -292,6 +300,8 @@ function transformCars(name,traslate){
 		transformLancer(traslate);
 	if(nombre=="Porsche")
 		transformPorsche(traslate);
+	if(nombre == "Corvette")
+		transformCorvette(traslate);
 }
 
 /*Metodo auxiliar para inciar texturas*/
@@ -307,6 +317,8 @@ function initTexture(){
 	camaroTexture = gl.createTexture();
 	camaroPlaca = gl.createTexture();
 	camaroLlantas = gl.createTexture();
+	corvetteTexture = gl.createTexture();
+	corvetteWheel = gl.createTexture();
 	texture.image = new Image();
 	enrejado.image = new Image();
 	fuego.image = new Image();
@@ -318,6 +330,8 @@ function initTexture(){
 	camaroTexture.image = new Image();
 	camaroPlaca.image = new Image();
 	camaroLlantas.image = new Image();
+	corvetteTexture.image = new Image();
+	corvetteWheel.image = new Image();
 	texture.image.onload = function(){
 		handleLoadedTexture(texture);
 	}
@@ -351,6 +365,12 @@ function initTexture(){
 	camaroLlantas.image.onload = function(){
 		handleLoadedTexture(camaroLlantas);
 	}
+	corvetteTexture.image.onload = function(){
+		handleLoadedTexture(corvetteTexture);
+	}
+	corvetteWheel.image.onload = function(){
+		handleLoadedTexture(corvetteWheel);
+	}
 	fuego.image.src = "textures/fuego.png";
 	texture.image.src = "textures/fondo-textura-marmol-textura-marmoles-tailandia-marmol-natural-abstracto-blanco-negro-gris-diseno_1253-914.jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
@@ -362,6 +382,8 @@ function initTexture(){
 	camaroTexture.image.src = "textures/Camaro/Lines1.png"
 	camaroPlaca.image.src = "textures/Camaro/plaque2.jpg"
 	camaroLlantas.image.src = "textures/Camaro/CAMARO RIM.png"
+	corvetteTexture.image.src = "textures/Corvette/albedo_esterno.jpg"
+	corvetteWheel.image.src = "textures/Corvette/wheels.png"
 }
 
 /*Metodo auxiliar para iniciar texturas*/
@@ -496,4 +518,16 @@ async function onModelLoad() {
 	console.log(4);
 	parsedOBJ_Lamborghini = [la];
 	// parsedOBJ_Porsche = [OBJParser.parseFile(porsche)];
+	const na = await parseFile("../Modelos/nissan.obj");
+	parsedOBJ_Nissan = [na];
+
+	const corvetteA = await parseFile("../Modelos/Corvette/corvette_chasis.obj");
+	const corvetteB = await parseFile("../Modelos/Corvette/corvette_vidrios.obj");
+	const corvetteC = await parseFile("../Modelos/Corvette/corvette_neumaticos.obj");
+	const corvetteD = await parseFile("../Modelos/Corvette/corvette_llantas.obj");
+	const corvetteE = await parseFile("../Modelos/Corvette/corvette_discoFreno.obj");
+
+	parsedOBJ_Corvette = [corvetteA,corvetteB,corvetteC,corvetteD,corvetteE];
+
+
 }

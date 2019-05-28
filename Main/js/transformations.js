@@ -143,7 +143,7 @@ function transformNissan(index){
 	let arr = nissan.getObjects();
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
-		translateToOrigin(arr[i]);
+		//translateToOrigin(arr[i]);
 		scaleObject(arr[i],[0.4,0.4,0.4]);
 		rotateObject(arr[i],90);
 		// translateObject(arr[i],[0,-0.282,1])
@@ -206,13 +206,28 @@ function transformPorsche(index){
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
 		//translateToOrigin(arr[i]);
-		scaleObject(arr[i],[0.2,0.2,0.2]);
+		scaleObject(arr[i],[0.22,0.22,0.22]);
 		rotateObject(arr[i],-90);
 		// translateObject(arr[i],[0,-0.282,1])
 		// translateToOrigin(arr[i]);
 		// scaleObject(arr[i],[0.2,0.2,0.2]);
 		// rotateObject(arr[i],180);
 		translateObject(arr[i],[0,0,index])
+	}
+}
+
+function transformCorvette(index){
+	let arr = corvette.getObjects();
+	for(let i = 0; i<arr.length; i++){
+		arr[i].resetObjectMatrix();
+		//translateToOrigin(arr[i]);
+		scaleObject(arr[i],[0.12,0.12,0.12]);
+		rotateObject(arr[i],90);
+		// translateObject(arr[i],[0,-0.282,1])
+		// translateToOrigin(arr[i]);
+		// scaleObject(arr[i],[0.2,0.2,0.2]);
+		// rotateObject(arr[i],180);
+		translateObject(arr[i],[0,-0.15,index])
 	}
 }
 
