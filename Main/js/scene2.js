@@ -162,12 +162,12 @@ async function onLoad() {
 	lancer.setTextures(lancer_textures);
 	lancer.setOBJ(parsedOBJ_Lancer);
 
-	// porsche = new Car("Porsche");
-	// let porsche_textures = [porsche1,null,null,null,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
-	// let porsche_colors = ["Chrome","Caucho","Glass","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
-	// porsche.setColors(porsche_colors);
-	// porsche.setTextures(porsche_textures);
-	// porsche.setOBJ(parsedOBJ_Porsche);
+	porsche = new Car("Porsche");
+	let porsche_textures = [porsche1,porsche1,ruedasPorsche,ruedasPorsche,null,null,enrejado,fuego,enrejado,enrejado,enrejado];
+	let porsche_colors = ["Chrome","Glass","Bronze","Bronze","Scarlet","Scarlet","Caucho","Scarlet","Caucho","Caucho","Caucho"];
+	porsche.setColors(porsche_colors);
+	porsche.setTextures(porsche_textures);
+	porsche.setOBJ(parsedOBJ_Porsche);
 
 	//Una vez que termine de crearlos los meto en el arreglo para mejor manejo
 	//obj_cars.push(lexus);
@@ -177,11 +177,11 @@ async function onLoad() {
 	//obj_cars.push(bugatti);
 	//obj_cars.push(lamborghini);
 	//obj_cars.push(specter);
-	// obj_cars.push(nissan);
+	//obj_cars.push(nissan);
 	//obj_cars.push(ardita);
 	//obj_cars.push(rx);
 	obj_cars.push(lancer);
-	//obj_cars.push(porsche);
+	obj_cars.push(porsche);
 
 	//Creo para cada auto todos los objetos asociados. Chasis, ruedas etc. Se obtienen del arreglo de parsedOBJ
 	for(let i = 0; i<obj_cars.length; i++){
@@ -231,7 +231,7 @@ async function onLoad() {
 /*Este metodo se llama constantemente gracias al metodo requestAnimationFrame(). En los sliders no
 se llama al onRender, sino que unicamente actualiza valores. Luego el onRender recupera esos valores y transforma
 los objetos como corresponda.*/
-var toDraw=["","Lancer",""];//Arreglo con los nombres de los autos a dibujar
+var toDraw=["","Porsche","Mitsubishi"];//Arreglo con los nombres de los autos a dibujar
 var last = 0; //Variables para contar fps
 var count = 0;
 var deltaTime;
@@ -302,6 +302,7 @@ function initTexture(){
 	porsche1 = gl.createTexture();
 	enrejadoMLE = gl.createTexture();
 	ruedasMLE = gl.createTexture();
+	ruedasPorsche = gl.createTexture();
 	texture.image = new Image();
 	enrejado.image = new Image();
 	fuego.image = new Image();
@@ -309,6 +310,7 @@ function initTexture(){
 	porsche1.image = new Image();
 	enrejadoMLE.image = new Image();
 	ruedasMLE.image = new Image();
+	ruedasPorsche.image = new Image();
 	texture.image.onload = function(){
 		handleLoadedTexture(texture);
 	}
@@ -330,14 +332,17 @@ function initTexture(){
 	ruedasMLE.image.onload = function(){
 		handleLoadedTexture(ruedasMLE);
 	}
+	ruedasPorsche.image.onload = function(){
+		handleLoadedTexture(ruedasPorsche);
+	}
 	fuego.image.src = "textures/fuego.png";
 	texture.image.src = "textures/textura2 (2).jpg";
 	enrejado.image.src = "textures/carbon-fiber.jpg";
 	mitsubishi.image.src = "textures/Mitsubishi/MLE-texture.jpg";
 	porsche1.image.src = "textures/Porsche/skin06/0000.bmp";
 	enrejadoMLE.image.src = "textures/Mitsubishi/MLE-opacity.jpg"
-	console.log(enrejadoMLE.image)
 	ruedasMLE.image.src = "textures/Mitsubishi/MLE-wheel.jpg"
+	ruedasPorsche.image.src = "textures/Porsche/car/0000.bmp"
 }
 
 /*Metodo auxiliar para iniciar texturas*/
@@ -446,6 +451,13 @@ async function onModelLoad() {
 	const h = await parseFile("../Modelos/Mitsubishi/mitsubishi_neumaticos.obj");
 	const i = await parseFile("../Modelos/Mitsubishi/mitsubishi_luces.obj");
 	parsedOBJ_Lancer = [a,b,c,d,e,f,g,h,i];
+
+	const pa = await parseFile("../Modelos/Porsche/porsche_chasis.obj");
+	const pb = await parseFile("../Modelos/Porsche/porsche_vidrios.obj");
+	const pc = await parseFile("../Modelos/Porsche/porsche_llantas.obj");
+	const pd = await parseFile("../Modelos/Porsche/porsche_neumaticos.obj");
+
+	parsedOBJ_Porsche = [pa,pb,pc,pd];
 
 
 

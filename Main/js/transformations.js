@@ -192,7 +192,7 @@ function transformLancer(index){
 		//scaleObject(arr[i],[0.0002,0.0002,0.0002]);
 		scaleObject(arr[i],[0.002,0.002,0.002]);
 		rotateObject(arr[i],0);
-		 translateObject(arr[i],[-0.5,-0.15,1])
+		translateObject(arr[i],[-0.5,-0.15,0])
 		// translateToOrigin(arr[i]);
 		// scaleObject(arr[i],[0.2,0.2,0.2]);
 		// rotateObject(arr[i],180);
@@ -205,7 +205,7 @@ function transformPorsche(index){
 	let arr = porsche.getObjects();
 	for(let i = 0; i<arr.length; i++){
 		arr[i].resetObjectMatrix();
-		translateToOrigin(arr[i]);
+		//translateToOrigin(arr[i]);
 		scaleObject(arr[i],[0.2,0.2,0.2]);
 		rotateObject(arr[i],-90);
 		// translateObject(arr[i],[0,-0.282,1])
